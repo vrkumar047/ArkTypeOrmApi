@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { CommonService } from '../services/common.service';
-const commonService = new CommonService();
+import { EmployeeService } from '../services/employee.service';
+const employeeService = new EmployeeService();
 export class EmployeeController {
   async getStates(req: Request, res: Response, next: NextFunction) {
     try {
@@ -9,7 +9,7 @@ export class EmployeeController {
       if (loggedInUser) {
         let states: any[] = [];
         if (!res.locals.data) {
-          states = await commonService.getStates(loggedInUser, countryCode);
+          states = await employeeService.getStates(loggedInUser, countryCode);
         } else {
           states = JSON.parse(res.locals.data);
         }
