@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { ErpEmployeeController } from '../controllers/erpEmployee.controller';
+import { ErpEmployeeController } from '../controllers/erp.employee.controller';
 import { authenticate } from '../middlewares/authenticate.middleware';
 import { SchemaValidator } from '../middlewares/validateSchema.middleware';
 import { checkCache } from '../middlewares/redis.middleware';

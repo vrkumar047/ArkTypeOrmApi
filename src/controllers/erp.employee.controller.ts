@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ErpEmployeeService } from '../services/erpEmployee.service';
+import { ErpEmployeeService } from '../services/erp.employee.service';
 const erpEmployeeService = new ErpEmployeeService();
 export class ErpEmployeeController {
   async getStates(req: Request, res: Response, next: NextFunction) {

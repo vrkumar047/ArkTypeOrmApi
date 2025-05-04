@@ -2,7 +2,7 @@
   "UnknownSource": "Request from unknown source",
   "InternalServerError": "Unable to perform action, please try later",
   "RecordNotFound": "Record not found",
-  "UserNotFound": "User is not registered, please sign up",
+  "UserNotFound": "User does not exist",
   "UserBlocked": "Login is suspended, please contact administrator",
   "UserInActive": "Login is blocked, please contact administrator",
   "IncorrectPassword": "Incorrect password, try again",

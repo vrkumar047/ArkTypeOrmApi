@@ -46,10 +46,11 @@ export class AuthController {
 
   async isLogedIn(req: Request, res: Response, next: NextFunction) {
     try {
-      let userName: string = req.body.userName;
-      let password: string = req.body.password;
-      let userDetail: any = await authService.checkuser(userName, password);
-      res.locals.data = userDetail;
+      const bearerToken = req.headers.authorization;
+      let token: string = bearerToken.split(' ')[1];
+      let aud = req.headers.origin;
+      let isLoggedIn: any = await authService.isLogedIn(token, aud);
+      res.locals.data = isLoggedIn;
     } catch (err) {
       res.locals.error = err;
     }

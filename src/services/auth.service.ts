@@ -11,6 +11,7 @@ import appConfig from '../_configs/app/appConfig.json';
 import dotenv from 'dotenv';
 import Logger from '../utils/logger';
 import moment from 'moment';
+import { Secret } from 'jsonwebtoken';
 const jwt = new JWT();
 dotenv.config();
 const { refreshTokenExpireTime } = process.env;
@@ -27,7 +28,60 @@ export class AuthService {
       const resultSets = await getResultSets(companyDb, constant.P_GetUser, {
         UserName: userName,
       }); //---------------------------- this will return multiple result sets
-      console.log(resultSets);
+      if (JSON.stringify(resultSets) == '[[],[]]') {
+        let err = new CustomError('UserNotFound');
+        throw err;
+      }
+      if (JSON.stringify(resultSets[0]) == '[]') {
+        let err = new CustomError('UserNotFound');
+        throw err;
+      }
+
+      let alreadyLogin: number = resultSets[0][0].islogedin;
+      let hashPassword: string = resultSets[0][0].hash_password;
+      let comparePassword: boolean = Encrypt.comparePassword(
+        password,
+        hashPassword,
+      );
+      comparePassword = true;
+      if (comparePassword) {
+        let claimJson: any = JSON.parse(resultSets[1][0].claim);
+        let roleName: string = resultSets[1][0].role_name;
+        for (var i = 1; i < resultSets[1].length; i++) {
+          roleName += ',' + resultSets[1][i].role_name;
+          //-----
+          var tempJson = JSON.parse(resultSets[1][i].claim);
+          var key;
+          for (key in tempJson.claims.web) {
+            if (tempJson.claims.web.hasOwnProperty(key)) {
+              if (tempJson.claims.web[key] == true) {
+                claimJson.claims.web[key] = tempJson.claims.web[key];
+              }
+            }
+          }
+        }
+
+        resultSets[0][0].claim = JSON.stringify(claimJson);
+        resultSets[0][0].role_name = roleName;
+
+        let token = jwt.generateToken(resultSets[0][0], claimJson);
+        let refreshToken = jwt.generateRefreshToken(resultSets[0][0].user_id);
+
+        //  let updatedUserLogin = await userLoginRepo.save(userLogin);  // update refresh token
+
+        resultSets[0][0].token = token;
+        resultSets[0][0].refreshToken = refreshToken;
+
+        // let status: any = {};
+        // status.action = 'LogedIn';
+        // status.userId = userName;
+        // // activity.LogInStatus(status);
+      } else {
+        let err = new CustomError('IncorrectPassword');
+        throw err;
+      }
+
+      //  console.log(resultSets);
       return resultSets;
     } catch (error: any) {
       if (error.driverError) {
@@ -107,8 +161,8 @@ export class AuthService {
         `select * from ${constant.P_GetUser}(0)`,
         [],
       );
-      let userClaims = this.getModulePermissions(modules, userLogin.userClaim);
-      let token = jwt.generateToken(user, userClaims, secret);
+      //  let userClaims = this.getModulePermissions(modules, userLogin.userClaim);
+      //  let token = jwt.generateToken(user, userClaims);
       let refreshToken = jwt.generateRefreshToken(<string>userLogin.userId);
       let userInfo: any = {};
       userInfo.userId = user.userId;
@@ -119,7 +173,7 @@ export class AuthService {
       userInfo.roles = roles;
       userInfo.mobile = user.mobile;
       userInfo.emailId = user.emailId;
-      userInfo.token = token;
+      //     userInfo.token = token;
       userInfo.refreshToken = refreshToken;
       userInfo.tokenExpiredAt = new Date();
 
@@ -198,28 +252,21 @@ export class AuthService {
     }
   }
 
-  getModulePermissions(modules: any[], userPermissions: any[]) {
-    let modulePermissions: any[] = [];
-    for (let mdls of modules) {
-      let module: any = userPermissions.find(
-        (x) => x.moduleId == mdls.moduleId,
-      );
-      if (module) {
-        delete mdls.roleId;
-        mdls.create = module.create;
-        mdls.read = module.read;
-        mdls.update = module.update;
-        mdls.delete = module.delete;
-        mdls.download = module.download;
+  async isLogedIn(token: string, aud: string) {
+    try {
+      aud = aud != undefined ? aud : 'http://localhost:4200';
+      var decoded = await jwt.validateToken(token, aud);
+      if (decoded) {
+        return { isLoggedIn: true };
       } else {
-        mdls.create = 0;
-        mdls.read = 0;
-        mdls.update = 0;
-        mdls.delete = 0;
-        mdls.download = 0;
+        return {
+          isLoggedIn: false,
+        };
       }
-      modulePermissions.push(mdls);
+    } catch (error: any) {
+      return {
+        isLoggedIn: false,
+      };
     }
-    return modulePermissions;
   }
 }

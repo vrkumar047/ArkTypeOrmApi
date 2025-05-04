@@ -9,21 +9,19 @@ import { Encrypt } from './encrypt';
 dotenv.config();
 const {} = process.env;
 
-const { dirPath, allowedOrigins, aud, iss, sub, tokenExpireTime } = process.env;
+const { dirPath, allowedOrigins, aud, iss, sub, tokenExpireTime, secret } =
+  process.env;
 
 export class JWT {
-  generateToken(userDetail: any, userClaims: any, secret: string) {
+  generateToken(userDetail: any, userClaims: any) {
     // information to be encoded in the JWT
     let payload = {
-      userId: userDetail.userId,
-      clientId: userDetail.clientId,
-      userName: userDetail.userName,
-      firstName: userDetail.firstName,
-      lastName: userDetail.lastName,
-      fullName: `${userDetail.firstName} ${userDetail.lastName}`,
-      tenantId: userDetail.tenantId,
+      userId: userDetail.user_id,
+      clientId: userDetail.companyCode,
+      userName: userDetail.userId,
+      fullName: userDetail.name,
       mobile: userDetail.mobile,
-      emailId: userDetail.emailId,
+      emailId: userDetail.email_id,
       secret: secret,
       userClaims: userClaims,
     };
@@ -47,7 +45,7 @@ export class JWT {
   }
 
   generateRefreshToken(userId: string) {
-    let timestamp = moment().clone().format('DDMMMYYYYHHmmssSSSZ');
+    let timestamp = moment().clone().format('DDMMMYYYYHHmmssSSS');
     let refreshTokenString = `${userId}${timestamp}`;
     return bcrypt.hashSync(refreshTokenString, 12);
   }

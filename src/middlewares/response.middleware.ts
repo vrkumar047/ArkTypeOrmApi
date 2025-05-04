@@ -48,13 +48,33 @@ export const CustomResponse = (req: Request, res: Response) => {
         message: 'Not found',
       });
     } else {
-      let data: any = res.locals.data;
-      res.locals = {};
-      res.status(200).json({
-        statusCode: 200,
-        status: 'success',
-        data: data,
-      });
+      if (
+        req.originalUrl == '/api/account/signIn' ||
+        req.originalUrl == '/api/account/refreshToken'
+      ) {
+        let data: any = res.locals.data;
+        let token: string = data[0][0].token;
+        let refeshToken: string = data[0][0].refreshToken;
+        delete data[0][0].token;
+        delete data[0][0].refreshToken;
+        delete data[0][0].hash_password;
+        res.locals = {};
+        res.status(200).json({
+          statusCode: 200,
+          status: 'success',
+          token: token,
+          refreshToken: refeshToken,
+          data: data,
+        });
+      } else {
+        let data: any = res.locals.data;
+        res.locals = {};
+        res.status(200).json({
+          statusCode: 200,
+          status: 'success',
+          data: data,
+        });
+      }
     }
   } catch (error) {
     res.status(500).json(error);

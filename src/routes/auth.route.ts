@@ -6,6 +6,7 @@ const authRoute = Router();
 const authCntrl = new AuthController();
 
 authRoute.post('/signIn', validateRequest, authCntrl.signIn);
+authRoute.post('/isLogedIn', validateRequest, authCntrl.isLogedIn);
 //authRoute.post('/refreshToken', validateRequest, authCntrl.refreshToken);
 
 export { authRoute };
