@@ -1,4 +1,4 @@
-import { GetCompanyDb } from '../_dbs/mssql/pgConnection';
+import { GetCompanyDb, getResultSets } from '../_dbs/mssql/pgConnection';
 import { plainToClass } from 'class-transformer';
 import constant from '../_dbs/mssql/constant';
 import Logger from '../utils/logger';
@@ -25,47 +25,37 @@ export class CommonService {
   generateUniqueId(format: string) {
     return `${format}${Math.floor(Math.random() * 100000)}`;
   }
-  getSnapShot(loggedInUser: any): Promise<any> {
-    return new Promise((resolve) => {
-      try {
-        var options = {
-          method: 'GET',
-          hostname: '192.168.1.201',
-          path: '/GetSnapshot/1',
-          headers: {
-            Authorization: 'Basic YWRtaW46QWRtaW5AMTIz',
-            Cookie: 'Secure',
-          },
-          maxRedirects: 20,
-        };
 
-        let imgReq: any = http.request(options, function (imgRes) {
-          let fileName: string = `img_${moment().format('DDMMYYYYHHMMss')}.jpg`;
-          let filePath: string = path.join(
-            __dirname,
-            `../../uploads/snapshots/${fileName}`,
-          );
-          const writeFile = fs.createWriteStream(filePath);
-          imgRes.on('data', function (chunk) {
-            writeFile.write(chunk);
-          });
-
-          imgRes.on('end', function () {
-            writeFile.close();
-            imgReq.end();
-            // console.log('Image downloaded successfully');
-            resolve({ fileName: fileName });
-          });
-
-          imgRes.on('error', function (error) {
-            imgReq.end();
-            resolve({ error: error.message });
-          });
+  async getDashboardDetails(
+    loggedInUser: any,
+    action: string,
+    role: string,
+    userId: string,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      const resultSets = await getResultSets(
+        companyDb,
+        constant.P_GetFormMasterList,
+        {
+          action: action,
+          role: role,
+          userId: userId,
+        },
+      );
+      let res: any = { recordsets: resultSets };
+      return res;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getDashboardDetails',
+          error: error.message,
         });
-      } catch (err: any) {
-        resolve({ error: err.message });
+        error = new CustomError('InternalServerError');
       }
-    });
+      throw error;
+    }
   }
 
   async getSnapShot2(loggedInUser: any): Promise<any> {

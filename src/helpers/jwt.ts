@@ -9,11 +9,10 @@ import { Encrypt } from './encrypt';
 dotenv.config();
 const {} = process.env;
 
-const { dirPath, allowedOrigins, aud, iss, sub, tokenExpireTime, secret } =
-  process.env;
+const { dirPath, allowedOrigins, aud, iss, sub, tokenExpireTime } = process.env;
 
 export class JWT {
-  generateToken(userDetail: any, userClaims: any) {
+  generateToken(userDetail: any, userClaims: any, secret: string) {
     // information to be encoded in the JWT
     let payload = {
       userId: userDetail.user_id,
@@ -36,7 +35,7 @@ export class JWT {
       audience: audience,
       algorithm: 'RS256',
       expiresIn: parseInt(tokenExpireTime) * 24 * 60 * 60, // Convert days to seconds
-      jwtid: `${userDetail.userId}`,
+      jwtid: `${userDetail.user_id}`,
       keyid: '7345274',
     };
 

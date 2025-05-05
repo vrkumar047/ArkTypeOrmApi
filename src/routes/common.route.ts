@@ -8,7 +8,10 @@ const commonRoute = Router();
 const commonCntrl = new CommonController();
 
 commonRoute.use(authenticate);
-commonRoute.get('/getSnapShot', commonCntrl.getSnapShot);
+commonRoute.get(
+  '/getDashboardDetails/:action/:role/:userId',
+  commonCntrl.getDashboardDetails,
+);
 commonRoute.get('/getVisitPurposes', commonCntrl.getVisitPurposes);
 
 commonRoute.get('/getDevicesForClient', commonCntrl.getDevicesForClient);

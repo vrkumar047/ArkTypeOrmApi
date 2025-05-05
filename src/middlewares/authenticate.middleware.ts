@@ -17,7 +17,7 @@ export const authenticate = async (
     }
     if (!aud) {
       // comment this block to secure for specific domain
-      aud = 'http://103.185.212.89:9785';
+      aud = 'http://127.0.0.1:61695';
     }
     if (!aud) {
       return res.status(421).json({

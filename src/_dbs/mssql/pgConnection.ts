@@ -11,8 +11,21 @@ let { db_host, db_port, db_name, db_user, db_password, node_env } = process.env;
 
 let CompanyDb: DataSource | null = null;
 
-const GetCompanyDb = async (): Promise<DataSource> => {
+const GetCompanyDb = async (secret: string = ''): Promise<DataSource> => {
   if (CompanyDb && CompanyDb.isInitialized) return CompanyDb; // Ensure singleton
+
+  let decryptedSecret: any;
+  if (secret != undefined && secret != '') {
+    decryptedSecret = JSON.parse(Encrypt.decrypt(secret));
+  }
+
+  if (decryptedSecret) {
+    db_host = decryptedSecret.hst;
+    db_name = decryptedSecret.name;
+    db_user = decryptedSecret.usrname;
+    db_password = decryptedSecret.pwd;
+    db_port = decryptedSecret.pt;
+  }
 
   CompanyDb = new DataSource({
     type: 'mssql',

@@ -11,10 +11,16 @@ import appConfig from '../_configs/app/appConfig.json';
 import dotenv from 'dotenv';
 import Logger from '../utils/logger';
 import moment from 'moment';
-import { Secret } from 'jsonwebtoken';
 const jwt = new JWT();
 dotenv.config();
-const { refreshTokenExpireTime } = process.env;
+const {
+  db_host,
+  db_port,
+  db_name,
+  db_user,
+  db_password,
+  refreshTokenExpireTime,
+} = process.env;
 export class AuthService {
   async checkuser(userName: string, password: string): Promise<any> {
     try {
@@ -64,7 +70,19 @@ export class AuthService {
         resultSets[0][0].claim = JSON.stringify(claimJson);
         resultSets[0][0].role_name = roleName;
 
-        let token = jwt.generateToken(resultSets[0][0], claimJson);
+        let configDetail: any = {
+          userId: resultSets[0][0].user_id,
+          hst: db_host,
+          usrname: db_user,
+          pwd: db_password,
+          name: db_name,
+          pt: db_port,
+          loginAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+        };
+
+        let secret: string = Encrypt.encrypt(JSON.stringify(configDetail));
+
+        let token = jwt.generateToken(resultSets[0][0], claimJson, secret);
         let refreshToken = jwt.generateRefreshToken(resultSets[0][0].user_id);
 
         //  let updatedUserLogin = await userLoginRepo.save(userLogin);  // update refresh token

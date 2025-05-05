@@ -6,7 +6,7 @@ export class ErpCommonController {
     try {
       let loggedInUser: any = req['currentUser'];
       if (loggedInUser) {
-        let data: any = await commonService.getSnapShot(loggedInUser);
+        let data: any = await commonService.getSnapShot2(loggedInUser);
         res.locals.data = data;
       } else {
         res.locals.error = 'Unauthorized';

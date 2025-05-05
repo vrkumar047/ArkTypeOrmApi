@@ -69,11 +69,12 @@ export const CustomResponse = (req: Request, res: Response) => {
       } else {
         let data: any = res.locals.data;
         res.locals = {};
-        res.status(200).json({
-          statusCode: 200,
-          status: 'success',
-          data: data,
-        });
+        // res.status(200).json({
+        //   statusCode: 200,
+        //   status: 'success',
+        //   data: data,
+        // });
+        res.status(200).json(data);
       }
     }
   } catch (error) {

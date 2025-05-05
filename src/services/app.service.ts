@@ -20,10 +20,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(xmlparser());
 //let allowedOrigins: any = 'http://localhost:4200,http://127.0.0.1:4200';
 app.get('/', function (req, res) {
-  res.send('Hello XSMatics');
-});
-app.get('/api/getFeedBackBaseApi', function (req, res) {
-  res.send({ feedbackBaseApi: feedbackBaseApi });
+  res.send('Hello ARK');
 });
 
 app.use(
@@ -79,9 +76,4 @@ app.use(
   express.static(path.join(__dirname, '../../uploads/snapshots/vehicles')),
 );
 
-//app.use(authorize);
-
-//app.use('/bills', express.static(path.join(config.dirPath + 'uploads/bills')));
-//app.use(ErrorHandler);
-//app.use(morganLogger);
 export { app };
