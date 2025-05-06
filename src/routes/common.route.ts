@@ -12,16 +12,29 @@ commonRoute.get(
   '/getDashboardDetails/:action/:role/:userId',
   commonCntrl.getDashboardDetails,
 );
-commonRoute.get('/getVisitPurposes', commonCntrl.getVisitPurposes);
-
-commonRoute.get('/getDevicesForClient', commonCntrl.getDevicesForClient);
-commonRoute.get('/getCountries', commonCntrl.getCountries);
-//commonRoute.get('/getFeedBackBaseApi', commonCntrl.getFeedBackBaseApi);
-
-//commonRoute.get('/getStates/:countryCode', checkCache, commonCntrl.getStates);  // to check data from redis
-commonRoute.get('/getStates/:countryCode', commonCntrl.getStates);
-
-commonRoute.get('/getIdProofTypes', commonCntrl.getIdProofTypes);
+commonRoute.get(
+  '/getProspectusNo/:action/:branchCode/:userId',
+  commonCntrl.getProspectusNo,
+);
+commonRoute.get(
+  '/getBasicTableDetails/:action/:userId',
+  commonCntrl.getBasicTableDetails,
+);
+commonRoute.get(
+  '/getAddressDetail/:action/:countryId/:stateId/:districtId/:cityId/:userId',
+  commonCntrl.getAddressDetail,
+);
+commonRoute.get('/getState', commonCntrl.getState);
+commonRoute.get(
+  '/getConstituency/:action/:stateCode/:pcCode',
+  commonCntrl.getConstituency,
+);
+commonRoute.get('/getCasteCategory/:stateCode', commonCntrl.getCasteCategory);
+commonRoute.get('/getCaste/:casteCategory/:stateCode', commonCntrl.getCaste);
+commonRoute.get(
+  '/getFeeBatchAndSchemeList/:tableName/:branchCode/:desigCode',
+  commonCntrl.getFeeBatchAndSchemeList,
+);
 
 // commonRoute.get(
 //   '/getCities',

@@ -19,9 +19,6 @@ let options: any = {
 };
 
 export class CommonService {
-  generateUniqueResidenceId(format: string, unitId: number, floorNo: number) {
-    return `${format}${unitId.toString().padStart(2, '00')}${floorNo.toString().padStart(2, '00')}${Math.floor(Math.random() * 1000)}`;
-  }
   generateUniqueId(format: string) {
     return `${format}${Math.floor(Math.random() * 100000)}`;
   }
@@ -58,59 +55,28 @@ export class CommonService {
     }
   }
 
-  async getSnapShot2(loggedInUser: any): Promise<any> {
+  async getBasicTableDetails(
+    loggedInUser: any,
+    action: string,
+    userId: string,
+  ): Promise<any> {
     try {
-      var options = {
-        uri: 'http://192.168.1.12/cgi-bin/snapshot.cgi?1',
-        encoding: 'binary',
-        auth: {
-          user: 'admin',
-          pass: 'admin@12345',
-          sendImmediately: false,
-        },
-      };
-
-      request.get(
-        options,
-        async function (error: any, response: any, body: any) {
-          if (response.statusCode == 200) {
-            const imageData = Buffer.from(response.body, 'binary');
-            let filePath: string = path.join(
-              __dirname,
-              `../../uploads/snapshots/image_${moment().format('DDMMYYYYHHMMss')}.jpg`,
-            );
-            fs.writeFile(filePath, imageData, (err) => {
-              if (err) throw err;
-              console.log('Image saved successfully!');
-            });
-          } else {
-            console.log('Code : ' + response.statusCode);
-          }
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      const resultSets = await getResultSets(
+        companyDb,
+        constant.P_BasicTableDetails,
+        {
+          action: action,
+          userId: userId,
         },
       );
-    } catch (err) {
-      return null;
-    }
-  }
-
-  async getVisitPurposes(loggedInUser: any): Promise<any[]> {
-    try {
-      let companyDb = await GetCompanyDb();
-      let purposes: any[] = await companyDb.manager.find('', {
-        where: {
-          isActive: 1,
-        },
-      });
-      // let puposeRes = purposes.map((value) =>
-      //   plainToClass(VisitPurposeResponse, value, options),
-      // );
-      // return puposeRes;
-      return purposes;
+      let res: any = { recordsets: resultSets };
+      return res;
     } catch (error: any) {
       if (error.driverError) {
         Logger.error({
           clientId: '',
-          src: 'common/getVisitPurpose',
+          src: 'common/getBasicTableDetails',
           error: error.message,
         });
         error = new CustomError('InternalServerError');
@@ -119,19 +85,30 @@ export class CommonService {
     }
   }
 
-  async getDevicesForClient(loggedInUser: any): Promise<any[]> {
+  async getProspectusNo(
+    loggedInUser: any,
+    action: string,
+    branchCode: string,
+    userId: string,
+  ): Promise<any> {
     try {
-      let companyDb = await GetCompanyDb();
-      let devices: any[] = await companyDb.manager.query(
-        `select * from ${constant.P_GetUser}()`,
-        [],
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      const resultSets = await getResultSets(
+        companyDb,
+        constant.P_ProspectusDetails,
+        {
+          action: action,
+          branchCode: branchCode,
+          userId: userId,
+        },
       );
-      return devices;
+      let res: any = resultSets[0];
+      return res;
     } catch (error: any) {
       if (error.driverError) {
         Logger.error({
           clientId: '',
-          src: 'common/getDevicesForClient',
+          src: 'common/getProspectusNo',
           error: error.message,
         });
         error = new CustomError('InternalServerError');
@@ -140,67 +117,224 @@ export class CommonService {
     }
   }
 
-  async getCountries(loggedInUser: any): Promise<any[]> {
-    let companyDb = await GetCompanyDb();
-    let countries: any[] = await companyDb.manager.find('', {
-      where: {
-        isActive: 1,
-      },
-    });
-    // let countryRes = countries.map((value) =>
-    //   plainToClass(CountryResponse, value, options),
-    // );
-    // return countryRes;
-
-    return countries;
-  }
-
-  async getStates(loggedInUser: any, countryCode: string): Promise<any[]> {
+  async getAddressDetail(
+    loggedInUser: any,
+    action: string,
+    countryId: string,
+    stateId: string,
+    districtId: string,
+    cityId: string,
+    userId: string,
+  ): Promise<any> {
     try {
-      let companyDb = await GetCompanyDb();
-      let states: any[] = await companyDb.manager.find('', {
-        where: {
-          countryCode: countryCode ?? '',
-          isActive: 1,
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      const resultSets = await getResultSets(
+        companyDb,
+        constant.P_AddressDetail,
+        {
+          action: action,
+          countryId: countryId,
+          stateId: stateId,
+          districtId: districtId,
+          cityId: cityId,
+          userId: userId,
         },
-      });
-      // await redis.set('IN', JSON.stringify(states), 'EX', 3600);
-      // let stateRes = states.map((value) =>
-      //   plainToClass(StateResponse, value, options),
-      // );
-      // return stateRes;
-      return states;
+      );
+      let res: any = resultSets[0];
+      return res;
     } catch (error: any) {
       if (error.driverError) {
         Logger.error({
           clientId: '',
-          src: 'common/getStates',
+          src: 'common/getAddressDetail',
           error: error.message,
         });
+        error = new CustomError('InternalServerError');
       }
-      let err = new CustomError('InternalServerError');
-      throw err;
+      throw error;
     }
   }
 
-  async getIdProofTypes(loggedInUser: any): Promise<any[]> {
+  async getState(loggedInUser: any): Promise<any> {
     try {
-      let companyDb = await GetCompanyDb();
-      let proofTypes: any[] = await companyDb.manager.find('', {
-        where: {
-          isActive: 1,
-        },
-      });
-      // let proofTypeRes = proofTypes.map((value) =>
-      //   plainToClass(IdProofTypeResponse, value, options),
-      // );
-      // return proofTypeRes;
-      return proofTypes;
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      const resultSets = await getResultSets(
+        companyDb,
+        constant.P_Get_State_Master,
+        {},
+      );
+      let res: any = resultSets[0];
+      return res;
     } catch (error: any) {
       if (error.driverError) {
         Logger.error({
           clientId: '',
-          src: 'common/getIdProofTypes',
+          src: 'common/getState',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getConstituency(
+    loggedInUser: any,
+    action: string,
+    stateCode: string,
+    pcCode: string,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      const resultSets = await getResultSets(
+        companyDb,
+        constant.P_Get_Constituency_Detail,
+        {
+          action: action,
+          stateCode: stateCode,
+          pcCode: pcCode,
+        },
+      );
+      let res: any = resultSets[0];
+      return res;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getConstituency',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getVehicles(loggedInUser: any): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let vehicleRes: any = await companyDb.manager
+        .createQueryBuilder(Vehicle, 'vh')
+        .innerJoin(Resident, 'rst', 'rst.residentId = vh.residentId')
+        .select([
+          'vh.vehicleId as "vehicleId"',
+          'vh.residentId as "residentId"',
+          `rst.firstName ||' '|| coalesce(rst.lastName,'')::varchar as "residentName"`,
+          'vh.vehicleOwnerName as "vehicleOwnerName"',
+          'vh.vehicleOwnerMobileNo as "vehicleOwnerMobileNo"',
+          'vh.vehicleNo as "vehicleNo"',
+          'vh.vehicleModel as "vehicleModel"',
+          'vh.fasTagId as "fasTagId"',
+          'vh.tagId as "tagId"',
+          'vh.tagEpc as "tagEpc"',
+          'vh.vehicleType as "vehicleType"',
+          `'${gateMangerBaseApi}' || coalesce(vh.vehicleImage,'na')::varchar as "vehicleImage"`,
+        ])
+        .where('vh.isActive = :isActive', {
+          isActive: 1,
+        })
+        .orderBy('vh.updated_at', 'DESC')
+        .getRawMany();
+
+      return vehicleRes;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          agencyId: loggedInUser.clientId,
+          src: 'common/getStaffs',
+          error: error.message,
+        });
+        let err = new CustomError('InternalServerError');
+        throw err;
+      } else {
+        throw error;
+      }
+    }
+  }
+
+  async getCasteCategory(loggedInUser: any, stateCode: string): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      const resultSets = await getResultSets(
+        companyDb,
+        constant.P_GetFormMasterList,
+        {
+          action: action,
+          role: role,
+          userId: userId,
+        },
+      );
+      let res: any = { recordsets: resultSets };
+      return res;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getDashboardDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getDashboardDetails(
+    loggedInUser: any,
+    action: string,
+    role: string,
+    userId: string,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      const resultSets = await getResultSets(
+        companyDb,
+        constant.P_GetFormMasterList,
+        {
+          action: action,
+          role: role,
+          userId: userId,
+        },
+      );
+      let res: any = { recordsets: resultSets };
+      return res;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getDashboardDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getFeeBatchAndSchemeList(
+    loggedInUser: any,
+    tableName: string,
+    branchCode: string,
+    desigCode: string,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      const resultSets = await getResultSets(
+        companyDb,
+        constant.P_getFeeBatchAndSchemeDetails,
+        {
+          tableName: tableName,
+          branchCode: branchCode,
+          desigCode: desigCode,
+        },
+      );
+      let res: any = resultSets[0];
+      return res;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getFeeBatchAndSchemeList',
           error: error.message,
         });
         error = new CustomError('InternalServerError');

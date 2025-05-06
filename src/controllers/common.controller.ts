@@ -25,17 +25,18 @@ export class CommonController {
     next();
   }
 
-  async getVisitPurposes(req: Request, res: Response, next: NextFunction) {
+  async getBasicTableDetails(req: Request, res: Response, next: NextFunction) {
     try {
       let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action;
+      let userId: string = req.params.userId;
       if (loggedInUser) {
-        let visitPurposes: any[] = [];
-        if (!res.locals.data) {
-          visitPurposes = await commonService.getVisitPurposes(loggedInUser);
-        } else {
-          visitPurposes = JSON.parse(res.locals.data);
-        }
-        res.locals.data = visitPurposes;
+        let data: any = await commonService.getBasicTableDetails(
+          loggedInUser,
+          action,
+          userId,
+        );
+        res.locals.data = data;
       } else {
         res.locals.error = 'Unauthorized';
       }
@@ -45,38 +46,20 @@ export class CommonController {
     next();
   }
 
-  async getCountries(req: Request, res: Response, next: NextFunction) {
+  async getProspectusNo(req: Request, res: Response, next: NextFunction) {
     try {
       let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action;
+      let branchCode: string = req.params.branchCode;
+      let userId: string = req.params.userId;
       if (loggedInUser) {
-        let countries: any[] = [];
-        if (!res.locals.data) {
-          countries = await commonService.getCountries(loggedInUser);
-        } else {
-          countries = JSON.parse(res.locals.data);
-        }
-        res.locals.data = countries;
-      } else {
-        res.locals.error = 'Unauthorized';
-      }
-    } catch (err) {
-      res.locals.error = err;
-    }
-    next();
-  }
-  async getStates(req: Request, res: Response, next: NextFunction) {
-    try {
-      let loggedInUser: any = req['currentUser'];
-      let countryCode: string = req.params.countryCode;
-      if (loggedInUser) {
-        let states: any[] = [];
-        if (!res.locals.data) {
-          states = await commonService.getStates(loggedInUser, countryCode);
-        } else {
-          states = JSON.parse(res.locals.data);
-        }
-
-        res.locals.data = states;
+        let data: any = await commonService.getProspectusNo(
+          loggedInUser,
+          action,
+          branchCode,
+          userId,
+        );
+        res.locals.data = data;
       } else {
         res.locals.error = 'Unauthorized';
       }
@@ -86,13 +69,26 @@ export class CommonController {
     next();
   }
 
-  async getDevicesForClient(req: Request, res: Response, next: NextFunction) {
+  async getAddressDetail(req: Request, res: Response, next: NextFunction) {
     try {
       let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action;
+      let countryId: string = req.params.countryId;
+      let stateId: string = req.params.stateId;
+      let districtId: string = req.params.districtId;
+      let cityId: string = req.params.cityId;
+      let userId: string = req.params.userId;
       if (loggedInUser) {
-        let devices: any[] = [];
-        devices = await commonService.getDevicesForClient(loggedInUser);
-        res.locals.data = devices;
+        let data: any = await commonService.getAddressDetail(
+          loggedInUser,
+          action,
+          countryId,
+          stateId,
+          districtId,
+          cityId,
+          userId,
+        );
+        res.locals.data = data;
       } else {
         res.locals.error = 'Unauthorized';
       }
@@ -102,17 +98,12 @@ export class CommonController {
     next();
   }
 
-  async getIdProofTypes(req: Request, res: Response, next: NextFunction) {
+  async getState(req: Request, res: Response, next: NextFunction) {
     try {
       let loggedInUser: any = req['currentUser'];
       if (loggedInUser) {
-        let idProofTypes: any[] = [];
-        if (!res.locals.data) {
-          idProofTypes = await commonService.getIdProofTypes(loggedInUser);
-        } else {
-          idProofTypes = JSON.parse(res.locals.data);
-        }
-        res.locals.data = idProofTypes;
+        let data: any = await commonService.getState(loggedInUser);
+        res.locals.data = data;
       } else {
         res.locals.error = 'Unauthorized';
       }
@@ -122,19 +113,58 @@ export class CommonController {
     next();
   }
 
-  // async getCities(req: Request, res: Response, next: NextFunction) {
-  //   try {
-  //     let loggedInUser: any = req['currentUser'];
-  //     if (loggedInUser) {
-  //       let states: StateResponse[] =
-  //         await commonService.getCities(loggedInUser);
-  //       res.locals.data = states;
-  //     } else {
-  //       res.locals.error = 'Unauthorized';
-  //     }
-  //   } catch (err) {
-  //     res.locals.error = err;
-  //   }
-  //   next();
-  // }
+  async getConstituency(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action;
+      let stateCode: string =
+        req.params.stateCode != 'stateCode' ? req.params.stateCode : '';
+      let pcCode: string =
+        req.params.pcCode != 'pcCode' ? req.params.pcCode : '';
+      if (loggedInUser) {
+        let data: any = await commonService.getConstituency(
+          loggedInUser,
+          action,
+          stateCode,
+          pcCode,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async getFeeBatchAndSchemeList(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let tableName: string =
+        req.params.tableName != 'tableName' ? req.params.tableName : '';
+      let branchCode: string =
+        req.params.branchCode != 'branchCode' ? req.params.branchCode : '';
+      let desigCode: string =
+        req.params.desigCode != 'desigCode' ? req.params.desigCode : '';
+      if (loggedInUser) {
+        let data: any = await commonService.getFeeBatchAndSchemeList(
+          loggedInUser,
+          tableName,
+          branchCode,
+          desigCode,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
 }
