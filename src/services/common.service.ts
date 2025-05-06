@@ -210,38 +210,19 @@ export class CommonService {
     }
   }
 
-  async getVehicles(loggedInUser: any): Promise<any> {
+  async getCasteCategory(loggedInUser: any, stateCode: string): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
-      let vehicleRes: any = await companyDb.manager
-        .createQueryBuilder(Vehicle, 'vh')
-        .innerJoin(Resident, 'rst', 'rst.residentId = vh.residentId')
-        .select([
-          'vh.vehicleId as "vehicleId"',
-          'vh.residentId as "residentId"',
-          `rst.firstName ||' '|| coalesce(rst.lastName,'')::varchar as "residentName"`,
-          'vh.vehicleOwnerName as "vehicleOwnerName"',
-          'vh.vehicleOwnerMobileNo as "vehicleOwnerMobileNo"',
-          'vh.vehicleNo as "vehicleNo"',
-          'vh.vehicleModel as "vehicleModel"',
-          'vh.fasTagId as "fasTagId"',
-          'vh.tagId as "tagId"',
-          'vh.tagEpc as "tagEpc"',
-          'vh.vehicleType as "vehicleType"',
-          `'${gateMangerBaseApi}' || coalesce(vh.vehicleImage,'na')::varchar as "vehicleImage"`,
-        ])
-        .where('vh.isActive = :isActive', {
-          isActive: 1,
-        })
-        .orderBy('vh.updated_at', 'DESC')
-        .getRawMany();
-
-      return vehicleRes;
+      let casteCategory: any = await companyDb.query(
+        'select id,CategoryName from tbl_CasteCategoryMaster_New (nolock) where isActive =1',
+        [],
+      );
+      return casteCategory;
     } catch (error: any) {
       if (error.driverError) {
         Logger.error({
           agencyId: loggedInUser.clientId,
-          src: 'common/getStaffs',
+          src: 'common/getCasteCategory',
           error: error.message,
         });
         let err = new CustomError('InternalServerError');
@@ -252,57 +233,23 @@ export class CommonService {
     }
   }
 
-  async getCasteCategory(loggedInUser: any, stateCode: string): Promise<any> {
-    try {
-      let companyDb = await GetCompanyDb(loggedInUser.secret);
-      const resultSets = await getResultSets(
-        companyDb,
-        constant.P_GetFormMasterList,
-        {
-          action: action,
-          role: role,
-          userId: userId,
-        },
-      );
-      let res: any = { recordsets: resultSets };
-      return res;
-    } catch (error: any) {
-      if (error.driverError) {
-        Logger.error({
-          clientId: '',
-          src: 'common/getDashboardDetails',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
-      throw error;
-    }
-  }
-
-  async getDashboardDetails(
+  async getCaste(
     loggedInUser: any,
-    action: string,
-    role: string,
-    userId: string,
+    casteCategory: string,
+    stateCode: string,
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
-      const resultSets = await getResultSets(
-        companyDb,
-        constant.P_GetFormMasterList,
-        {
-          action: action,
-          role: role,
-          userId: userId,
-        },
+      let casteRes: any = await companyDb.query(
+        `select id,CasteCategory,caste_name as CasteName from tbl_CasteDetail_New (nolock) where StateCode = '${stateCode}' and CasteCategory= '${casteCategory}' and isActive=1`,
+        [],
       );
-      let res: any = { recordsets: resultSets };
-      return res;
+      return casteRes;
     } catch (error: any) {
       if (error.driverError) {
         Logger.error({
           clientId: '',
-          src: 'common/getDashboardDetails',
+          src: 'common/getCaste',
           error: error.message,
         });
         error = new CustomError('InternalServerError');

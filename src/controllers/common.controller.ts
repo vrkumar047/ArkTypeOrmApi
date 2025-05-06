@@ -138,6 +138,52 @@ export class CommonController {
     next();
   }
 
+  async getCaste(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let casteCategory: string =
+        req.params.casteCategory != 'casteCategory'
+          ? req.params.casteCategory
+          : '';
+      let stateCode: string =
+        req.params.stateCode != 'stateCode' ? req.params.stateCode : '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.getCaste(
+          loggedInUser,
+          casteCategory,
+          stateCode,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async getCasteCategory(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let stateCode: string =
+        req.params.stateCode != 'stateCode' ? req.params.stateCode : '';
+      if (loggedInUser) {
+        let data: any = await commonService.getCasteCategory(
+          loggedInUser,
+          stateCode,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
   async getFeeBatchAndSchemeList(
     req: Request,
     res: Response,
