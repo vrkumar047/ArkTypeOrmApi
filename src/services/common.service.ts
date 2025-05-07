@@ -289,4 +289,176 @@ export class CommonService {
       throw error;
     }
   }
+
+  async getReasonList(loggedInUser: any, action: string = ''): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let reasonList: any = await companyDb.query(
+        `EXEC ${constant.P_getReasonList} @action = @0`,
+        [action],
+      );
+      return reasonList;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getReasonList',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getDocumentList(
+    loggedInUser: any,
+    post: string = '',
+    candidateType: string = '',
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let documentList: any = await companyDb.query(
+        `EXEC ${constant.Proc_DocumentRequired} @Post = @0, @CandType = @1`,
+        [post, candidateType],
+      );
+      return documentList;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getDocumentList',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getRequiredDocument(
+    loggedInUser: any,
+    docType: number = 0,
+    post: string = '',
+    candidateType: string = '',
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let documentList: any = await companyDb.query(
+        `EXEC ${constant.Proc_DocumentList}  @DocType = @0, @Post = @1, @CandType = @2`,
+        [docType, post, candidateType],
+      );
+      return documentList;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getRequiredDocument',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getRequiredDocs(
+    loggedInUser: any,
+    post: string = '',
+    candidateType: string = '',
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let documentList: any = await companyDb.query(
+        `EXEC ${constant.Proc_DocumentRequired} @Post = @0, @CandType = @1`,
+        [post, candidateType],
+      );
+      return documentList;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getDocumentList',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getApplicableDocType(
+    loggedInUser: any,
+    docCode: number = 0,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let documentList: any = await companyDb.query(
+        `EXEC ${constant.P_GetApplicableDocType} @DocId = @0`,
+        [docCode],
+      );
+      return documentList;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getApplicableDocType',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getDocumentForVerify(
+    loggedInUser: any,
+    post: string = '',
+    candidateType: string = '',
+    isBranch: number = 0,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let documentList: any = await companyDb.query(
+        `EXEC ${constant.Proc_required_document_list} @Post = @0, @CandType = @1, @isBranch = @2`,
+        [post, candidateType, isBranch],
+      );
+      return documentList;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getDocumentForVerify',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getMandatoryDocList(
+    loggedInUser: any,
+    post: string = '',
+    candidateType: string = '',
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let documentList: any = await companyDb.query(
+        `EXEC ${constant.Proc_DocumentRequired} @Post = @0, @CandType = @1`,
+        [post, candidateType],
+      );
+      return documentList;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getMandatoryDocList',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
 }
