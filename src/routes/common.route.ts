@@ -105,35 +105,25 @@ commonRoute.get(
   commonCntrl.getBankDetailsIFSCWise,
 );
 
-// commonRoute.get(
-//   '/getDesignationList/:action/:branchCode/:userId',
-//   commonCntrl.getDesignationList,
-// );
+commonRoute.get(
+  '/getDesignationList/:action/:branchCode/:userId',
+  commonCntrl.getDesignationList,
+);
 
-// commonRoute.get(
-//   '/getBasicTableDetails/:action/:userId',
-//   commonCntrl.getBasicTableDetails,
-// );
+commonRoute.get(
+  '/getTempDeploymentFormList/:userId',
+  commonCntrl.getTempDeploymentFormList,
+);
 
-// commonRoute.get(
-//   '/getDashboardDetails/:action/:role/:userId',
-//   commonCntrl.getDashboardDetails,
-// );
+commonRoute.get(
+  '/getUnApprovedDocuments/:formNo',
+  commonCntrl.getUnApprovedDocuments,
+);
 
-// commonRoute.get(
-//   '/getTempDeploymentFormList/:userId',
-//   commonCntrl.getTempDeploymentFormList,
-// );
-
-// commonRoute.get(
-//   '/getUnApprovedDocuments/:formNo',
-//   commonCntrl.getUnApprovedDocuments,
-// );
-
-// commonRoute.get(
-//   '/getTempDeploymentApplicationDetail/:formNo',
-//   commonCntrl.getTempDeploymentApplicationDetail,
-// );
+commonRoute.get(
+  '/getTempDeploymentApplicationDetail/:formNo',
+  commonCntrl.getTempDeploymentApplicationDetail,
+);
 
 // commonRoute.post(
 //   '/updateTempDeploymentDocumentStatus',

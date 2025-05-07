@@ -687,4 +687,120 @@ export class CommonService {
       throw error;
     }
   }
+
+  async getDesignationList(
+    loggedInUser: any,
+    action: string = '',
+    branchCode: string = '',
+    userId: string = '',
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      const resultSets = await getResultSets(
+        companyDb,
+        constant.P_DesignationDetails,
+        {
+          action: action,
+          branchCode: branchCode,
+          userId: userId,
+        },
+      );
+      let res: any = { recordsets: resultSets };
+      return res;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getDesignationList',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getTempDeploymentFormList(
+    loggedInUser: any,
+    userId: string = '',
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      const resultSets = await getResultSets(
+        companyDb,
+        constant.P_GetTempDeploymentFormList,
+        {
+          userId: userId,
+        },
+      );
+      let res: any = { recordsets: resultSets };
+      return res;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getTempDeploymentFormList',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getUnApprovedDocuments(
+    loggedInUser: any,
+    formNo: number = 0,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      const resultSets = await getResultSets(
+        companyDb,
+        constant.P_GetUnApprovedDocuments,
+        {
+          formNo: formNo,
+        },
+      );
+      let res: any = { recordsets: resultSets };
+      return res;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getUnApprovedDocuments',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getTempDeploymentApplicationDetail(
+    loggedInUser: any,
+    formNo: number = 0,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      const resultSets = await getResultSets(
+        companyDb,
+        constant.P_GetTempDeploymentApplicationDetails,
+        {
+          formNo: formNo,
+        },
+      );
+      let res: any = { recordsets: resultSets };
+      return res;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getTempDeploymentApplicationDetail',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
 }

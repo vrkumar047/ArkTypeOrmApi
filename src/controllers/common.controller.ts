@@ -559,4 +559,102 @@ export class CommonController {
     }
     next();
   }
+
+  async getDesignationList(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action ?? '';
+      let branchCode: string = req.params.branchCode ?? '';
+      let userId: string = req.params.userId ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.getDesignationList(
+          loggedInUser,
+          action,
+          branchCode,
+          userId,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async getTempDeploymentFormList(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let userId: string = req.params.userId ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.getTempDeploymentFormList(
+          loggedInUser,
+          userId,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async getUnApprovedDocuments(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let formNo: number =
+        req.params.formNo != undefined ? parseInt(req.params.formNo) : 0;
+
+      if (loggedInUser) {
+        let data: any = await commonService.getUnApprovedDocuments(
+          loggedInUser,
+          formNo,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async getTempDeploymentApplicationDetail(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let formNo: number =
+        req.params.formNo != undefined ? parseInt(req.params.formNo) : 0;
+
+      if (loggedInUser) {
+        let data: any = await commonService.getTempDeploymentApplicationDetail(
+          loggedInUser,
+          formNo,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
 }
