@@ -461,4 +461,230 @@ export class CommonService {
       throw error;
     }
   }
+
+  async getEducationDetails(
+    loggedInUser: any,
+    action: string = '',
+    formNo: string = '',
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let eduDetails: any = await companyDb.query(
+        `EXEC ${constant.P_EducationDetails} @action = @0, @formNo = @1`,
+        [action, formNo],
+      );
+      return eduDetails;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getEducationDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getLanguageDetails(
+    loggedInUser: any,
+    action: string = '',
+    formNo: string = '',
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let languageDetails: any = await companyDb.query(
+        `EXEC ${constant.P_LanguageDetails} @action = @0, @formNo = @1`,
+        [action, formNo],
+      );
+      return languageDetails;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getLanguageDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getExperienceDetails(
+    loggedInUser: any,
+    action: string = '',
+    formNo: string = '',
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let expDetails: any = await companyDb.query(
+        `EXEC ${constant.P_CivilianDetails} @action = @0, @formNo = @1`,
+        [action, formNo],
+      );
+      return expDetails;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getExperienceDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getExManExperienceDetails(
+    loggedInUser: any,
+    action: string = '',
+    formNo: string = '',
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let exManExpDetails: any = await companyDb.query(
+        `EXEC ${constant.P_ExManExpDetails} @action = @0, @formNo = @1`,
+        [action, formNo],
+      );
+      return exManExpDetails;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getExManExperienceDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getEsiServerDetails(
+    loggedInUser: any,
+    action: string = '',
+    formNo: string = '',
+    esiNo: string = '',
+    userId: string = '',
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let esiDetails: any = await companyDb.query(
+        `EXEC ${constant.P_EsiServerDetails} @action = @0, @formNo = @1, @esiNo = @2, @userId = @3`,
+        [action, formNo, esiNo, userId],
+      );
+      return esiDetails;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getEsiServerDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getFamilyDetails(
+    loggedInUser: any,
+    action: string = '',
+    formNo: string = '',
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let familyDetails: any = await companyDb.query(
+        `EXEC ${constant.P_FamilyDetails} @action = @0, @formNo = @1`,
+        [action, formNo],
+      );
+      return familyDetails;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getFamilyDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getPhysicalDetails(
+    loggedInUser: any,
+    action: string = '',
+    formNo: string = '',
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let physicalDetails: any = await companyDb.query(
+        `EXEC ${constant.P_PhysicalDetails} @action = @0, @formNo = @1`,
+        [action, formNo],
+      );
+      return physicalDetails;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getPhysicalDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getBankDetails(
+    loggedInUser: any,
+    action: string = '',
+    formNo: string = '',
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let bankDetails: any = await companyDb.query(
+        `EXEC ${constant.P_BankDetails} @action = @0, @formNo = @1`,
+        [action, formNo],
+      );
+      return bankDetails;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getBankDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getBankDetailsIFSCWise(
+    loggedInUser: any,
+    ifscCode: string = '',
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let bankDetails: any = await companyDb.query(
+        `EXEC ${constant.P_GetBankDetailIFSCCodeWise} @ifscCode = @0`,
+        [ifscCode],
+      );
+      return bankDetails;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/getBankDetailsIFSCWise',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
 }

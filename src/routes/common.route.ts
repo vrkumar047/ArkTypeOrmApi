@@ -63,47 +63,47 @@ commonRoute.get(
   commonCntrl.getMandatoryDocList,
 );
 
-// commonRoute.get(
-//   '/getEducationDetails/:action/:formNo',
-//   commonCntrl.getEducationDetails,
-// );
+commonRoute.get(
+  '/getEducationDetails/:action/:formNo',
+  commonCntrl.getEducationDetails,
+);
 
-// commonRoute.get(
-//   '/getLanguageDetails/:action/:formNo',
-//   commonCntrl.getLanguageDetails,
-// );
+commonRoute.get(
+  '/getLanguageDetails/:action/:formNo',
+  commonCntrl.getLanguageDetails,
+);
 
-// commonRoute.get(
-//   '/getExperienceDetails/:action/:formNo',
-//   commonCntrl.getExperienceDetails,
-// );
+commonRoute.get(
+  '/getExperienceDetails/:action/:formNo',
+  commonCntrl.getExperienceDetails,
+);
 
-// commonRoute.get(
-//   '/getExManExperienceDetails/:action/:formNo',
-//   commonCntrl.getExManExperienceDetails,
-// );
+commonRoute.get(
+  '/getExManExperienceDetails/:action/:formNo',
+  commonCntrl.getExManExperienceDetails,
+);
 
-// commonRoute.get(
-//   '/getEsiServerDetails/:action/:formNo/:esiNo/:userId',
-//   commonCntrl.getEsiServerDetails,
-// );
+commonRoute.get(
+  '/getEsiServerDetails/:action/:formNo/:esiNo/:userId',
+  commonCntrl.getEsiServerDetails,
+);
 
-// commonRoute.get(
-//   '/getFamilyDetails/:action/:formNo',
-//   commonCntrl.getFamilyDetails,
-// );
+commonRoute.get(
+  '/getFamilyDetails/:action/:formNo',
+  commonCntrl.getFamilyDetails,
+);
 
-// commonRoute.get(
-//   '/getPhysicalDetails/:action/:formNo',
-//   commonCntrl.getPhysicalDetails,
-// );
+commonRoute.get(
+  '/getPhysicalDetails/:action/:formNo',
+  commonCntrl.getPhysicalDetails,
+);
 
-// commonRoute.get('/getBankDetails/:action/:formNo', commonCntrl.getBankDetails);
+commonRoute.get('/getBankDetails/:action/:formNo', commonCntrl.getBankDetails);
 
-// commonRoute.get(
-//   '/getBankDetailsIFSCWise/:ifscCode',
-//   commonCntrl.getBankDetailsIFSCWise,
-// );
+commonRoute.get(
+  '/getBankDetailsIFSCWise/:ifscCode',
+  commonCntrl.getBankDetailsIFSCWise,
+);
 
 // commonRoute.get(
 //   '/getDesignationList/:action/:branchCode/:userId',
