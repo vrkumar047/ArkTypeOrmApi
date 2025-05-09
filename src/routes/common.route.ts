@@ -125,24 +125,24 @@ commonRoute.get(
   commonCntrl.getTempDeploymentApplicationDetail,
 );
 
-// commonRoute.post(
-//   '/updateTempDeploymentDocumentStatus',
-//   commonCntrl.updateTempDeploymentDocumentStatus,
-// );
+commonRoute.post(
+  '/updateTempDeploymentDocumentStatus',
+  commonCntrl.updateTempDeploymentDocumentStatus,
+);
 
-// commonRoute.get(
-//   '/RqccDocumentDetail/:action/:formNo',
-//   commonCntrl.RqccDocumentDetail,
-// );
+commonRoute.get(
+  '/RqccDocumentDetail/:action/:formNo',
+  commonCntrl.RqccDocumentDetail,
+);
 
-// commonRoute.get('/CandidatTypeList/:branchCode', commonCntrl.CandidatTypeList);
+commonRoute.get('/CandidatTypeList/:branchCode', commonCntrl.CandidatTypeList);
 
-// commonRoute.get('/GetList/:action/:userId', commonCntrl.GetList);
+commonRoute.get('/GetList/:action/:userId', commonCntrl.GetList);
 
-// commonRoute.get(
-//   '/formlist/:action/:role/:branchCode/:desig/:month/:year/:userId',
-//   commonCntrl.formlist,
-// );
+commonRoute.get(
+  '/formlist/:action/:role/:branchCode/:desig/:month/:year/:userId',
+  commonCntrl.formlist,
+);
 
 // commonRoute.get(
 //   '/esiverificationlist/:action/:role/:branchCode/:fromDate/:toDate/:userId',

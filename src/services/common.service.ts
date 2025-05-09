@@ -803,4 +803,133 @@ export class CommonService {
       throw error;
     }
   }
+
+  async updateTempDeploymentDocumentStatus(
+    loggedInUser: any,
+    docsStatus: string = '',
+    userId: string = '',
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let documentStatus: any = await companyDb.query(
+        `EXEC ${constant.p_updateTempDeploymentDocStatus} @docsStatus = @0, @userId = @1`,
+        [docsStatus, userId],
+      );
+      return documentStatus;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/updateTempDeploymentDocumentStatus',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async RqccDocumentDetail(
+    loggedInUser: any,
+    action: string = '',
+    formNo: string = '',
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let documentDetails: any = await companyDb.query(
+        `EXEC ${constant.P_RqccDocumentDetail} @action = @0, @formNo = @1`,
+        [action, formNo],
+      );
+      return documentDetails;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/RqccDocumentDetail',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async CandidatTypeList(
+    loggedInUser: any,
+    branchCode: string = '',
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let typeList: any = await companyDb.query(
+        `EXEC ${constant.P_GetCandidateTypeMaster} @branchCode = @0`,
+        [branchCode],
+      );
+      return typeList;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/CandidatTypeList',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async GetList(
+    loggedInUser: any,
+    action: string = '',
+    userId: string = '',
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let list: any = await companyDb.query(
+        `EXEC ${constant.P_GetList} @action = @0, @userId = @1`,
+        [action, userId],
+      );
+      return list;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/GetList',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async formlist(
+    loggedInUser: any,
+    action: string = '',
+    role: string = '',
+    branchCode: string = '',
+    desig: string = '',
+    month: string = '',
+    year: string = '',
+    userId: string = '',
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let list: any = await companyDb.query(
+        `EXEC ${constant.P_GetFormListRoleWise} @action = @0, @role = @1, @branchCode = @2, @desig = @3, @month = @4, @year = @5, @userId = @6`,
+        [action, role, branchCode, desig, month, year, userId],
+      );
+      return list;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'common/formlist',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
 }

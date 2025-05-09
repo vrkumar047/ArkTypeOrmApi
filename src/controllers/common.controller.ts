@@ -657,4 +657,126 @@ export class CommonController {
     }
     next();
   }
+
+  async updateTempDeploymentDocumentStatus(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let docsStatus: string = req.body.docsStatus ?? '';
+      let userId: string = req.body.userId ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.updateTempDeploymentDocumentStatus(
+          loggedInUser,
+          docsStatus,
+          userId,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async RqccDocumentDetail(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action ?? '';
+      let formNo: string = req.params.formNo ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.RqccDocumentDetail(
+          loggedInUser,
+          action,
+          formNo,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async CandidatTypeList(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let branchCode: string = req.params.branchCode ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.CandidatTypeList(
+          loggedInUser,
+          branchCode,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async GetList(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action ?? '';
+      let userId: string = req.params.userId ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.GetList(
+          loggedInUser,
+          action,
+          userId,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async formlist(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action ?? '';
+      let role: string = req.params.role ?? '';
+      let branchCode: string = req.params.branchCode ?? '';
+      let desig: string = req.params.desig ?? '';
+      let month: string = req.params.month ?? '';
+      let year: string = req.params.year ?? '';
+      let userId: string = req.params.userId ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.formlist(
+          loggedInUser,
+          action,
+          role,
+          branchCode,
+          desig,
+          month,
+          year,
+          userId,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
 }
