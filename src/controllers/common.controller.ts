@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Request, Response, NextFunction } from 'express';
 import { CommonService } from '../services/common.service';
 const commonService = new CommonService();
@@ -770,6 +771,493 @@ export class CommonController {
           year,
           userId,
         );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async esiverificationlist(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action ?? '';
+      let role: string = req.params.role ?? '';
+      let branchCode: string = req.params.branchCode ?? '';
+      let fromDate: string = req.params.fromDate ?? '';
+      let toDate: string = req.params.toDate ?? '';
+      let userId: string = req.params.userId ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.esiverificationlist(
+          loggedInUser,
+          action,
+          role,
+          branchCode,
+          fromDate,
+          toDate,
+          userId,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async formStatus(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action ?? '';
+      let role: string = req.params.role ?? '';
+      let formNo: string = req.params.formNo ?? '';
+      let userId: string = req.params.userId ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.formStatus(
+          loggedInUser,
+          action,
+          role,
+          formNo,
+          userId,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async filteredFormList(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let role: string = req.params.role ?? '';
+      let formNo: string = req.params.formNo ?? '';
+      let filterText: string = req.params.filterText ?? '';
+      let userId: string = req.params.userId ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.filteredFormList(
+          loggedInUser,
+          role,
+          formNo,
+          filterText,
+          userId,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async empPicDetails(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action ?? '';
+      let formNo: string = req.params.formNo ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.empPicDetails(
+          loggedInUser,
+          action,
+          formNo,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async getUserDetails(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action ?? '';
+      let agentCode: string = req.params.agentCode ?? '';
+      let compCode: string = req.params.compCode ?? '';
+      let searchText: string = req.params.searchText ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.getUserDetails(
+          loggedInUser,
+          action,
+          agentCode,
+          compCode,
+          searchText,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async isUserExist(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action ?? '';
+      let checkFor: string = req.params.checkFor ?? '';
+      let checkString: string = req.params.checkString ?? '';
+      let userId: string = req.params.userId ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.isUserExist(
+          loggedInUser,
+          action,
+          checkFor,
+          checkString,
+          userId,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async checkBasicDetails(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let checkFor: string = req.params.checkFor ?? '';
+      let checkString: string = req.params.checkString ?? '';
+      let name: string = req.params.name ?? '';
+      let formNo: string = req.params.formNo ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.checkBasicDetails(
+          loggedInUser,
+          checkFor,
+          checkString,
+          name,
+          formNo,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async assessmentDetails(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action ?? '';
+      let loginName: string = req.params.loginName ?? '';
+      let assessType: string = req.params.assessType ?? '';
+      let assessCode: string = req.params.assessCode ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.assessmentDetails(
+          loggedInUser,
+          action,
+          loginName,
+          assessType,
+          assessCode,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async getCondoDetails(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action ?? '';
+      let formNo: string = req.params.formNo ?? '';
+      let branchCode: string = req.params.branchCode ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.getCondoDetails(
+          loggedInUser,
+          action,
+          formNo,
+          branchCode,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async getFileSequence(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let formNo: string = req.params.formNo ?? '';
+      let docTypeId: string = req.params.docTypeId ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.getFileSequence(
+          loggedInUser,
+          formNo,
+          docTypeId,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async industryList(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action ?? '';
+      let formNo: string = req.params.formNo ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.industryList(
+          loggedInUser,
+          action,
+          formNo,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async userWiseBranchList(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let userId: string = req.params.userId ?? '';
+      let compCode: string = req.params.compCode ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.industryList(
+          loggedInUser,
+          userId,
+          compCode,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async getSearchedApplications(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.body.action ?? '';
+      let regNo: string = req.body.regNo ?? '';
+      let formNo: string = req.body.formNo ?? '';
+      let name: string = req.body.name ?? '';
+      let dob: string = req.body.dob ?? '';
+      let mobileNo: string = req.body.mobileNo ?? '';
+      let meetAllCrt: number =
+        req.body.meetAllCrt != undefined ? parseInt(req.body.meetAllCrt) : 0;
+      let userId: string = req.body.user_id ?? '';
+
+      let applicationDetail: any = {
+        action: action,
+        regNo: regNo,
+        formNo: formNo,
+        name: name,
+        dob: dob,
+        mobileNo: mobileNo,
+        meetAllCrt: meetAllCrt,
+        userId: userId,
+      };
+
+      if (loggedInUser) {
+        let data: any = await commonService.getSearchedApplications(
+          loggedInUser,
+          applicationDetail,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async getSchemeDetails(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.body.action ?? '';
+      let companyCode: string = req.body.companyCode ?? '';
+      let branchCode: string = req.body.branchCode ?? '';
+      let desigCode: string = req.body.desigCode ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.getSchemeDetails(
+          loggedInUser,
+          action,
+          companyCode,
+          branchCode,
+          desigCode,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async postUanStatusDetail(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.body.action ?? '';
+      let formNo: string = req.body.formNo ?? '';
+      let branchCode: string = req.body.branchCode ?? '';
+      let aadharNo: string = req.body.aadharNo ?? '';
+      let aadharName: string = req.body.aadharName ?? '';
+      let aadharDob: string = req.body.aadharDob ?? '';
+      let uanNo: string = req.body.uanNo ?? '';
+      let status: string = req.body.status ?? '';
+      let userId: string = req.body.userId ?? '';
+
+      let uanDetail: any = {
+        action: action,
+        formNo: formNo,
+        branchCode: branchCode,
+        aadharNo: aadharNo,
+        aadharName: aadharName,
+        aadharDob: aadharDob,
+        uanNo: uanNo,
+        status: status,
+        userId: userId,
+      };
+
+      if (loggedInUser) {
+        let data: any = await commonService.postUanStatusDetail(
+          loggedInUser,
+          uanDetail,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async postApproveRejectElectronicDetail(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.body.action ?? '';
+      let formNo: string = req.body.formNo ?? '';
+      let defaultImage: string = req.body.defaultImage ?? '';
+      let remark: string = req.body.remark ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.postApproveRejectElectronicDetail(
+          loggedInUser,
+          action,
+          formNo,
+          defaultImage,
+          remark,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async getReportList(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let userId: string = req.params.userId ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.getReportList(loggedInUser, userId);
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async getAppToken(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let appName: any = req.headers.appname ?? '';
+
+      if (loggedInUser) {
+        let data: any = await commonService.getAppToken(loggedInUser, appName);
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async updateAppToken(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+
+      if (loggedInUser) {
+        let data: any = await commonService.getAppToken(loggedInUser);
         res.locals.data = data;
       } else {
         res.locals.error = 'Unauthorized';

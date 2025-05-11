@@ -144,83 +144,78 @@ commonRoute.get(
   commonCntrl.formlist,
 );
 
-// commonRoute.get(
-//   '/esiverificationlist/:action/:role/:branchCode/:fromDate/:toDate/:userId',
-//   commonCntrl.esiverificationlist,
-// );
+commonRoute.get(
+  '/esiverificationlist/:action/:role/:branchCode/:fromDate/:toDate/:userId',
+  commonCntrl.esiverificationlist,
+);
 
-// commonRoute.get(
-//   '/formstatus/:action/:role/:formNo/:userId',
-//   commonCntrl.formstatus,
-// );
+commonRoute.get(
+  '/formstatus/:action/:role/:formNo/:userId',
+  commonCntrl.formStatus,
+);
 
-// commonRoute.get(
-//   '/filteredformlist/:role/:formNo/:filterText/:userId',
-//   commonCntrl.filteredformlist,
-// );
+commonRoute.get(
+  '/filteredformlist/:role/:formNo/:filterText/:userId',
+  commonCntrl.filteredFormList,
+);
 
-// commonRoute.get('/EmpPicDetails/:action/:formNo', commonCntrl.EmpPicDetails);
+commonRoute.get('/EmpPicDetails/:action/:formNo', commonCntrl.empPicDetails);
 
-// commonRoute.get(
-//   '/GetUserDetails/:action/:agentCode/:compCode/:searchText',
-//   commonCntrl.GetUserDetails,
-// );
+commonRoute.get(
+  '/GetUserDetails/:action/:agentCode/:compCode/:searchText',
+  commonCntrl.getUserDetails,
+);
 
-// commonRoute.get(
-//   '/IsUserExist/:action/:checkFor/:checkString/:userId',
-//   commonCntrl.IsUserExist,
-// );
+commonRoute.get(
+  '/IsUserExist/:action/:checkFor/:checkString/:userId',
+  commonCntrl.isUserExist,
+);
 
-// commonRoute.get(
-//   '/CheckBasicDetails/:checkFor/:checkString/:name/:formNo',
-//   commonCntrl.CheckBasicDetails,
-// );
+commonRoute.get(
+  '/CheckBasicDetails/:checkFor/:checkString/:name/:formNo',
+  commonCntrl.checkBasicDetails,
+);
 
-// commonRoute.get(
-//   '/AssessmentDetails/:action/:loginName/:assessType/:assessCode',
-//   commonCntrl.AssessmentDetails,
-// );
+commonRoute.get(
+  '/AssessmentDetails/:action/:loginName/:assessType/:assessCode',
+  commonCntrl.assessmentDetails,
+);
 
-// commonRoute.get(
-//   '/GetCondoDetails/:action/:formNo/:branchCode',
-//   commonCntrl.GetCondoDetails,
-// );
+commonRoute.get(
+  '/GetCondoDetails/:action/:formNo/:branchCode',
+  commonCntrl.getCondoDetails,
+);
 
-// commonRoute.get(
-//   '/GetFileSequence/:formNo/:docTypeId',
-//   commonCntrl.GetFileSequence,
-// );
+commonRoute.get(
+  '/GetFileSequence/:formNo/:docTypeId',
+  commonCntrl.getFileSequence,
+);
 
-// commonRoute.get('/IndustryList/:action/:formNo', commonCntrl.IndustryList);
+commonRoute.get('/IndustryList/:action/:formNo', commonCntrl.industryList);
 
-// commonRoute.get(
-//   '/GetFileSequence/:formNo/:docTypeId',
-//   commonCntrl.GetFileSequence,
-// );
+commonRoute.get(
+  '/UserWiseBranchList/:userId/:compCode',
+  commonCntrl.userWiseBranchList,
+);
 
-// commonRoute.get(
-//   '/UserWiseBranchList/:userId/:compCode',
-//   commonCntrl.UserWiseBranchList,
-// );
+commonRoute.post(
+  '/GetSearchedApplications',
+  commonCntrl.getSearchedApplications,
+);
 
-// commonRoute.post(
-//   '/GetSearchedApplications',
-//   commonCntrl.GetSearchedApplications,
-// );
+commonRoute.post('/getSchemeDetails', commonCntrl.getSchemeDetails);
 
-// commonRoute.post('/getSchemeDetails', commonCntrl.getSchemeDetails);
+commonRoute.post('/postUanStatusDetail', commonCntrl.postUanStatusDetail);
 
-// commonRoute.post('/postUanStatusDetail', commonCntrl.postUanStatusDetail);
+commonRoute.post(
+  '/postApproveRejectElectronicDetail',
+  commonCntrl.postApproveRejectElectronicDetail,
+);
 
-// commonRoute.post(
-//   '/postApproveRejectElectronicDetail',
-//   commonCntrl.postApproveRejectElectronicDetail,
-// );
+commonRoute.get('/GetReportList/:userId', commonCntrl.getReportList);
 
-// commonRoute.get('/GetReportList/:userId', commonCntrl.GetReportList);
+commonRoute.get('/GetAppToken', commonCntrl.getAppToken);
 
-// commonRoute.get('/GetAppToken', commonCntrl.GetAppToken);
-
-// commonRoute.get('/UpdateAppToken', commonCntrl.UpdateAppToken);
+commonRoute.get('/UpdateAppToken', commonCntrl.updateAppToken);
 
 export { commonRoute };
