@@ -9,7 +9,10 @@ const cmdCntrl = new CmdController();
 
 cmdRoute.use(authenticate);
 
-//employeeRoute.get('/getStates/:countryCode', checkCache, employeeCntrl.getStates);  // to check data from redis
-cmdRoute.get('/getStates/:countryCode', cmdCntrl.getStates);
+cmdRoute.get('/execBat', cmdCntrl.execBat);
+cmdRoute.get('/pingCamera/:companyCode', cmdCntrl.pingCamera);
+cmdRoute.get('/execCommand/:ip/:userid/:pwd/:branchCode', cmdCntrl.execCommand);
+cmdRoute.get('/closeBat/:pid', cmdCntrl.closeBat);
+cmdRoute.get('/closeCommand', cmdCntrl.closeCommand);
 
 export { cmdRoute };
