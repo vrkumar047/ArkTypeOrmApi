@@ -15,7 +15,7 @@ let options: any = {
   excludeExtraneousValues: true,
 };
 
-export class ErpEmployeeService {
+export class DashboardService {
   async getStates(loggedInUser: any, countryCode: string): Promise<any[]> {
     try {
       let companyDb = await GetCompanyDb();

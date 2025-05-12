@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { ErpEmployeeService } from '../services/erp.employee.service';
-const erpEmployeeService = new ErpEmployeeService();
-export class ErpEmployeeController {
+import { DashboardService } from '../services/dashboard.service';
+const dashboardService = new DashboardService();
+export class DashboardController {
   async getStates(req: Request, res: Response, next: NextFunction) {
     try {
       let loggedInUser: any = req['currentUser'];
@@ -9,10 +9,7 @@ export class ErpEmployeeController {
       if (loggedInUser) {
         let states: any[] = [];
         if (!res.locals.data) {
-          states = await erpEmployeeService.getStates(
-            loggedInUser,
-            countryCode,
-          );
+          states = await dashboardService.getStates(loggedInUser, countryCode);
         } else {
           states = JSON.parse(res.locals.data);
         }

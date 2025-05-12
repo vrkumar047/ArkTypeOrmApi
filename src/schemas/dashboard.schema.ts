@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import { CustomError } from '../helpers/validatorCustomError';
 
-const AddErpEmployee = Joi.object({
+const GetDashboard = Joi.object({
   UserName: Joi.string()
     .required()
     .error((errors) => CustomError('UserName', errors)),
@@ -10,4 +10,4 @@ const AddErpEmployee = Joi.object({
     .error((errors) => CustomError('Pwd', errors)),
 });
 
-export { AddErpEmployee };
+export { GetDashboard };
