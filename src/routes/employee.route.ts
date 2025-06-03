@@ -10,6 +10,94 @@ const employeeCntrl = new EmployeeController();
 employeeRoute.use(authenticate);
 
 //employeeRoute.get('/getStates/:countryCode', checkCache, employeeCntrl.getStates);  // to check data from redis
-employeeRoute.get('/getStates/:countryCode', employeeCntrl.getStates);
+employeeRoute.get(
+  '/getFormNo/:head/:branchCode/:updateBit',
+  employeeCntrl.getFormNo,
+);
+employeeRoute.post('/addEmployee', employeeCntrl.addEmployee);
+// employeeRoute.put(
+//   '/OTPDetail/:action/:formNo/:otpNo/:userId',
+//   employeeCntrl.OTPDetail,
+// );
+// employeeRoute.post('/addEducationDetails', employeeCntrl.addEducationDetails);
+// employeeRoute.put(
+//   '/removeEducationDetails/:action/:formNo/:classCode',
+//   employeeCntrl.removeEducationDetails,
+// );
+// employeeRoute.post('/addLanguageDetails', employeeCntrl.addLanguageDetails);
 
+// employeeRoute.post('/addCvExpDetails', employeeCntrl.addCvExpDetails);
+
+// employeeRoute.put(
+//   '/removeCvExpDetails/:action/:formNo/:orgType',
+//   employeeCntrl.removeCvExpDetails,
+// );
+
+// employeeRoute.post('/addExManExpDetails', employeeCntrl.addExManExpDetails);
+// employeeRoute.put(
+//   '/removeExManExpDetails/:action/:formNo/:serviceType/:org',
+//   employeeCntrl.removeExManExpDetails,
+// );
+
+// employeeRoute.post('/addEsiServerDetails', employeeCntrl.addEsiServerDetails);
+// employeeRoute.put(
+//   '/removeEsiServerDetails/:action/:formNo/:esiNo',
+//   employeeCntrl.removeEsiServerDetails,
+// );
+
+// employeeRoute.post('/addFamilyDetails', employeeCntrl.addFamilyDetails);
+// employeeRoute.put(
+//   '/removeFamilyDetail/:action/:formNo/:name',
+//   employeeCntrl.removeFamilyDetail,
+// );
+
+// employeeRoute.post('/addPhysicalDetails', employeeCntrl.addPhysicalDetails);
+// employeeRoute.put(
+//   '/removePhysicalDetail/:action/:formNo',
+//   employeeCntrl.removePhysicalDetail,
+// );
+
+// employeeRoute.post('/addBankDetails', employeeCntrl.addBankDetails);
+// employeeRoute.put(
+//   '/removeBankDetail/:action/:formNo',
+//   employeeCntrl.removeBankDetail,
+// );
+// employeeRoute.put(
+//   '/updateFormStatus/:action/:formNo/:formName/:status/:userId',
+//   employeeCntrl.updateFormStatus,
+// );
+// employeeRoute.get(
+//   '/getEmployeeBasicDetails/:action/:formNo',
+//   employeeCntrl.getEmployeeBasicDetails,
+// );
+// employeeRoute.get(
+//   '/getUploadedFormDetails/:action/:formNo',
+//   employeeCntrl.getUploadedFormDetails,
+// );
+// employeeRoute.get(
+//   '/removedocument/:action/:formNo/:docTypeId/:docId',
+//   employeeCntrl.removedocument,
+// );
+// employeeRoute.get(
+//   '/getEduLangDetails/:formNo',
+//   employeeCntrl.getEduLangDetails,
+// );
+// employeeRoute.get(
+//   '/getExpExMEsiDetails/:formNo',
+//   employeeCntrl.getExpExMEsiDetails,
+// );
+// employeeRoute.post('/updateRqccDocument', employeeCntrl.updateRqccDocument);
+// employeeRoute.post('/UpdateApprovalStatus', employeeCntrl.UpdateApprovalStatus);
+// employeeRoute.post(
+//   '/UpdateEmployeeDetails',
+//   employeeCntrl.UpdateEmployeeDetails,
+// );
+// employeeRoute.post('/UpdateAllFormStatus', employeeCntrl.UpdateAllFormStatus);
+// employeeRoute.post('/UpdateRegNo', employeeCntrl.UpdateRegNo);
+// employeeRoute.post(
+//   '/UpdateApprovalStatusDetails',
+//   employeeCntrl.UpdateApprovalStatusDetails,
+// );
+// employeeRoute.post('/CheckPreEmployee', employeeCntrl.CheckPreEmployee);
+// employeeRoute.post('/sendOtp', employeeCntrl.sendOtp);
 export { employeeRoute };

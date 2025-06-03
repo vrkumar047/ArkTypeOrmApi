@@ -8,4 +8,5 @@ import { GetDashboard } from './dashboard.schema';
 export default {
   '/signIn': SignIn,
   '/refreshToken': RefreshToken,
+  '/addEmployee': AddEmployee,
 } as { [key: string]: ObjectSchema };

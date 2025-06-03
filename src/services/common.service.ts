@@ -129,7 +129,7 @@ export class CommonService {
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
-      const resultSets = await getResultSets(
+      let resultSets: any[] = await getResultSets(
         companyDb,
         constant.P_AddressDetail,
         {
