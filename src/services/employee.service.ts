@@ -460,4 +460,200 @@ export class EmployeeService {
       throw error;
     }
   }
+
+  async addFamilyDetails(loggedInUser: any, familyDetail: any): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let addedFamilyDetail: any = await companyDb.query(
+        `EXEC ${constant.P_FamilyDetails} @action = @0, @formNo = @1, @name = @2, @dateOfBirth = @3, @relation = @4, @isDependent = @5, @isNominee = @6, @nomineePc = @7, @age = @8, @userId = @9`,
+        [
+          familyDetail.action,
+          familyDetail.formNo,
+          familyDetail.name,
+          familyDetail.dob,
+          familyDetail.relation,
+          familyDetail.isDpndnt,
+          familyDetail.isNmnee,
+          familyDetail.age,
+          familyDetail.userId,
+        ],
+      );
+
+      return addedFamilyDetail;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'employee/addFamilyDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async removeFamilyDetail(
+    loggedInUser: any,
+    action: string,
+    formNo: string,
+    name: string,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let removedFamilyDetail: any = await companyDb.query(
+        `EXEC ${constant.P_FamilyDetails} @action = @0, @formNo = @1, @name = @2`,
+        [action, formNo, name],
+      );
+
+      return removedFamilyDetail;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'employee/removeFamilyDetail',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async addPhysicalDetails(
+    loggedInUser: any,
+    physicalDetail: any,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let addedPhysicalDetail: any = await companyDb.query(
+        `EXEC ${constant.P_PhysicalDetails} @action = @0, @formNo = @1, @ht = @2, @htFt = @3, @chest = @4, @chestFt = @5, @wt = @6, @head = @7 @heal = @8,
+         @shirtChest = @9, @shirtShoulder = @10, @shirtSleeve = @11, @shirtLength = @12, @pantWaist = @13, @pantHip = @14, @pantLength = @15, @cap = @16, @shoe = @17,
+         @fullPicture = @18, @condonation = @19, @isVerified = @20, @RQCCAgent = @21, @verifiedOn = @22, @userId = @23`,
+        [
+          physicalDetail.action,
+          physicalDetail.formNo,
+          physicalDetail.heightCm,
+          physicalDetail.heightFt,
+          physicalDetail.chestCm,
+          physicalDetail.chestFt,
+          physicalDetail.weightKg,
+          physicalDetail.head,
+          physicalDetail.heal,
+          physicalDetail.shirtChest,
+          physicalDetail.shirtSholder,
+          physicalDetail.shirtSleev,
+          physicalDetail.shirtLength,
+          physicalDetail.paintWaist,
+          physicalDetail.paintHip,
+          physicalDetail.paintLength,
+          physicalDetail.capSize,
+          physicalDetail.shoeSize,
+          physicalDetail.fullPicture,
+          physicalDetail.condonation,
+          physicalDetail.isVrified,
+          physicalDetail.rqccAgent,
+          physicalDetail.verifiedOn,
+          physicalDetail.userId,
+        ],
+      );
+
+      return addedPhysicalDetail;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'employee/addPhysicalDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async removePhysicalDetail(
+    loggedInUser: any,
+    action: string,
+    formNo: string,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let removedPhysicalDetail: any = await companyDb.query(
+        `EXEC ${constant.P_PhysicalDetails} @action = @0, @formNo = @1`,
+        [action, formNo],
+      );
+
+      return removedPhysicalDetail;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'employee/removePhysicalDetail',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async addBankDetails(loggedInUser: any, bankDetail: any): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let addedBankDetail: any = await companyDb.query(
+        `EXEC ${constant.P_BankDetails} @action = @0, @formNo = @1, @ifscCode = @2, @bankName = @3, @accountNo = @4, @bankBranch = @5, @bankBranchAddress = @6, @bankDetail = @7 @bankUpdatedInErp = @8, @userId = @9`,
+        [
+          bankDetail.action,
+          bankDetail.formNo,
+          bankDetail.ifscCode,
+          bankDetail.bankName,
+          bankDetail.accountNo,
+          bankDetail.bankBranch,
+          bankDetail.bankBranchAddress,
+          bankDetail.bankDetail,
+          bankDetail.bankUpdatedInERP,
+          bankDetail.userId,
+        ],
+      );
+
+      return addedBankDetail;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'employee/addBankDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async removeBankDetail(
+    loggedInUser: any,
+    action: string,
+    formNo: string,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let removedPhysicalDetail: any = await companyDb.query(
+        `EXEC ${constant.P_BankDetails} @action = @0, @formNo = @1`,
+        [action, formNo],
+      );
+
+      return removedPhysicalDetail;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'employee/removeBankDetail',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
 }

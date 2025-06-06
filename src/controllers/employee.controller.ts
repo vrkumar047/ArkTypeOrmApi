@@ -353,4 +353,215 @@ export class EmployeeController {
     }
     next();
   }
+
+  async addFamilyDetails(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let familyDetail: any = {
+        action: req.body.action ?? '',
+        formNo: req.body.formNo ?? '',
+        name: req.body.name ?? '',
+        dob: req.body.dob ?? '',
+        relation: req.body.relation ?? '',
+        isDpndnt:
+          req.body.isDpndnt != undefined ? parseInt(req.body.isDpndnt) : 0,
+        isNmnee: req.body.isNmnee != undefined ? parseInt(req.body.isNmnee) : 0,
+        nomineePerc:
+          req.body.nomineePerc != undefined
+            ? parseInt(req.body.nomineePerc)
+            : 0,
+        age: req.body.age != undefined ? parseInt(req.body.age) : 0,
+        userId: req.body.userId ?? '',
+      };
+
+      if (loggedInUser) {
+        let data: any = await employeeService.addFamilyDetails(
+          loggedInUser,
+          familyDetail,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async removeFamilyDetail(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action ?? '';
+      let formNo: string = req.params.formNo ?? '';
+      let name: string = req.params.name ?? '';
+
+      if (loggedInUser) {
+        let data: any = await employeeService.removeFamilyDetail(
+          loggedInUser,
+          action,
+          formNo,
+          name,
+        );
+
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async addPhysicalDetails(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let physicalDetail: any = {
+        action: req.body.action ?? '',
+        formNo: req.body.formNo ?? '',
+        heightCm:
+          req.body.heightCm != undefined ? parseFloat(req.body.heightCm) : 0,
+        heightFt:
+          req.body.heightFt != undefined ? parseFloat(req.body.heightFt) : 0,
+        chestCm:
+          req.body.chestCm != undefined ? parseFloat(req.body.chestCm) : 0,
+        chestFt:
+          req.body.chestFt != undefined ? parseFloat(req.body.chestFt) : 0,
+        weightKg:
+          req.body.weightKg != undefined ? parseFloat(req.body.weightKg) : 0,
+        head: req.body.head != undefined ? parseFloat(req.body.head) : 0,
+        heal: req.body.heal != undefined ? parseFloat(req.body.heal) : 0,
+        shirtChest:
+          req.body.shirtChest != undefined
+            ? parseFloat(req.body.shirtChest)
+            : 0,
+        shirtSholder:
+          req.body.shirtSholder != undefined
+            ? parseFloat(req.body.shirtSholder)
+            : 0,
+        shirtSleev:
+          req.body.shirtSleev != undefined
+            ? parseFloat(req.body.shirtSleev)
+            : 0,
+        shirtLength:
+          req.body.shirtLength != undefined
+            ? parseFloat(req.body.shirtLength)
+            : 0,
+        paintWaist:
+          req.body.paintWaist != undefined
+            ? parseFloat(req.body.paintWaist)
+            : 0,
+        paintHip:
+          req.body.paintHip != undefined ? parseFloat(req.body.paintHip) : 0,
+        paintLength:
+          req.body.paintLength != undefined
+            ? parseFloat(req.body.paintLength)
+            : 0,
+        capSize:
+          req.body.capSize != undefined ? parseFloat(req.body.capSize) : 0,
+        shoeSize:
+          req.body.shoeSize != undefined ? parseInt(req.body.shoeSize) : 0,
+        fullPicture: req.body.fullPicture ?? '',
+        condonation: req.body.condonation ?? '',
+        isVrified:
+          req.body.isVrified != undefined ? parseInt(req.body.isVrified) : 0,
+        rqccAgent: req.body.rqccAgent ?? '',
+        verifiedOn: req.body.verifiedOn ?? '',
+        userId: req.body.userId ?? '',
+      };
+
+      if (loggedInUser) {
+        let data: any = await employeeService.addPhysicalDetails(
+          loggedInUser,
+          physicalDetail,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async removePhysicalDetail(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action ?? '';
+      let formNo: string = req.params.formNo ?? '';
+
+      if (loggedInUser) {
+        let data: any = await employeeService.removePhysicalDetail(
+          loggedInUser,
+          action,
+          formNo,
+        );
+
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async addBankDetails(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let bankDetail: any = {
+        action: req.body.action ?? '',
+        formNo: req.body.formNo ?? '',
+        ifscCode: req.body.ifscCode ?? '',
+        bankName: req.body.bankName ?? '',
+        accountNo: req.body.accountNo ?? '',
+        bankBranch: req.body.bankBranch ?? '',
+        bankBranchAddress: req.body.bankBranchAddress ?? '',
+        bankDetail: req.body.bankDetail ?? '',
+        bankUpdatedInERP:
+          req.body.bankUpdatedInERP != undefined
+            ? parseInt(req.body.bankUpdatedInERP)
+            : 0,
+        userId: req.body.userId ?? '',
+      };
+      if (loggedInUser) {
+        let data: any = await employeeService.addBankDetails(
+          loggedInUser,
+          bankDetail,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async removeBankDetail(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action ?? '';
+      let formNo: string = req.params.formNo ?? '';
+
+      if (loggedInUser) {
+        let data: any = await employeeService.removeBankDetail(
+          loggedInUser,
+          action,
+          formNo,
+        );
+
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
 }

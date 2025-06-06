@@ -45,23 +45,23 @@ employeeRoute.put(
   employeeCntrl.removeEsiServerDetails,
 );
 
-// employeeRoute.post('/addFamilyDetails', employeeCntrl.addFamilyDetails);
-// employeeRoute.put(
-//   '/removeFamilyDetail/:action/:formNo/:name',
-//   employeeCntrl.removeFamilyDetail,
-// );
+employeeRoute.post('/addFamilyDetails', employeeCntrl.addFamilyDetails);
+employeeRoute.put(
+  '/removeFamilyDetail/:action/:formNo/:name',
+  employeeCntrl.removeFamilyDetail,
+);
 
-// employeeRoute.post('/addPhysicalDetails', employeeCntrl.addPhysicalDetails);
-// employeeRoute.put(
-//   '/removePhysicalDetail/:action/:formNo',
-//   employeeCntrl.removePhysicalDetail,
-// );
+employeeRoute.post('/addPhysicalDetails', employeeCntrl.addPhysicalDetails);
+employeeRoute.put(
+  '/removePhysicalDetail/:action/:formNo',
+  employeeCntrl.removePhysicalDetail,
+);
 
-// employeeRoute.post('/addBankDetails', employeeCntrl.addBankDetails);
-// employeeRoute.put(
-//   '/removeBankDetail/:action/:formNo',
-//   employeeCntrl.removeBankDetail,
-// );
+employeeRoute.post('/addBankDetails', employeeCntrl.addBankDetails);
+employeeRoute.put(
+  '/removeBankDetail/:action/:formNo',
+  employeeCntrl.removeBankDetail,
+);
 // employeeRoute.put(
 //   '/updateFormStatus/:action/:formNo/:formName/:status/:userId',
 //   employeeCntrl.updateFormStatus,
