@@ -15,35 +15,35 @@ employeeRoute.get(
   employeeCntrl.getFormNo,
 );
 employeeRoute.post('/addEmployee', employeeCntrl.addEmployee);
-// employeeRoute.put(
-//   '/OTPDetail/:action/:formNo/:otpNo/:userId',
-//   employeeCntrl.OTPDetail,
-// );
-// employeeRoute.post('/addEducationDetails', employeeCntrl.addEducationDetails);
-// employeeRoute.put(
-//   '/removeEducationDetails/:action/:formNo/:classCode',
-//   employeeCntrl.removeEducationDetails,
-// );
-// employeeRoute.post('/addLanguageDetails', employeeCntrl.addLanguageDetails);
+employeeRoute.put(
+  '/OTPDetail/:action/:formNo/:otpNo/:userId',
+  employeeCntrl.getOtpDetail,
+);
+employeeRoute.post('/addEducationDetails', employeeCntrl.addEducationDetails);
+employeeRoute.put(
+  '/removeEducationDetails/:action/:formNo/:classCode',
+  employeeCntrl.removeEducationDetails,
+);
+employeeRoute.post('/addLanguageDetails', employeeCntrl.addLanguageDetails);
 
-// employeeRoute.post('/addCvExpDetails', employeeCntrl.addCvExpDetails);
+employeeRoute.post('/addCvExpDetails', employeeCntrl.addCvExpDetails);
 
-// employeeRoute.put(
-//   '/removeCvExpDetails/:action/:formNo/:orgType',
-//   employeeCntrl.removeCvExpDetails,
-// );
+employeeRoute.put(
+  '/removeCvExpDetails/:action/:formNo/:orgType',
+  employeeCntrl.removeCvExpDetails,
+);
 
-// employeeRoute.post('/addExManExpDetails', employeeCntrl.addExManExpDetails);
-// employeeRoute.put(
-//   '/removeExManExpDetails/:action/:formNo/:serviceType/:org',
-//   employeeCntrl.removeExManExpDetails,
-// );
+employeeRoute.post('/addExManExpDetails', employeeCntrl.addExManExpDetails);
+employeeRoute.put(
+  '/removeExManExpDetails/:action/:formNo/:serviceType/:org',
+  employeeCntrl.removeExManExpDetails,
+);
 
-// employeeRoute.post('/addEsiServerDetails', employeeCntrl.addEsiServerDetails);
-// employeeRoute.put(
-//   '/removeEsiServerDetails/:action/:formNo/:esiNo',
-//   employeeCntrl.removeEsiServerDetails,
-// );
+employeeRoute.post('/addEsiServerDetails', employeeCntrl.addEsiServerDetails);
+employeeRoute.put(
+  '/removeEsiServerDetails/:action/:formNo/:esiNo',
+  employeeCntrl.removeEsiServerDetails,
+);
 
 // employeeRoute.post('/addFamilyDetails', employeeCntrl.addFamilyDetails);
 // employeeRoute.put(
