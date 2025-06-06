@@ -3,6 +3,7 @@ import { plainToClass } from 'class-transformer';
 import constant from '../_dbs/mssql/constant';
 import Logger from '../utils/logger';
 import { CustomError } from '../helpers/customError';
+import { create } from 'xmlbuilder2';
 import { Config } from '../helpers/config';
 import * as path from 'path';
 import * as http from 'http';
@@ -649,6 +650,388 @@ export class EmployeeService {
         Logger.error({
           clientId: '',
           src: 'employee/removeBankDetail',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async updateFormStatus(loggedInUser: any, formDetail: any): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let updatedFormDetail: any = await companyDb.query(
+        `EXEC ${constant.P_UpdateFormStatus} @action = @0, @formNo = @1, @formName = @2, @status = @3, @userId = @4`,
+        [
+          formDetail.action,
+          formDetail.formNo,
+          formDetail.formName,
+          formDetail.status,
+          formDetail.userId,
+        ],
+      );
+      return updatedFormDetail;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'employee/updateFormStatus',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getEmployeeBasicDetails(
+    loggedInUser: any,
+    action: string,
+    formNo: string,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let basicDetails: any = await companyDb.query(
+        `EXEC ${constant.P_EmployeeBasicDetails} @action = @0, @formNO = @1`,
+        [action, formNo],
+      );
+      return basicDetails;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'employee/getEmployeeBasicDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getUploadedFormDetails(
+    loggedInUser: any,
+    action: string,
+    formNo: string,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let formDetails: any = await companyDb.query(
+        `EXEC ${constant.P_uploadFormFiles} @action = @0, @form_no = @1`,
+        [action, formNo],
+      );
+      return formDetails;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'employee/getUploadedFormDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async removedocument(
+    loggedInUser: any,
+    action: string,
+    formNo: string,
+    docTypeId: string,
+    docId: string,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let removedDocument: any = await companyDb.query(
+        `EXEC ${constant.P_uploadFormFiles} @action = @0, @form_no = @1, @doc_type_id = @2, @doc_id = @3`,
+        [action, formNo, docTypeId, docId],
+      );
+      return removedDocument;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'employee/removedocument',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getEduLangDetails(loggedInUser: any, formNo: string): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let langDetails: any = await companyDb.query(
+        `EXEC ${constant.P_GetEduLangDetails} @formNo = @0`,
+        [formNo],
+      );
+      return langDetails;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'employee/getEduLangDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getExpExMEsiDetails(loggedInUser: any, formNo: string): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let esiDetails: any = await companyDb.query(
+        `EXEC ${constant.P_GetExpExMEsiDetails} @formNo = @0`,
+        [formNo],
+      );
+      return esiDetails;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'employee/getExpExMEsiDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async updateRqccDocument(
+    loggedInUser: any,
+    documentDetail: any,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let rqccDocument: any = await companyDb.query(
+        `EXEC ${constant.P_RqccDocumentDetail} @action = @0, @formNo = @1, @appForm = @2, @identityProof = @3, @addressProof = @4, @expProof = @5, @ageProof = @6
+        , @eduProof = @7, @driverProof = @8, @gunmanProof = @9, @exMProof = @10, @bankAccProof = @11, @OthersProof = @12, @fireMProof = @13, @aadharCnLProof = @14, @uanNoProof = @15
+        , @casteCertProof = @16, @expFromUan = @17, @expFromEsi = @18, @userId = @19, @withPhysical = @20`,
+        [
+          documentDetail.action,
+          documentDetail.formNo,
+          documentDetail.appForm,
+          documentDetail.identityProof,
+          documentDetail.addressProof,
+          documentDetail.expProof,
+          documentDetail.ageProof,
+          documentDetail.eduProof,
+          documentDetail.driverProof,
+          documentDetail.gunmanProof,
+          documentDetail.exMProof,
+          documentDetail.bankAccProof,
+          documentDetail.OthersProof,
+          documentDetail.fireMProof,
+          documentDetail.aadharCnLProof,
+          documentDetail.uanNoProof,
+          documentDetail.casteCertProof,
+          documentDetail.expFromUAN,
+          documentDetail.expFromESI,
+          documentDetail.userId,
+          documentDetail.withPhysical,
+        ],
+      );
+      return rqccDocument;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'employee/updateRqccDocument',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async updateApprovalStatus(
+    loggedInUser: any,
+    statusDetail: any,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let formLists: any = statusDetail.formLists;
+      //       const doc = create({ version: '1.0' })
+      //   .ele('root')
+      //     .ele('user')
+      //       .att('id', '123')
+      //       .ele('name').txt('John Doe').up()
+      //       .ele('email').txt('john@example.com')
+      //     .up()
+      //   .up()
+      // .end({ prettyPrint: true });
+
+      // console.log(doc);
+
+      // let xmlNode: any = xmlBuilder.create('formList');
+      // for (var i = 0; i <= formLists.length - 1; i++) {
+      //   var leafNode = xmlNode.ele('emp');
+      //   leafNode.ele('formNo', formLists[i].formNo);
+      //   leafNode.ele('formStatus', formLists[i].formStatus);
+      //   leafNode.ele('reason', formLists[i].reason);
+      // }
+      // xmlNode.end({ pretty: true });
+
+      //let xmlString: string = xmlNode.toString();
+
+      let xmlString: string = '';
+
+      let rqccDocument: any = await companyDb.query(
+        `EXEC ${constant.P_UpdateApprovalStatus} @action = @0, @formList = @1, @userId = @2`,
+        [statusDetail.action, xmlString, statusDetail.userId],
+      );
+
+      // var formLists = req.body.formLists;
+
+      // var sqlReq = new sql.Request(conn_pool);
+      // sqlReq.input('action', sql.VarChar(50), req.body.action);
+      // sqlReq.input('formList', sql.VarChar(sql.MAX), xmlString);
+      // sqlReq.input('userId', sql.VarChar(50), req.body.userId);
+
+      return rqccDocument;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'employee/updateApprovalStatus',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async updateEmployeeDetails(
+    loggedInUser: any,
+    empDetails: any,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let updatedEmpDetails: any = await companyDb.query(
+        `EXEC ${constant.P_UpdateEmployeeDetails} @action = @0, @form_no = @1, @candType = @2, @dob = @3, @dobInAaadhar = @4, @uanNo = @5, @userId = @6`,
+        [
+          empDetails.action,
+          empDetails.formNo,
+          empDetails.candType,
+          empDetails.dob,
+          empDetails.Aadhar_Dob,
+          empDetails.UanNo,
+          empDetails.userId,
+        ],
+      );
+      return updatedEmpDetails;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'employee/updateEmployeeDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async updateAllFormStatus(
+    loggedInUser: any,
+    statusDetails: any,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let updatedStatusDetails: any = await companyDb.query(
+        `EXEC ${constant.P_UpdateAllFormStatus} @action = @0, @formNo = @1, @basic = @2, @document = @3, @education = @4, @experience = @5, @physical = @6
+        , @assessment = @7, @score = @8, @electronic = @9, @family = @10, @bank = @11, @icard = @12, @rqccdoc = @13, @rqccPhy = @14, @userId = @15`,
+        [
+          statusDetails.action,
+          statusDetails.form_no,
+          statusDetails.basicDetail,
+          statusDetails.documentDetail,
+          statusDetails.educationDetail,
+          statusDetails.experienceDetail,
+          statusDetails.phyMeasurDetail,
+          statusDetails.assessmentDetail,
+          statusDetails.scoreDetail,
+          statusDetails.electronicDetail,
+          statusDetails.familyDetail,
+          statusDetails.bankDetail,
+          statusDetails.printCardDetail,
+          statusDetails.rqccDocVerified,
+          statusDetails.rqccPhyVerified,
+          statusDetails.userId,
+        ],
+      );
+      return updatedStatusDetails;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'employee/updateAllFormStatus',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async updateRegNo(loggedInUser: any, regNoDetails: any): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let updatedRegNo: any = await companyDb.query(
+        `EXEC ${constant.P_UpdateRegNo} @fromNo = @0, @regNo = @1, @userId = @2`,
+        [regNoDetails.formNo, regNoDetails.regNo, regNoDetails.userId],
+      );
+      return updatedRegNo;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'employee/updateRegNo',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async updateApprovalStatusDetails(
+    loggedInUser: any,
+    statusDetails: any,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let updatedStatusDetail: any = await companyDb.query(
+        `EXEC ${constant.P_UpdateApprovalStatusDetails} @action = @0, @formNo = @1, @name = @2, @dob = @3, @uanNo = @4, @accountNo = @5, @status = @6, @statusReason = @7, @otherRemark = @8, @userId = @9`,
+        [
+          statusDetails.action,
+          statusDetails.formNo,
+          statusDetails.name,
+          statusDetails.dob,
+          statusDetails.uanNo,
+          statusDetails.accountNo,
+          statusDetails.status,
+          statusDetails.statusReason,
+          statusDetails.otherRemark,
+          statusDetails.userId,
+        ],
+      );
+      return updatedStatusDetail;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'employee/updateApprovalStatusDetails',
           error: error.message,
         });
         error = new CustomError('InternalServerError');

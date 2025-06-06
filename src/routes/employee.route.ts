@@ -62,42 +62,42 @@ employeeRoute.put(
   '/removeBankDetail/:action/:formNo',
   employeeCntrl.removeBankDetail,
 );
-// employeeRoute.put(
-//   '/updateFormStatus/:action/:formNo/:formName/:status/:userId',
-//   employeeCntrl.updateFormStatus,
-// );
-// employeeRoute.get(
-//   '/getEmployeeBasicDetails/:action/:formNo',
-//   employeeCntrl.getEmployeeBasicDetails,
-// );
-// employeeRoute.get(
-//   '/getUploadedFormDetails/:action/:formNo',
-//   employeeCntrl.getUploadedFormDetails,
-// );
-// employeeRoute.get(
-//   '/removedocument/:action/:formNo/:docTypeId/:docId',
-//   employeeCntrl.removedocument,
-// );
-// employeeRoute.get(
-//   '/getEduLangDetails/:formNo',
-//   employeeCntrl.getEduLangDetails,
-// );
-// employeeRoute.get(
-//   '/getExpExMEsiDetails/:formNo',
-//   employeeCntrl.getExpExMEsiDetails,
-// );
-// employeeRoute.post('/updateRqccDocument', employeeCntrl.updateRqccDocument);
-// employeeRoute.post('/UpdateApprovalStatus', employeeCntrl.UpdateApprovalStatus);
-// employeeRoute.post(
-//   '/UpdateEmployeeDetails',
-//   employeeCntrl.UpdateEmployeeDetails,
-// );
-// employeeRoute.post('/UpdateAllFormStatus', employeeCntrl.UpdateAllFormStatus);
-// employeeRoute.post('/UpdateRegNo', employeeCntrl.UpdateRegNo);
-// employeeRoute.post(
-//   '/UpdateApprovalStatusDetails',
-//   employeeCntrl.UpdateApprovalStatusDetails,
-// );
+employeeRoute.put(
+  '/updateFormStatus/:action/:formNo/:formName/:status/:userId',
+  employeeCntrl.updateFormStatus,
+);
+employeeRoute.get(
+  '/getEmployeeBasicDetails/:action/:formNo',
+  employeeCntrl.getEmployeeBasicDetails,
+);
+employeeRoute.get(
+  '/getUploadedFormDetails/:action/:formNo',
+  employeeCntrl.getUploadedFormDetails,
+);
+employeeRoute.get(
+  '/removedocument/:action/:formNo/:docTypeId/:docId',
+  employeeCntrl.removedocument,
+);
+employeeRoute.get(
+  '/getEduLangDetails/:formNo',
+  employeeCntrl.getEduLangDetails,
+);
+employeeRoute.get(
+  '/getExpExMEsiDetails/:formNo',
+  employeeCntrl.getExpExMEsiDetails,
+);
+employeeRoute.post('/updateRqccDocument', employeeCntrl.updateRqccDocument);
+employeeRoute.post('/UpdateApprovalStatus', employeeCntrl.updateApprovalStatus);
+employeeRoute.post(
+  '/UpdateEmployeeDetails',
+  employeeCntrl.updateEmployeeDetails,
+);
+employeeRoute.post('/UpdateAllFormStatus', employeeCntrl.updateAllFormStatus);
+employeeRoute.post('/UpdateRegNo', employeeCntrl.updateRegNo);
+employeeRoute.post(
+  '/UpdateApprovalStatusDetails',
+  employeeCntrl.updateApprovalStatusDetails,
+);
 // employeeRoute.post('/CheckPreEmployee', employeeCntrl.CheckPreEmployee);
 // employeeRoute.post('/sendOtp', employeeCntrl.sendOtp);
 export { employeeRoute };

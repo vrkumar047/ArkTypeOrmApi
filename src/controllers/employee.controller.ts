@@ -564,4 +564,412 @@ export class EmployeeController {
     }
     next();
   }
+
+  async updateFormStatus(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let formDetail: any = {
+        action: req.params.action ?? '',
+        formNo: req.params.formNo ?? '',
+        formName: req.params.formName ?? '',
+        status: req.params.status ?? '',
+        userId: req.params.userId ?? '',
+      };
+      if (loggedInUser) {
+        let data: any = await employeeService.updateFormStatus(
+          loggedInUser,
+          formDetail,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async getEmployeeBasicDetails(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action ?? '';
+      let formNo: string = req.params.formNo ?? '';
+
+      if (loggedInUser) {
+        let data: any = await employeeService.getEmployeeBasicDetails(
+          loggedInUser,
+          action,
+          formNo,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async getUploadedFormDetails(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action ?? '';
+      let formNo: string = req.params.formNo ?? '';
+
+      if (loggedInUser) {
+        let data: any = await employeeService.getUploadedFormDetails(
+          loggedInUser,
+          action,
+          formNo,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async removedocument(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.params.action ?? '';
+      let formNo: string = req.params.formNo ?? '';
+      let docTypeId: string = req.params.docTypeId ?? '';
+      let docId: string = req.params.docId ?? '';
+
+      if (loggedInUser) {
+        let data: any = await employeeService.removedocument(
+          loggedInUser,
+          action,
+          formNo,
+          docTypeId,
+          docId,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async getEduLangDetails(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let formNo: string = req.params.formNo ?? '';
+
+      if (loggedInUser) {
+        let data: any = await employeeService.getEduLangDetails(
+          loggedInUser,
+          formNo,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async getExpExMEsiDetails(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let formNo: string = req.params.formNo ?? '';
+
+      if (loggedInUser) {
+        let data: any = await employeeService.getExpExMEsiDetails(
+          loggedInUser,
+          formNo,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async updateRqccDocument(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let documentDetail: any = {
+        action: req.body.action ?? '',
+        formNo: req.body.formNo ?? '',
+        appForm: req.body.appForm != undefined ? parseInt(req.body.appForm) : 0,
+        identityProof:
+          req.body.identityProof != undefined
+            ? parseInt(req.body.identityProof)
+            : 0,
+        addressProof:
+          req.body.addressProof != undefined
+            ? parseInt(req.body.addressProof)
+            : 0,
+        expProof:
+          req.body.expProof != undefined ? parseInt(req.body.expProof) : 0,
+        ageProof:
+          req.body.ageProof != undefined ? parseInt(req.body.ageProof) : 0,
+        eduProof:
+          req.body.eduProof != undefined ? parseInt(req.body.eduProof) : 0,
+        driverProof:
+          req.body.driverProof != undefined
+            ? parseInt(req.body.driverProof)
+            : 0,
+        gunmanProof:
+          req.body.gunmanProof != undefined
+            ? parseInt(req.body.gunmanProof)
+            : 0,
+        exMProof:
+          req.body.exMProof != undefined ? parseInt(req.body.exMProof) : 0,
+        bankAccProof:
+          req.body.bankAccProof != undefined
+            ? parseInt(req.body.bankAccProof)
+            : 0,
+        OthersProof:
+          req.body.OthersProof != undefined
+            ? parseInt(req.body.OthersProof)
+            : 0,
+        fireMProof:
+          req.body.fireMProof != undefined ? parseInt(req.body.fireMProof) : 0,
+        aadharCnLProof:
+          req.body.aadharCnLProof != undefined
+            ? parseInt(req.body.aadharCnLProof)
+            : 0,
+        uanNoProof:
+          req.body.uanNoProof != undefined ? parseInt(req.body.uanNoProof) : 0,
+        casteCertProof:
+          req.body.casteCertProof != undefined
+            ? parseInt(req.body.casteCertProof)
+            : 0,
+        expFromUAN:
+          req.body.expFromUAN != undefined ? parseInt(req.body.expFromUAN) : 0,
+        expFromESI:
+          req.body.expFromESI != undefined ? parseInt(req.body.expFromESI) : 0,
+        withPhysical:
+          req.body.withPhysical != undefined
+            ? parseInt(req.body.withPhysical)
+            : 0,
+        userId: req.body.userId ?? '',
+      };
+
+      if (loggedInUser) {
+        let data: any = await employeeService.updateRqccDocument(
+          loggedInUser,
+          documentDetail,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async updateApprovalStatus(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let statusDetail: any = {
+        action: req.body.action ?? [],
+        formLists: req.body.formLists ?? [],
+        userId: req.body.userId ?? [],
+      };
+
+      if (loggedInUser) {
+        let data: any = await employeeService.updateApprovalStatus(
+          loggedInUser,
+          statusDetail,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async updateEmployeeDetails(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let employeeDetail: any = {
+        action: req.body.action ?? '',
+        formNo: req.body.formNo ?? '',
+        candType: req.body.candType ?? '',
+        dob: req.body.dob ?? '',
+        Aadhar_Dob: req.body.Aadhar_Dob ?? '',
+        UanNo: req.body.UanNo ?? '',
+        userId: req.body.userId ?? '',
+      };
+
+      if (loggedInUser) {
+        let data: any = await employeeService.updateEmployeeDetails(
+          loggedInUser,
+          employeeDetail,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async updateAllFormStatus(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let statusDetails: any = {
+        action: req.body.action ?? '',
+        form_no: req.body.form_no ?? '',
+        basicDetail:
+          req.body.basicDetail != undefined
+            ? parseInt(req.body.basicDetail)
+            : 0,
+        documentDetail:
+          req.body.documentDetail != undefined
+            ? parseInt(req.body.documentDetail)
+            : 0,
+        educationDetail:
+          req.body.educationDetail != undefined
+            ? parseInt(req.body.educationDetail)
+            : 0,
+        experienceDetail:
+          req.body.experienceDetail != undefined
+            ? parseInt(req.body.experienceDetail)
+            : 0,
+        phyMeasurDetail:
+          req.body.phyMeasurDetail != undefined
+            ? parseInt(req.body.phyMeasurDetail)
+            : 0,
+        assessmentDetail:
+          req.body.assessmentDetail != undefined
+            ? parseInt(req.body.assessmentDetail)
+            : 0,
+        scoreDetail:
+          req.body.scoreDetail != undefined
+            ? parseInt(req.body.scoreDetail)
+            : 0,
+        electronicDetail:
+          req.body.electronicDetail != undefined
+            ? parseInt(req.body.electronicDetail)
+            : 0,
+        familyDetail:
+          req.body.familyDetail != undefined
+            ? parseInt(req.body.familyDetail)
+            : 0,
+        bankDetail:
+          req.body.bankDetail != undefined ? parseInt(req.body.bankDetail) : 0,
+        printCardDetail:
+          req.body.printCardDetail != undefined
+            ? parseInt(req.body.printCardDetail)
+            : 0,
+        rqccDocVerified:
+          req.body.rqccDocVerified != undefined
+            ? parseInt(req.body.rqccDocVerified)
+            : 0,
+        rqccPhyVerified:
+          req.body.rqccPhyVerified != undefined
+            ? parseInt(req.body.rqccPhyVerified)
+            : 0,
+        userId: req.body.userId ?? '',
+      };
+
+      if (loggedInUser) {
+        let data: any = await employeeService.updateAllFormStatus(
+          loggedInUser,
+          statusDetails,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async updateRegNo(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let regNoDetails: any = {
+        formNo: req.body.formNo ?? '',
+        regNo: req.body.regNo ?? '',
+        userId: req.body.userId ?? '',
+      };
+
+      if (loggedInUser) {
+        let data: any = await employeeService.updateRegNo(
+          loggedInUser,
+          regNoDetails,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async updateApprovalStatusDetails(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let statusDetails: any = {
+        action: req.body.action ?? '',
+        formNo: req.body.formNo ?? '',
+        name: req.body.name ?? '',
+        dob: req.body.dob ?? '',
+        uanNo: req.body.uanNo ?? '',
+        accountNo: req.body.accountNo ?? '',
+        status: req.body.status ?? '',
+        statusReason:
+          req.body.statusReason != undefined
+            ? parseInt(req.body.statusReason)
+            : 0,
+        otherRemark: req.body.otherRemark ?? '',
+        userId: req.body.userId ?? '',
+      };
+
+      if (loggedInUser) {
+        let data: any = await employeeService.updateApprovalStatusDetails(
+          loggedInUser,
+          statusDetails,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
 }
