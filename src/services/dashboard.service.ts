@@ -195,6 +195,4 @@ export class DashboardService {
       throw error;
     }
   }
-
-  downloadVerifiedESI;
 }
