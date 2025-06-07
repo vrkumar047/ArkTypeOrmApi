@@ -30,7 +30,7 @@ export class CmdService {
         },
       );
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'cmd/execBat',
@@ -61,7 +61,7 @@ export class CmdService {
       }, 180000);
       return { result: '' };
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'cmd/pingCamera',
@@ -92,7 +92,7 @@ export class CmdService {
         }
       });
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'cmd/execCommand',
@@ -109,7 +109,7 @@ export class CmdService {
       cmdCammond.exec(`taskkill/PID  ${pid}`);
       return { res: 'success' };
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'cmd/closeBat',
@@ -126,7 +126,7 @@ export class CmdService {
       cmdCammond.exec('taskkill/im vlc.exe');
       return { res: 'success' };
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'cmd/closeCommand',
@@ -160,7 +160,7 @@ export class CmdService {
       );
       return cameraStatusDetails;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'cmd/updateCameraStatus',

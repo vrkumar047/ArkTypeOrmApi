@@ -34,7 +34,7 @@ export class EmployeeService {
       );
       return formNo;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/getFormNo',
@@ -137,11 +137,12 @@ export class EmployeeService {
               created_by: employeeDetail.userId,
             },
           );
-          let res: any = resultSets[0];
+          let res: any = resultSets;
+          return res;
         } catch (errEmp: any) {}
       }
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/addEmployee',
@@ -168,7 +169,7 @@ export class EmployeeService {
       );
       return otpDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/getOtpDetail',
@@ -200,7 +201,7 @@ export class EmployeeService {
       );
       return otpDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/addEducationDetails',
@@ -226,7 +227,7 @@ export class EmployeeService {
       );
       return otpDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/removeEducationDetails',
@@ -259,7 +260,7 @@ export class EmployeeService {
       );
       return addedLanguageDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/addLanguageDetails',
@@ -297,7 +298,7 @@ export class EmployeeService {
 
       return exprDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/addCvExpDetails',
@@ -323,7 +324,7 @@ export class EmployeeService {
       );
       return expDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/removeCvExpDetails',
@@ -358,7 +359,7 @@ export class EmployeeService {
 
       return addedExManDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/addExManExpDetails',
@@ -385,7 +386,7 @@ export class EmployeeService {
       );
       return removedExManDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/removeExManExpDetails',
@@ -423,7 +424,7 @@ export class EmployeeService {
 
       return addedEsiDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/addEsiServerDetails',
@@ -450,7 +451,7 @@ export class EmployeeService {
 
       return removedEsiDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/removeEsiServerDetails',
@@ -482,7 +483,7 @@ export class EmployeeService {
 
       return addedFamilyDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/addFamilyDetails',
@@ -509,7 +510,7 @@ export class EmployeeService {
 
       return removedFamilyDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/removeFamilyDetail',
@@ -561,7 +562,7 @@ export class EmployeeService {
 
       return addedPhysicalDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/addPhysicalDetails',
@@ -587,7 +588,7 @@ export class EmployeeService {
 
       return removedPhysicalDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/removePhysicalDetail',
@@ -620,7 +621,7 @@ export class EmployeeService {
 
       return addedBankDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/addBankDetails',
@@ -646,7 +647,7 @@ export class EmployeeService {
 
       return removedPhysicalDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/removeBankDetail',
@@ -673,7 +674,7 @@ export class EmployeeService {
       );
       return updatedFormDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/updateFormStatus',
@@ -692,13 +693,18 @@ export class EmployeeService {
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
-      let basicDetails: any = await companyDb.query(
-        `EXEC ${constant.P_EmployeeBasicDetails} @action = @0, @formNO = @1`,
-        [action, formNo],
+      const basicDetails = await getResultSets(
+        companyDb,
+        constant.P_EmployeeBasicDetails,
+        {
+          action: action,
+          formNO: formNo,
+        },
       );
-      return basicDetails;
+      let res: any = basicDetails;
+      return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/getEmployeeBasicDetails',
@@ -717,13 +723,18 @@ export class EmployeeService {
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
-      let formDetails: any = await companyDb.query(
-        `EXEC ${constant.P_uploadFormFiles} @action = @0, @form_no = @1`,
-        [action, formNo],
+      const formDetails = await getResultSets(
+        companyDb,
+        constant.P_uploadFormFiles,
+        {
+          action: action,
+          form_no: formNo,
+        },
       );
-      return formDetails;
+      let res: any = formDetails;
+      return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/getUploadedFormDetails',
@@ -744,13 +755,20 @@ export class EmployeeService {
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
-      let removedDocument: any = await companyDb.query(
-        `EXEC ${constant.P_uploadFormFiles} @action = @0, @form_no = @1, @doc_type_id = @2, @doc_id = @3`,
-        [action, formNo, docTypeId, docId],
+      const removedDocument = await getResultSets(
+        companyDb,
+        constant.P_uploadFormFiles,
+        {
+          action: action,
+          form_no: formNo,
+          doc_type_id: docTypeId,
+          doc_id: docId,
+        },
       );
-      return removedDocument;
+      let res: any = removedDocument;
+      return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/removedocument',
@@ -765,13 +783,17 @@ export class EmployeeService {
   async getEduLangDetails(loggedInUser: any, formNo: string): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
-      let langDetails: any = await companyDb.query(
-        `EXEC ${constant.P_GetEduLangDetails} @formNo = @0`,
-        [formNo],
+      const langDetails = await getResultSets(
+        companyDb,
+        constant.P_GetEduLangDetails,
+        {
+          formNo: formNo,
+        },
       );
-      return langDetails;
+      let res: any = langDetails;
+      return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/getEduLangDetails',
@@ -786,13 +808,17 @@ export class EmployeeService {
   async getExpExMEsiDetails(loggedInUser: any, formNo: string): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
-      let esiDetails: any = await companyDb.query(
-        `EXEC ${constant.P_GetExpExMEsiDetails} @formNo = @0`,
-        [formNo],
+      const esiDetails = await getResultSets(
+        companyDb,
+        constant.P_GetExpExMEsiDetails,
+        {
+          formNo: formNo,
+        },
       );
-      return esiDetails;
+      let res: any = esiDetails;
+      return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/getExpExMEsiDetails',
@@ -840,7 +866,7 @@ export class EmployeeService {
       );
       return rqccDocument;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/updateRqccDocument',
@@ -898,7 +924,7 @@ export class EmployeeService {
 
       return rqccDocument;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/updateApprovalStatus',
@@ -930,7 +956,7 @@ export class EmployeeService {
       );
       return updatedEmpDetails;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/updateEmployeeDetails',
@@ -972,7 +998,7 @@ export class EmployeeService {
       );
       return updatedStatusDetails;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/updateAllFormStatus',
@@ -993,7 +1019,7 @@ export class EmployeeService {
       );
       return updatedRegNo;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/updateRegNo',
@@ -1028,7 +1054,7 @@ export class EmployeeService {
       );
       return updatedStatusDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/updateApprovalStatusDetails',

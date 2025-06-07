@@ -44,7 +44,7 @@ export class CommonService {
       let res: any = { recordsets: resultSets };
       return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getDashboardDetails',
@@ -74,7 +74,7 @@ export class CommonService {
       let res: any = { recordsets: resultSets };
       return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getBasicTableDetails',
@@ -106,7 +106,7 @@ export class CommonService {
       let res: any = resultSets[0];
       return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getProspectusNo',
@@ -144,7 +144,7 @@ export class CommonService {
       let res: any = resultSets[0];
       return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getAddressDetail',
@@ -167,7 +167,7 @@ export class CommonService {
       let res: any = resultSets[0];
       return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getState',
@@ -199,7 +199,7 @@ export class CommonService {
       let res: any = resultSets[0];
       return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getConstituency',
@@ -220,7 +220,7 @@ export class CommonService {
       );
       return casteCategory;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           agencyId: loggedInUser.clientId,
           src: 'common/getCasteCategory',
@@ -247,7 +247,7 @@ export class CommonService {
       );
       return casteRes;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getCaste',
@@ -279,7 +279,7 @@ export class CommonService {
       let res: any = resultSets[0];
       return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getFeeBatchAndSchemeList',
@@ -300,7 +300,7 @@ export class CommonService {
       );
       return reasonList;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getReasonList',
@@ -325,7 +325,7 @@ export class CommonService {
       );
       return documentList;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getDocumentList',
@@ -351,7 +351,7 @@ export class CommonService {
       );
       return documentList;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getRequiredDocument',
@@ -376,7 +376,7 @@ export class CommonService {
       );
       return documentList;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getDocumentList',
@@ -400,7 +400,7 @@ export class CommonService {
       );
       return documentList;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getApplicableDocType',
@@ -426,7 +426,7 @@ export class CommonService {
       );
       return documentList;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getDocumentForVerify',
@@ -451,7 +451,7 @@ export class CommonService {
       );
       return documentList;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getMandatoryDocList',
@@ -476,7 +476,7 @@ export class CommonService {
       );
       return eduDetails;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getEducationDetails',
@@ -501,7 +501,7 @@ export class CommonService {
       );
       return languageDetails;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getLanguageDetails',
@@ -526,7 +526,7 @@ export class CommonService {
       );
       return expDetails;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getExperienceDetails',
@@ -551,7 +551,7 @@ export class CommonService {
       );
       return exManExpDetails;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getExManExperienceDetails',
@@ -578,7 +578,7 @@ export class CommonService {
       );
       return esiDetails;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getEsiServerDetails',
@@ -603,7 +603,7 @@ export class CommonService {
       );
       return familyDetails;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getFamilyDetails',
@@ -628,7 +628,7 @@ export class CommonService {
       );
       return physicalDetails;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getPhysicalDetails',
@@ -653,7 +653,7 @@ export class CommonService {
       );
       return bankDetails;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getBankDetails',
@@ -677,7 +677,7 @@ export class CommonService {
       );
       return bankDetails;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getBankDetailsIFSCWise',
@@ -709,7 +709,7 @@ export class CommonService {
       let res: any = { recordsets: resultSets };
       return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getDesignationList',
@@ -737,7 +737,7 @@ export class CommonService {
       let res: any = { recordsets: resultSets };
       return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getTempDeploymentFormList',
@@ -765,7 +765,7 @@ export class CommonService {
       let res: any = { recordsets: resultSets };
       return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getUnApprovedDocuments',
@@ -793,7 +793,7 @@ export class CommonService {
       let res: any = { recordsets: resultSets };
       return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getTempDeploymentApplicationDetail',
@@ -818,7 +818,7 @@ export class CommonService {
       );
       return documentStatus;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/updateTempDeploymentDocumentStatus',
@@ -843,7 +843,7 @@ export class CommonService {
       );
       return documentDetails;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/RqccDocumentDetail',
@@ -863,11 +863,11 @@ export class CommonService {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let typeList: any = await companyDb.query(
         `EXEC ${constant.P_GetCandidateTypeMaster} @branchCode = @0`,
-        [branchCode],
+        [branchCode == 'null' ? null : branchCode],
       );
       return typeList;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/CandidatTypeList',
@@ -892,7 +892,7 @@ export class CommonService {
       );
       return list;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/GetList',
@@ -922,7 +922,7 @@ export class CommonService {
       );
       return list;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/formlist',
@@ -951,7 +951,7 @@ export class CommonService {
       );
       return formList;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/esiverificationlist',
@@ -978,7 +978,7 @@ export class CommonService {
       );
       return formStatuses;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/formstatus',
@@ -1005,7 +1005,7 @@ export class CommonService {
       );
       return formList;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/filteredFormList',
@@ -1032,7 +1032,7 @@ export class CommonService {
       );
       return picDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/empPicDetails',
@@ -1066,7 +1066,7 @@ export class CommonService {
       let res: any = resultSets[0];
       return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getUserDetails',
@@ -1093,7 +1093,7 @@ export class CommonService {
       );
       return { rowCount: userDetail.length };
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/isUserExist',
@@ -1120,7 +1120,7 @@ export class CommonService {
       );
       return { rowCount: basicDetail.length };
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/checkBasicDetails',
@@ -1147,7 +1147,7 @@ export class CommonService {
       );
       return assessmentDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/assessmentDetails',
@@ -1173,7 +1173,7 @@ export class CommonService {
       );
       return assessmentDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getCondoDetails',
@@ -1198,7 +1198,7 @@ export class CommonService {
       );
       return assessmentDetail;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getFileSequence',
@@ -1223,7 +1223,7 @@ export class CommonService {
       );
       return industryList;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/industryList',
@@ -1248,7 +1248,7 @@ export class CommonService {
       );
       return branchList;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/userWiseBranchList',
@@ -1281,7 +1281,7 @@ export class CommonService {
       );
       return applications;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getSearchedApplications',
@@ -1308,13 +1308,13 @@ export class CommonService {
           action: 'schemedetails',
           companyCode: companyCode,
           branchCode: branchCode,
-          desigCode: desigCode,
+          desig_code: desigCode,
         },
       );
-      let res: any = schemeDetail[0];
+      let res: any = schemeDetail;
       return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getSchemeDetails',
@@ -1350,7 +1350,7 @@ export class CommonService {
       let res: any = uanStatusDetail[0];
       return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/postUanStatusDetail',
@@ -1384,7 +1384,7 @@ export class CommonService {
       let res: any = electronicDetail[0];
       return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/postApproveRejectElectronicDetail',
@@ -1410,7 +1410,7 @@ export class CommonService {
       let res: any = electronicDetail[0];
       return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getReportList',
@@ -1450,7 +1450,7 @@ export class CommonService {
         return res;
       }
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getAppToken',
@@ -1490,7 +1490,7 @@ export class CommonService {
         return res;
       }
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'common/getAppToken',

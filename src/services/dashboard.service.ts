@@ -31,7 +31,7 @@ export class DashboardService {
       );
       return result;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'dashboard/dashboardList',
@@ -70,7 +70,7 @@ export class DashboardService {
       let res: any = resultSets[0];
       return res;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'dashboard/dashboardDetails',
@@ -94,7 +94,7 @@ export class DashboardService {
       );
       return result;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'dashboard/activeBranchList',
@@ -118,7 +118,7 @@ export class DashboardService {
       );
       return result;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'dashboard/branchCameraDetails',
@@ -152,7 +152,7 @@ export class DashboardService {
 
       return result;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'dashboard/downloadReport',
@@ -184,7 +184,7 @@ export class DashboardService {
 
       return result;
     } catch (error: any) {
-      if (error.driverError) {
+      if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'dashboard/downloadVerifiedESI',
