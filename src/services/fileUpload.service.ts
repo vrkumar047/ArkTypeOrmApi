@@ -1,32 +1,38 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { existsSync, mkdirSync } from 'fs';
+import moment from 'moment';
 import { CustomError } from '../helpers/validatorCustomError';
+import dotenv from 'dotenv';
+dotenv.config();
+const { clientId } = process.env;
 
 export class FileUploadService {
-  //#region ---------------------------------------------------------------- client logo image storage
-  clientLogoStorage = multer.diskStorage({
+  //#region ---------------------------------------------------------------- document image storage
+  fileStorage = multer.diskStorage({
     destination: function (req: any, file: any, cb) {
-      cb(null, path.join(__dirname, '../../uploads/clients/logos'));
+      let mmyy: string = moment().format('MMYY');
+      let folderPath: string = path.join(
+        __dirname,
+        `../../Uploads/files/${clientId}/${mmyy}`,
+      );
+      if (!existsSync(folderPath)) {
+        mkdirSync(folderPath, { recursive: true });
+      }
+      cb(null, folderPath);
     },
     filename: function (req: any, file: any, cb) {
       let splitedFileName: string[] = file.originalname.split('.');
       let fileExt: string = splitedFileName[splitedFileName.length - 1];
-      let dt = new Date();
-      let dateString: string =
-        dt.getFullYear().toString() +
-        (dt.getMonth() + 1).toString() +
-        dt.getDate().toString() +
-        dt.getHours().toString() +
-        dt.getMinutes().toString() +
-        dt.getSeconds().toString() +
-        dt.getMilliseconds().toString();
-      var newFileName = 'img' + dateString;
-      cb(null, newFileName + '.' + fileExt);
+      //let newFileName: string = req.params.formNo.replace('/', '-');
+      let newFileName: string = `${moment().format('HHmmss')}`;
+      //cb(null, `${newFileName}_doc_${req.params.docCode}.${fileExt}`);
+      cb(null, `${newFileName}_doc_1.${fileExt}`);
     },
   });
 
-  clientLogoImageFilters = (req: any, file: any, cb: any) => {
+  fileFilters = (req: any, file: any, cb: any) => {
     if (
       file.mimetype == 'image/jpeg' ||
       file.mimetype == 'image/jpg' ||
@@ -35,7 +41,7 @@ export class FileUploadService {
     ) {
       cb(null, true);
     } else {
-      cb(null, false);
+      cb(null, false, new Error('Wrong MIME Type'));
       req.modelError = {
         details: [
           {
@@ -46,17 +52,17 @@ export class FileUploadService {
     }
   };
 
-  clientLogo = multer({
-    storage: this.clientLogoStorage,
+  uploadFile = multer({
+    storage: this.fileStorage,
     limits: {
-      fileSize: 1024 * 1024 * 5,
+      fileSize: 1024 * 1024 * 10,
     },
-    fileFilter: this.clientLogoImageFilters,
-  }).single('clientLogo');
+    fileFilter: this.fileFilters,
+  }).any();
 
-  uploadClientLogo = (req: any, res: any) => {
+  uploadDocumentFile = (req: any, res: any) => {
     return new Promise((resolve, reject) => {
-      this.clientLogo(req, res, (err) => {
+      this.uploadFile(req, res, (err) => {
         let fileDetail: any,
           actualFilePath: string = '',
           actualFileName: string = '',
@@ -80,7 +86,8 @@ export class FileUploadService {
             filePath = fileDetail.path.replace(/\\/g, '/');
             let arrFileName: string[] = filePath.split('/');
             actualFileName = arrFileName[arrFileName.length - 1];
-            actualFilePath = `logos/${actualFileName}`;
+            let mmyy: string = moment().format('MMYY');
+            actualFilePath = `docfile/${clientId}/${mmyy}/${actualFileName}`;
           }
           resolve({
             actualFilePath: actualFilePath,
@@ -90,7 +97,7 @@ export class FileUploadService {
       });
     });
   };
-  //#endregion ---------------------------------------------------------------- end client logo image storage
+  //#endregion ---------------------------------------------------------------- document image storage
 
   //#region ---------------------------------------------------------------- application user member image storage
   userImageStorage = multer.diskStorage({

@@ -54,19 +54,20 @@ export class EmployeeService {
       let datetime = new Date().toLocaleString();
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let formNo: any = await companyDb.query(
-        `EXEC ${constant.P_getFormNo} @head = @0, @BranchCode = @1, @Update = @2`,
+        `EXEC ${constant.P_getFormNo} @head = @0, @BranchCode = @1, @Update = @2, @prospectus_no = @3`,
         [
           employeeDetail.head,
           employeeDetail.branchCode,
           employeeDetail.updateBit,
+          employeeDetail.prspctNo,
         ],
       );
-      if (formNo) {
-        if (formNo.Code == 'update') {
+      if (formNo[0]) {
+        if (formNo[0].Code == 'update') {
           formNO = employeeDetail.head;
           action = 'update';
         } else {
-          formNO = formNo.Code.Code;
+          formNO = formNo[0].Code;
           action = 'insert';
         }
         try {
@@ -138,7 +139,7 @@ export class EmployeeService {
             },
           );
           let res: any = resultSets;
-          return res;
+          return { isError: false, recordsets: res };
         } catch (errEmp: any) {}
       }
     } catch (error: any) {

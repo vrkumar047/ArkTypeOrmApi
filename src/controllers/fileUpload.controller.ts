@@ -2,15 +2,18 @@ import { Request, Response, NextFunction } from 'express';
 import { FileUploadService } from '../services/fileUpload.service';
 const fileUploadService = new FileUploadService();
 export class FileUploadController {
-  async clientLogo(req: Request, res: Response, next: NextFunction) {
+  async uploadDocumentFile(req: Request, res: Response, next: NextFunction) {
     try {
       let loggedInUser: any = req['currentUser'];
-      if (loggedInUser) {
-        let userImage: any = await fileUploadService.uploadClientLogo(req, res);
-        res.locals.data = userImage;
-      } else {
-        res.locals.error = 'Unauthorized';
-      }
+      //  if (loggedInUser) {
+      // req['clientId'] = loggedInUser.clientId;
+      let test = req.files;
+      req['clientId'] = 'sis';
+      let userImage: any = await fileUploadService.uploadDocumentFile(req, res);
+      res.locals.data = userImage;
+      // } else {
+      //   res.locals.error = 'Unauthorized';
+      // }
     } catch (err) {
       res.locals.error = err;
     }

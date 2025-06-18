@@ -4,6 +4,7 @@ import path from 'path';
 import cors from 'cors';
 import helmet from 'helmet';
 import xmlparser from 'express-xml-bodyparser';
+import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import compression from 'compression';
 dotenv.config();
@@ -18,6 +19,17 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(xmlparser());
+app.use(bodyParser.urlencoded({ extended: true }));
+// create application/json parser
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(
+  bodyParser.urlencoded({
+    limit: '50mb',
+    extended: true,
+    parameterLimit: 50000,
+  }),
+);
+
 //let allowedOrigins: any = 'http://localhost:4200,http://127.0.0.1:4200';
 app.get('/', function (req, res) {
   res.send('Hello ARK');
@@ -37,43 +49,39 @@ app.use(
   }),
 );
 
+// app.use(express.static(__dirname));
+// app.use(express.static(path.join(__dirname, 'Uploads/public/')));
+// app.use(express.static(path.join(__dirname, 'Uploads/files/')));
+// app.use(express.static(path.join(__dirname, 'Uploads/pdfs/')));
+// app.use(express.static(path.join(__dirname, 'Uploads/icard/')));
+// app.use(express.static(path.join(__dirname, 'Uploads/Erp/files/'))); // For Erp
+// app.use(express.static(path.join(__dirname, 'Uploads/Erp/pdfs/'))); // For Erp
+// app.use(express.static(path.join(__dirname, 'Uploads/picandsig/')));
+// app.use(express.static(path.join(__dirname, 'Uploads/reportfiles/')));
+// app.use(express.static(__dirname + '/Resources')); // load static resources
+
 /** file path */
 app.use(
-  '/logo',
-  express.static(path.join(__dirname, '../../uploads/clients/logos')),
+  '/public',
+  express.static(path.join(__dirname, '../../Uploads/public/')),
 );
 app.use(
-  '/userprofilepic',
-  express.static(path.join(__dirname, '../../uploads/users')),
+  '/docfile',
+  express.static(path.join(__dirname, '../../Uploads/files/')),
 );
+console.log(path.join(__dirname, '../../Uploads/files/'));
+app.use('/docpdf', express.static(path.join(__dirname, '../../Uploads/pdfs/')));
+
+app.use('/icard', express.static(path.join(__dirname, '../../Uploads/icard/')));
+
 app.use(
-  '/empprofilepic',
-  express.static(path.join(__dirname, '../../uploads/employees')),
+  '/picandsig',
+  express.static(path.join(__dirname, '../../Uploads/picandsig/')),
 );
 
 app.use(
-  '/staffpic',
-  express.static(path.join(__dirname, '../../uploads/staffs/pictures')),
-);
-
-app.use(
-  '/staffidproof',
-  express.static(path.join(__dirname, '../../uploads/staffs/idproofs')),
-);
-
-app.use(
-  '/vehicleimg',
-  express.static(path.join(__dirname, '../../uploads/vehicles')),
-);
-
-app.use(
-  '/driverlgimg',
-  express.static(path.join(__dirname, '../../uploads/snapshots/drivers')),
-);
-
-app.use(
-  '/vehiclelgimg',
-  express.static(path.join(__dirname, '../../uploads/snapshots/vehicles')),
+  '/reportfiles',
+  express.static(path.join(__dirname, '../../Uploads/reportfiles/')),
 );
 
 export { app };

@@ -6,13 +6,13 @@ const validateRequest = SchemaValidator(true);
 const fileUploadRoute = Router();
 const fileUploadCntrl = new FileUploadController();
 
-fileUploadRoute.use(authenticate);
+//fileUploadRoute.use(authenticate);
 
-fileUploadRoute.post(
-  '/clientLogo',
-  validateRequest,
-  fileUploadCntrl.clientLogo,
-);
+// fileUploadRoute.post(
+//   '/uploadDocFile/:formNo/:docCode',
+//   validateRequest,
+//   fileUploadCntrl.uploadDocumentFile,
+// );
 fileUploadRoute.post(
   '/userProfilePicture',
   validateRequest,
