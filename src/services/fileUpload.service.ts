@@ -1,9 +1,15 @@
+import { GetCompanyDb, getResultSets } from '../_dbs/mssql/pgConnection';
+import { plainToClass } from 'class-transformer';
+import constant from '../_dbs/mssql/constant';
+import Logger from '../utils/logger';
+import { CustomError } from '../helpers/customError';
+import { create } from 'xmlbuilder2';
+import PDFDocument from 'pdfkit';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { existsSync, mkdirSync } from 'fs';
 import moment from 'moment';
-import { CustomError } from '../helpers/validatorCustomError';
 import dotenv from 'dotenv';
 dotenv.config();
 const { clientId } = process.env;
@@ -99,415 +105,244 @@ export class FileUploadService {
   };
   //#endregion ---------------------------------------------------------------- document image storage
 
-  //#region ---------------------------------------------------------------- application user member image storage
-  userImageStorage = multer.diskStorage({
-    destination: function (req: any, file: any, cb) {
-      cb(null, path.join(__dirname, `../../uploads/users/${req.clientId}/`));
-    },
-    filename: function (req: any, file: any, cb) {
-      let splitedFileName: string[] = file.originalname.split('.');
-      let fileExt: string = splitedFileName[splitedFileName.length - 1];
-      let dt = new Date();
-      let dateString: string =
-        dt.getFullYear().toString() +
-        (dt.getMonth() + 1).toString() +
-        dt.getDate().toString() +
-        dt.getHours().toString() +
-        dt.getMinutes().toString() +
-        dt.getSeconds().toString() +
-        dt.getMilliseconds().toString();
-      var newFileName = 'img' + dateString;
-      cb(null, newFileName + '.' + fileExt);
-    },
-  });
-
-  userImageFilters = (req: any, file: any, cb: any) => {
-    if (
-      file.mimetype == 'image/jpeg' ||
-      file.mimetype == 'image/jpg' ||
-      file.mimetype == 'image/png' ||
-      file.mimetype == 'image/gif'
-    ) {
-      cb(null, true);
-    } else {
-      cb(null, false);
-      req.modelError = {
-        details: [
-          {
-            message: 'Unsupported file extension',
-          },
-        ],
-      };
-    }
-  };
-
-  userImage = multer({
-    storage: this.userImageStorage,
-    limits: {
-      fileSize: 1024 * 1024 * 5,
-    },
-    fileFilter: this.userImageFilters,
-  }).single('userProfilePicture');
-
-  uploadUserImage = (req: any, res: any) => {
-    return new Promise((resolve, reject) => {
-      this.userImage(req, res, (err) => {
-        let fileDetail: any,
-          actualFilePath: string = '',
-          actualFileName: string = '',
-          originalName: string = '';
-        if (err) {
-          return reject(err);
-        }
-        if (req.modelError) {
-          return res.status(422).json({
-            status: 'fail',
-            error: req.modelError,
-          });
-        } else if (req.file) {
-          fileDetail = req.file;
-          let filePath: string = '';
-          if (fileDetail != undefined) {
-            originalName =
-              fileDetail.originalname != undefined
-                ? fileDetail.originalname
-                : '';
-            filePath = fileDetail.path.replace(/\\/g, '/');
-            let arrFileName: string[] = filePath.split('/');
-            actualFileName = arrFileName[arrFileName.length - 1];
-            actualFilePath = `userprofilepic/${actualFileName}`;
-          }
-          resolve({
-            actualFilePath: actualFilePath,
-            originalFileName: originalName,
-          });
-        }
-      });
-    });
-  };
-  //#endregion ---------------------------------------------------------------- end application user image storage
-
-  //#region ---------------------------------------------------------------- residents image storage
-  residentImageStorage = multer.diskStorage({
-    destination: function (req: any, file: any, cb) {
-      cb(null, path.join(__dirname, '../../uploads/residents/'));
-    },
-    filename: function (req: any, file: any, cb) {
-      let dt = new Date();
-      let splitedFileName: string[] = file.originalname.split('.');
-      let fileExt: string = splitedFileName[splitedFileName.length - 1];
-      let datestring: string =
-        dt.getFullYear().toString() +
-        (dt.getMonth() + 1).toString() +
-        dt.getDate().toString() +
-        dt.getHours().toString() +
-        dt.getMinutes().toString() +
-        dt.getSeconds().toString() +
-        dt.getMilliseconds().toString();
-      var newFileName = 'img' + datestring;
-      cb(null, newFileName + '.' + fileExt);
-    },
-  });
-
-  residentImageFilters = (req: any, file: any, cb: any) => {
-    if (
-      file.mimetype == 'image/jpeg' ||
-      file.mimetype == 'image/jpg' ||
-      file.mimetype == 'image/png' ||
-      file.mimetype == 'image/gif'
-    ) {
-      cb(null, true);
-    } else {
-      cb(null, false);
-      req.uploadError = 'Extension error';
-      return cb(null, false, new Error('Extension error'));
-    }
-  };
-
-  uploadResidentImage = multer({
-    storage: this.residentImageStorage,
-    limits: {
-      fileSize: 1024 * 1024 * 15,
-    },
-    fileFilter: this.residentImageFilters,
-  }).single('residentImg');
-  //#endregion ---------------------------------------------------------------- end residents image storage
-
-  //#region ---------------------------------------------------------------- vehicles image storage
-  vehicleImageStorage = multer.diskStorage({
-    destination: function (req: any, file: any, cb) {
-      try {
-        const destinationPath = path.join(
-          __dirname,
-          `../../uploads/vehicles/${req.clientId}/`,
-        );
-        if (!fs.existsSync(destinationPath)) {
-          fs.mkdirSync(destinationPath, { recursive: true });
-        }
-        cb(null, destinationPath);
-      } catch (err: any) {
-        console.log(`Error while vehicle image uploading :- ${err.message}`);
-        cb(err, 'error while vehicle image uploading to specific path');
-      }
-    },
-    filename: function (req: any, file: any, cb) {
-      try {
-        let dt = new Date();
-        let fileExt: string = path.extname(file.originalname);
-        let datestring: string =
-          dt.getFullYear().toString() +
-          (dt.getMonth() + 1).toString() +
-          dt.getDate().toString() +
-          dt.getHours().toString() +
-          dt.getMinutes().toString() +
-          dt.getSeconds().toString() +
-          dt.getMilliseconds().toString();
-        const newFileName: string = 'img' + datestring;
-        if (newFileName != '') {
-          cb(null, newFileName + fileExt);
-        } else {
-          cb(null, 'fileName is blank');
-        }
-      } catch (err: any) {
-        console.log(
-          `Error while vehicle image uploading (name generation part) :- ${err.message}`,
-        );
-        cb(err, 'error while vehicle image name generation');
-      }
-    },
-  });
-
-  vehicleImageFilters = (req: any, file: any, cb: any) => {
+  async setFileSequence(
+    loggedInUser: any,
+    formNo: string,
+    docId: number,
+    seq: number,
+  ): Promise<any> {
     try {
-      if (
-        file.mimetype == 'image/jpeg' ||
-        file.mimetype == 'image/jpg' ||
-        file.mimetype == 'image/png' ||
-        file.mimetype == 'image/gif'
-      ) {
-        cb(null, true);
-      } else {
-        cb(null, false);
-        req.uploadError = 'Extension error';
-        return cb(null, false, new Error('Extension error'));
-      }
-    } catch (err: any) {
-      console.log(
-        `Error while vehicle image uploading (extension part) :- ${err.message}`,
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let fileSequence: any = await companyDb.query(
+        `EXEC ${constant.P_SetFileSequence} @formNo = @0, @docId = @1, @sequence = @2`,
+        [formNo, docId, seq],
       );
+      return fileSequence;
+    } catch (error: any) {
+      if (error.driverError || error.name == 'RequestError') {
+        Logger.error({
+          clientId: '',
+          src: 'fileupload/setFileSequence',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
     }
-  };
+  }
 
-  // uploadVehicleImage = multer({
-  //   storage: this.vehicleImageStorage,
-  //   fileFilter: this.residentImageFilters,
-  // }).single('vehicleImg');
+  async captureDocument(
+    loggedInUser: any,
+    formNo: string,
+    docId: number,
+    fileName: string,
+    docsList: any[] = [],
+  ): Promise<any> {
+    try {
+      const xmlDoc = create().ele('docList');
 
-  uploadVehicleImage = (req, res, next) => {
-    const upload = multer({
-      storage: this.vehicleImageStorage,
-      fileFilter: this.residentImageFilters,
-    }).single('vehicleImg');
+      docsList.forEach((doc) => {
+        const leafNode = xmlDoc.ele('doc');
+        leafNode.ele('formNo').txt(formNo);
+        leafNode.ele('docTypeId').txt(doc.docTypeId);
+        leafNode.ele('docId').txt(docId.toString());
+        leafNode.ele('authority').txt(doc.authority);
+        leafNode.ele('docNo').txt(doc.docNo);
+        leafNode.ele('remarks').txt(doc.remarks);
+        leafNode.ele('validFrom').txt(doc.validFrom);
+        leafNode.ele('validTo').txt(doc.validTo);
+        leafNode.ele('licenseType').txt(doc.licenseType);
+        leafNode.ele('issuingState').txt(doc.issuingState);
+        leafNode.ele('areaOfUse').txt(doc.areaOfUse);
+        leafNode.ele('placeOfUse').txt(doc.placeOfUse);
+        leafNode.ele('file_path').txt(fileName);
+      });
 
-    // Use a Promise to handle multer's callback
-    new Promise((resolve, reject) => {
-      upload(req, res, (err) => {
-        if (err) {
-          console.log(`error while saving image in multer :- ${err.message}`);
-          return reject(err); // Reject the promise with the error
+      let xmlString: string = xmlDoc.end({ headless: true, prettyPrint: true });
+      xmlString = xmlString.replace(/[\r\n]+/g, '').trim();
+
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let documentDetail: any = await companyDb.query(
+        `EXEC ${constant.P_UpdateUploadedFileList} @action = @0, @docsList = @1`,
+        ['insert', xmlString],
+      );
+      return documentDetail;
+    } catch (error: any) {
+      if (error.driverError || error.name == 'RequestError') {
+        Logger.error({
+          clientId: '',
+          src: 'fileupload/captureDocument',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async generatePdf(loggedInUser: any, formNo: string): Promise<any> {
+    try {
+      let _filePath: string = '';
+      var _docname: string = '';
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let totalUploadedFormList: any[] = await companyDb.query(
+        `EXEC ${constant.P_GetUploadedFiles} @formNo = @0`,
+        [formNo],
+      );
+      let uploadedFormList: any[] = [];
+      if (totalUploadedFormList && totalUploadedFormList.length > 0) {
+        for (let i = 0; i < totalUploadedFormList.length; i++) {
+          var prevdocid = 0;
+          var prevfilename = '';
+          var doc_used = 0;
+          _docname = '';
+
+          if (i == 0) {
+            prevdocid = totalUploadedFormList[i].doc_id;
+            prevfilename = totalUploadedFormList[i].file_path;
+            var obj = totalUploadedFormList[i];
+            obj.file_sequence = uploadedFormList.length + 1;
+            _docname = totalUploadedFormList[i].document_type;
+            for (var j = i + 1; j < totalUploadedFormList.length; j++) {
+              if (totalUploadedFormList[j].doc_id == prevdocid) {
+                _docname =
+                  _docname + totalUploadedFormList[j].document_type + ', ';
+              }
+            }
+            obj.document_type = _docname;
+            uploadedFormList.push(obj);
+          } else {
+            doc_used = 0;
+            for (var k = 0; k < uploadedFormList.length; k++) {
+              if (
+                uploadedFormList[k].doc_id == totalUploadedFormList[i].doc_id
+              ) {
+                doc_used = 1;
+              }
+            }
+
+            prevdocid = totalUploadedFormList[i - 1].doc_id;
+            prevfilename = totalUploadedFormList[i - 1].file_path;
+            if (
+              totalUploadedFormList[i].doc_id != prevdocid &&
+              totalUploadedFormList[i].file_path != prevfilename &&
+              doc_used != 1
+            ) {
+              var obj = totalUploadedFormList[i];
+              obj.file_sequence = uploadedFormList.length + 1;
+              _docname = totalUploadedFormList[i].document_type;
+              //Merge All Doc names
+              for (var j = i + 1; j < totalUploadedFormList.length; j++) {
+                if (
+                  totalUploadedFormList[j].doc_id ==
+                  totalUploadedFormList[i].doc_id
+                ) {
+                  _docname =
+                    _docname + ', ' + totalUploadedFormList[j].document_type;
+                }
+              }
+              obj.document_type = _docname;
+
+              uploadedFormList.push(obj);
+            }
+            //console.log('My Seq : ' + uploadedFormList.length+1);
+          }
         }
-        resolve(''); // Resolve the promise if no error
-      });
-    })
-      .then(() => next()) // Proceed to the next middleware if successful
-      .catch((error) => {
-        console.log(
-          `error while saving image in multer catch block :- ${error.message}`,
+      }
+      try {
+        var doc = new PDFDocument({
+          layout: 'portrait',
+          size: 'A4', // 'A4' [450,500]
+          margin: 5,
+        });
+        let mmyy: string = moment().format('MMYY');
+        let folderPath: string = path.join(
+          __dirname,
+          `../../Uploads/pdfs/${clientId}/${mmyy}`,
         );
-        // Handle errors
-        res.status(400).json({ error: error.message || 'File upload failed.' });
-      });
-  };
-  //#endregion ---------------------------------------------------------------- end vehicles image storage
+        if (!existsSync(folderPath)) {
+          mkdirSync(folderPath, { recursive: true });
+        }
+        var encodedFormNo = formNo.replace('/', '-');
+        _filePath = `docpdf/${clientId}/${mmyy}/${encodedFormNo}_doc.pdf`;
+        var inputFilePath = path.join(`${folderPath}/${_filePath}`);
+        // if (!fs.existsSync(inputFilePath)) {
+        //   _filePath = encodedFormNo + '_doc_1.pdf';
+        // }
 
-  //#region ---------------------------------------------------------------- staff picture storage
-  staffPictureStorage = multer.diskStorage({
-    destination: function (req: any, file: any, cb) {
-      cb(
-        null,
-        path.join(__dirname, `../../uploads/staffs/pictures/${req.clientId}/`),
-      );
-    },
-    filename: function (req: any, file: any, cb) {
-      let dt = new Date();
-      let splitedFileName: string[] = file.originalname.split('.');
-      let fileExt: string = splitedFileName[splitedFileName.length - 1];
-      let datestring: string =
-        dt.getFullYear().toString() +
-        (dt.getMonth() + 1).toString() +
-        dt.getDate().toString() +
-        dt.getHours().toString() +
-        dt.getMinutes().toString() +
-        dt.getSeconds().toString() +
-        dt.getMilliseconds().toString();
-      var newFileName = 'img' + datestring;
-      cb(null, newFileName + '.' + fileExt);
-    },
-  });
-
-  staffPictureFilters = (req: any, file: any, cb: any) => {
-    if (
-      file.mimetype == 'image/jpeg' ||
-      file.mimetype == 'image/jpg' ||
-      file.mimetype == 'image/png' ||
-      file.mimetype == 'image/gif'
-    ) {
-      cb(null, true);
-    } else {
-      cb(null, false);
-      req.uploadError = 'Extension error';
-      return cb(null, false, new Error('Extension error'));
-    }
-  };
-
-  staffPicture = multer({
-    storage: this.staffPictureStorage,
-    limits: {
-      fileSize: 1024 * 1024 * 5,
-    },
-    fileFilter: this.staffPictureFilters,
-  }).single('staffPicture');
-
-  uploadStaffPicture = (req: any, res: any) => {
-    return new Promise((resolve, reject) => {
-      try {
-        this.staffPicture(req, res, (err) => {
-          let fileDetail: any,
-            actualFilePath: string = '',
-            actualFileName: string = '',
-            originalName: string = '';
-          if (err) {
-            return reject(err);
-          }
-          if (req.modelError) {
-            return res.status(422).json({
-              status: 'fail',
-              error: req.modelError,
-            });
-          } else if (req.file) {
-            fileDetail = req.file;
-            let filePath: string = '';
-            if (fileDetail != undefined) {
-              originalName =
-                fileDetail.originalname != undefined
-                  ? fileDetail.originalname
-                  : '';
-              filePath = fileDetail.path.replace(/\\/g, '/');
-              let arrFileName: string[] = filePath.split('/');
-              actualFileName = arrFileName[arrFileName.length - 1];
-              actualFilePath = `staffpic/${actualFileName}`;
+        doc.pipe(fs.createWriteStream(inputFilePath));
+        for (var i = 0; i < uploadedFormList.length; i++) {
+          try {
+            // var filePath = './Uploads/files/' + uploadedFormList[i].file_path;
+            let filePath: string = uploadedFormList[i].file_path;
+            filePath = filePath.replace('docfile', './Uploads/files');
+            _docname = uploadedFormList[i].document_name;
+            //console.log(filePath + _docname);
+            if (i == 0) {
+              doc
+                .image(filePath, 0, 15, {
+                  fit: [595.28, 841.89],
+                  align: 'center',
+                  valign: 'center',
+                })
+                .text(
+                  uploadedFormList[i].document_type + ' : ' + _docname,
+                  5,
+                  5,
+                ); //doc.image(filePath, 0, 15, {width: 300});
+              this.setFileSequence(
+                loggedInUser,
+                uploadedFormList[i].form_no,
+                uploadedFormList[i].doc_id,
+                uploadedFormList[i].file_sequence,
+              );
+            } else {
+              doc
+                .addPage()
+                .image(filePath, 0, 15, {
+                  fit: [595.28, 841.89],
+                  align: 'center',
+                  valign: 'center',
+                })
+                .text(
+                  uploadedFormList[i].document_type + ' : ' + _docname,
+                  5,
+                  5,
+                ); //.image(filePath, 0, 15, {width: 300});
+              this.setFileSequence(
+                loggedInUser,
+                uploadedFormList[i].form_no,
+                uploadedFormList[i].doc_id,
+                uploadedFormList[i].file_sequence,
+              );
             }
-            resolve({
-              actualFilePath: actualFilePath,
-              originalFileName: originalName,
-            });
+          } catch (pgErr) {
+            throw pgErr;
           }
-        });
-      } catch (err: any) {
-        reject(err);
+        }
+        doc.flushPages();
+        doc.end();
+        let datetime = new Date().toLocaleString();
+
+        let companyDb = await GetCompanyDb(loggedInUser.secret);
+        let pdfDetails: any = await companyDb.query(
+          `EXEC ${constant.P_FileDetailsFormWise} @action = @0, @formNo = @1, @filePath = @2, @userId = @3`,
+          ['updatepdfdetails', formNo, _filePath, loggedInUser.userId],
+        );
+        return pdfDetails;
+      } catch (err) {
+        throw err;
       }
-    });
-  };
-  //#endregion ---------------------------------------------------------------- end staff picture storage
-
-  //#region ---------------------------------------------------------------- staff picture storage
-  staffIdProofStorage = multer.diskStorage({
-    destination: function (req: any, file: any, cb) {
-      cb(
-        null,
-        path.join(__dirname, `../../uploads/staffs/idproofs/${req.clientId}/`),
-      );
-    },
-    filename: function (req: any, file: any, cb) {
-      let dt = new Date();
-      let splitedFileName: string[] = file.originalname.split('.');
-      let fileExt: string = splitedFileName[splitedFileName.length - 1];
-      let datestring: string =
-        dt.getFullYear().toString() +
-        (dt.getMonth() + 1).toString() +
-        dt.getDate().toString() +
-        dt.getHours().toString() +
-        dt.getMinutes().toString() +
-        dt.getSeconds().toString() +
-        dt.getMilliseconds().toString();
-      var newFileName = 'staffpic' + datestring;
-      cb(null, newFileName + '.' + fileExt);
-    },
-  });
-
-  staffIdProofFilters = (req: any, file: any, cb: any) => {
-    if (
-      file.mimetype == 'image/jpeg' ||
-      file.mimetype == 'image/jpg' ||
-      file.mimetype == 'image/png' ||
-      file.mimetype == 'image/gif' ||
-      file.mimetype == 'application/pdf'
-    ) {
-      cb(null, true);
-    } else {
-      cb(null, false);
-      req.uploadError = 'Extension error';
-      return cb(null, false, new Error('Extension error'));
+    } catch (error: any) {
+      if (error.driverError || error.name == 'RequestError') {
+        Logger.error({
+          clientId: '',
+          src: 'fileupload/generatePdf',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
     }
-  };
-
-  staffIdProof = multer({
-    storage: this.staffIdProofStorage,
-    limits: {
-      fileSize: 1024 * 1024 * 5,
-    },
-    fileFilter: this.staffPictureFilters,
-  }).single('staffIdProof');
-
-  uploadStaffIdProof = (req: any, res: any) => {
-    return new Promise((resolve, reject) => {
-      try {
-        this.staffIdProof(req, res, (err) => {
-          let fileDetail: any,
-            actualFilePath: string = '',
-            actualFileName: string = '',
-            originalName: string = '';
-          if (err) {
-            return reject(err);
-          }
-          if (req.modelError) {
-            return res.status(422).json({
-              status: 'fail',
-              error: req.modelError,
-            });
-          } else if (req.file) {
-            fileDetail = req.file;
-            let filePath: string = '';
-            if (fileDetail != undefined) {
-              originalName =
-                fileDetail.originalname != undefined
-                  ? fileDetail.originalname
-                  : '';
-              filePath = fileDetail.path.replace(/\\/g, '/');
-              let arrFileName: string[] = filePath.split('/');
-              actualFileName = arrFileName[arrFileName.length - 1];
-              actualFilePath = `staffidprf/${actualFileName}`;
-            }
-            resolve({
-              actualFilePath: actualFilePath,
-              originalFileName: originalName,
-            });
-          }
-        });
-      } catch (err: any) {
-        reject(err);
-      }
-    });
-  };
-  //#endregion ---------------------------------------------------------------- end staff picture storage
+  }
 }

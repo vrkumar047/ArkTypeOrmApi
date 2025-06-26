@@ -155,7 +155,7 @@ export class EmployeeService {
     }
   }
 
-  async getOtpDetail(
+  async otpDetail(
     loggedInUser: any,
     action: string,
     formNo: string,
@@ -185,8 +185,8 @@ export class EmployeeService {
   async addEducationDetails(loggedInUser: any, eduDetail: any): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
-      let otpDetail: any = await companyDb.query(
-        `EXEC ${constant.P_EducationDetails} @action = @0, @formNo = @1, @classCode = @2, @passingYear = @3, @markPc = @4, @board = @5, @institute = @6, @remarks = @7, @condoRemark = @8, @userId = @10`,
+      let addedEduDetail: any = await companyDb.query(
+        `EXEC ${constant.P_EducationDetails} @action = @0, @formNo = @1, @classCode = @2, @passingYear = @3, @markPc = @4, @board = @5, @institute = @6, @remarks = @7, @condoRemark = @8, @userId = @9`,
         [
           eduDetail.action,
           eduDetail.formNo,
@@ -200,7 +200,7 @@ export class EmployeeService {
           eduDetail.userId,
         ],
       );
-      return otpDetail;
+      return addedEduDetail;
     } catch (error: any) {
       if (error.driverError || error.name == 'RequestError') {
         Logger.error({
@@ -222,11 +222,11 @@ export class EmployeeService {
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
-      let otpDetail: any = await companyDb.query(
+      let removedEduDetail: any = await companyDb.query(
         `EXEC ${constant.P_EducationDetails} @action = @0, @formNo = @1, @classCode = @2`,
         [action, formNo, classCode],
       );
-      return otpDetail;
+      return removedEduDetail;
     } catch (error: any) {
       if (error.driverError || error.name == 'RequestError') {
         Logger.error({
@@ -247,7 +247,7 @@ export class EmployeeService {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let addedLanguageDetail: any = await companyDb.query(
-        `EXEC ${constant.P_EducationDetails} @action = @0, @formNo = @1, @lngId = @2, @proficiency = @3, @canRead = @4, @canWrite = @5, @canSpeak = @6, @userId = @7`,
+        `EXEC ${constant.P_LanguageDetails} @action = @0, @formNo = @1, @lngId = @2, @proficiency = @3, @read = @4, @write = @5, @speak = @6, @userId = @7`,
         [
           languageDetail.action,
           languageDetail.formNo,
@@ -259,6 +259,7 @@ export class EmployeeService {
           languageDetail.userId,
         ],
       );
+
       return addedLanguageDetail;
     } catch (error: any) {
       if (error.driverError || error.name == 'RequestError') {
@@ -277,7 +278,7 @@ export class EmployeeService {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let exprDetail: any = await companyDb.query(
-        `EXEC ${constant.P_CivilianDetails} @action = @0, @formNo = @1, @org = @2, @orgType = @3, @empId = @4, @uanPFNo = @5, @esiNo = @6, @lastRank = @7, @isBhCert = @8, @isEsiVeri = @9, @isExpFromUan = @10, @fromDate = @11, @toDate = @12, @remarks = @13, @userId = @14`,
+        `EXEC ${constant.P_CivilianDetails} @action = @0, @formNo = @1, @org = @2, @org_type = @3, @empId = @4, @uanPfNo = @5, @esiNo = @6, @lastRank = @7, @isBhCert = @8, @isEsiVeri = @9, @expFromUan = @10, @fromDate = @11, @toDate = @12, @remarks = @13, @userId = @14`,
         [
           expDetail.action,
           expDetail.formNo,

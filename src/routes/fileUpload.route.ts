@@ -14,21 +14,17 @@ const fileUploadCntrl = new FileUploadController();
 //   fileUploadCntrl.uploadDocumentFile,
 // );
 fileUploadRoute.post(
-  '/userProfilePicture',
+  '/captureDocument',
   validateRequest,
-  fileUploadCntrl.userProfilePicture,
+  authenticate,
+  fileUploadCntrl.captureDocument,
 );
 
 fileUploadRoute.post(
-  '/staffPicture',
+  '/generatePdf',
   validateRequest,
-  fileUploadCntrl.staffPicture,
-);
-
-fileUploadRoute.post(
-  '/staffIdProof',
-  validateRequest,
-  fileUploadCntrl.staffIdProof,
+  authenticate,
+  fileUploadCntrl.generatePdf,
 );
 
 export { fileUploadRoute };

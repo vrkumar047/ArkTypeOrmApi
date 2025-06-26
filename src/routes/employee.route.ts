@@ -17,7 +17,7 @@ employeeRoute.get(
 employeeRoute.post('/addEmployee', employeeCntrl.addEmployee);
 employeeRoute.put(
   '/OTPDetail/:action/:formNo/:otpNo/:userId',
-  employeeCntrl.getOtpDetail,
+  employeeCntrl.otpDetail,
 );
 employeeRoute.post('/addEducationDetails', employeeCntrl.addEducationDetails);
 employeeRoute.put(

@@ -20,11 +20,21 @@ export class FileUploadController {
     next();
   }
 
-  async userProfilePicture(req: Request, res: Response, next: NextFunction) {
+  async captureDocument(req: Request, res: Response, next: NextFunction) {
     try {
       let loggedInUser: any = req['currentUser'];
       if (loggedInUser) {
-        let userImage: any = await fileUploadService.uploadUserImage(req, res);
+        let formNo: string = req.body.formNo;
+        let docId: number = parseInt(req.body.docId ?? '0');
+        let fileName: string = req.body.fileName;
+        let docList: any[] = req.body.docsList ?? [];
+        let userImage: any = await fileUploadService.captureDocument(
+          loggedInUser,
+          formNo,
+          docId,
+          fileName,
+          docList,
+        );
         res.locals.data = userImage;
       } else {
         res.locals.error = 'Unauthorized';
@@ -35,31 +45,17 @@ export class FileUploadController {
     next();
   }
 
-  async staffPicture(req: Request, res: Response, next: NextFunction) {
+  async generatePdf(req: Request, res: Response, next: NextFunction) {
     try {
       let loggedInUser: any = req['currentUser'];
       if (loggedInUser) {
-        let staffPic: any = await fileUploadService.uploadStaffPicture(
-          req,
-          res,
-        );
-        res.locals.data = staffPic;
-      } else {
-        res.locals.error = 'Unauthorized';
-      }
-    } catch (err) {
-      res.locals.error = err;
-    }
-    next();
-  }
-
-  async staffIdProof(req: Request, res: Response, next: NextFunction) {
-    try {
-      let loggedInUser: any = req['currentUser'];
-      if (loggedInUser) {
-        let userImage: any = await fileUploadService.uploadStaffIdProof(
-          req,
-          res,
+        let formNo: string = req.body.formNo;
+        let docId: number = parseInt(req.body.docId ?? '0');
+        let fileName: string = req.body.fileName;
+        let docList: any[] = req.body.docsList ?? [];
+        let userImage: any = await fileUploadService.generatePdf(
+          loggedInUser,
+          formNo,
         );
         res.locals.data = userImage;
       } else {

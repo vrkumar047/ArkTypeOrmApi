@@ -45,7 +45,7 @@ export class EmployeeController {
     next();
   }
 
-  async getOtpDetail(req: Request, res: Response, next: NextFunction) {
+  async otpDetail(req: Request, res: Response, next: NextFunction) {
     try {
       let loggedInUser: any = req['currentUser'];
       let action: string = req.params.action ?? '';
@@ -55,14 +55,14 @@ export class EmployeeController {
       let userId: string = req.params.userId ?? '';
 
       if (loggedInUser) {
-        let data: any = await employeeService.getOtpDetail(
+        let data: any = await employeeService.otpDetail(
           loggedInUser,
           action,
           formNo,
           otpNo,
           userId,
         );
-        res.locals.data = data;
+        res.locals.data = data[0][''];
       } else {
         res.locals.error = 'Unauthorized';
       }
