@@ -23,6 +23,16 @@ const {
   clientId,
 } = process.env;
 app.use('/api', route);
+app.use((req, res, next) => {
+  res.removeHeader('X-Frame-Options'); // Remove completely
+  // Or allow from same origin
+  res.setHeader('X-Frame-Options', 'ALLOW-FROM http://localhost:61695');
+  res.setHeader(
+    'Content-Security-Policy',
+    "frame-ancestors 'self' http://localhost:61695",
+  );
+  next();
+});
 app.post('/api/fileupload/upload', (req, res) => {
   const form = new IncomingForm();
 

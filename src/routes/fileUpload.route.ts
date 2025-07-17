@@ -26,5 +26,10 @@ fileUploadRoute.post(
   authenticate,
   fileUploadCntrl.generatePdf,
 );
+fileUploadRoute.get(
+  '/downloadBase64/:formNo/:fileSeq',
+  authenticate,
+  fileUploadCntrl.getImageBase64,
+);
 
 export { fileUploadRoute };

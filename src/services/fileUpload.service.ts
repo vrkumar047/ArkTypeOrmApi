@@ -9,8 +9,10 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { existsSync, mkdirSync } from 'fs';
+import * as mime from 'mime-types';
 import moment from 'moment';
 import dotenv from 'dotenv';
+import { convert } from 'pdf-poppler';
 dotenv.config();
 const { clientId } = process.env;
 
@@ -338,6 +340,71 @@ export class FileUploadService {
         Logger.error({
           clientId: '',
           src: 'fileupload/generatePdf',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getImageBase64(
+    loggedInUser: any,
+    formNo: string,
+    fileSeq: number,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let fileDetail: any = await companyDb.query(
+        `EXEC ${constant.P_FileDetailsFormWise} @action = @0, @formNo = @1`,
+        ['pdfdetails', formNo],
+      );
+      let fileUrl: string = fileDetail[0].file_path;
+      fileUrl = fileUrl.replace('docpdf/', '');
+      let inputFilePath: string = path.join(
+        __dirname,
+        '../../Uploads/pdfs/' + fileUrl,
+      );
+      let outputfleName: string = path.basename(
+        inputFilePath,
+        path.extname(inputFilePath),
+      );
+      let outputFilePath = path.join(
+        __dirname,
+        '../../Uploads/tmpSign/' + outputfleName,
+      );
+      let opts = {
+        format: 'jpeg',
+        out_dir: path.dirname(outputFilePath),
+        out_prefix: path.basename(inputFilePath, path.extname(inputFilePath)),
+        page: fileSeq,
+      };
+      let imageAsBase64;
+      await convert(inputFilePath, opts)
+        .then((fileInfo) => {
+          var fileName =
+            outputFilePath + '-' + ('00' + fileSeq).slice(-2) + '.jpg';
+          var inputFilePath = path.join(
+            __dirname,
+            '../../Uploads/pdfs/' + fileUrl,
+          );
+          if (fs.existsSync(fileName)) {
+            const fileBuffer = fs.readFileSync(fileName);
+            const base64 = fileBuffer.toString('base64');
+            const ext = path.extname(fileName).slice(1); // e.g., 'png', 'jpg'
+            imageAsBase64 = `data:image/${ext};base64,${base64}`;
+          }
+        })
+        .catch((err) => {
+          throw err;
+        });
+      let res: any = { data: imageAsBase64 };
+      return res;
+    } catch (error: any) {
+      if (error.driverError || error.name == 'RequestError') {
+        Logger.error({
+          clientId: '',
+          src: 'fileupload/getImageBase64',
           error: error.message,
         });
         error = new CustomError('InternalServerError');

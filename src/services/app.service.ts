@@ -49,17 +49,6 @@ app.use(
   }),
 );
 
-// app.use(express.static(__dirname));
-// app.use(express.static(path.join(__dirname, 'Uploads/public/')));
-// app.use(express.static(path.join(__dirname, 'Uploads/files/')));
-// app.use(express.static(path.join(__dirname, 'Uploads/pdfs/')));
-// app.use(express.static(path.join(__dirname, 'Uploads/icard/')));
-// app.use(express.static(path.join(__dirname, 'Uploads/Erp/files/'))); // For Erp
-// app.use(express.static(path.join(__dirname, 'Uploads/Erp/pdfs/'))); // For Erp
-// app.use(express.static(path.join(__dirname, 'Uploads/picandsig/')));
-// app.use(express.static(path.join(__dirname, 'Uploads/reportfiles/')));
-// app.use(express.static(__dirname + '/Resources')); // load static resources
-
 /** file path */
 app.use(
   '/public',
@@ -69,19 +58,16 @@ app.use(
   '/docfile',
   express.static(path.join(__dirname, '../../Uploads/files/')),
 );
-console.log(path.join(__dirname, '../../Uploads/files/'));
 app.use('/docpdf', express.static(path.join(__dirname, '../../Uploads/pdfs/')));
 
 app.use('/icard', express.static(path.join(__dirname, '../../Uploads/icard/')));
 
-app.use(
-  '/picandsig',
-  express.static(path.join(__dirname, '../../Uploads/picandsig/')),
-);
+app.use(express.static(path.join(__dirname, '../../Uploads/picandsig/')));
 
 app.use(
   '/reportfiles',
   express.static(path.join(__dirname, '../../Uploads/reportfiles/')),
 );
+app.use('/reportfiles', express.static(path.join(__dirname, '/Resources')));
 
 export { app };

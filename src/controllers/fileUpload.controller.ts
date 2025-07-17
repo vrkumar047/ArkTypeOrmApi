@@ -57,6 +57,28 @@ export class FileUploadController {
           loggedInUser,
           formNo,
         );
+        console.log(userImage);
+        res.locals.data = userImage;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async getImageBase64(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      if (loggedInUser) {
+        let formNo: string = req.params.formNo;
+        let fileSeq: number = parseInt(req.params.fileSeq ?? '0');
+        let userImage: any = await fileUploadService.getImageBase64(
+          loggedInUser,
+          formNo,
+          fileSeq,
+        );
         res.locals.data = userImage;
       } else {
         res.locals.error = 'Unauthorized';

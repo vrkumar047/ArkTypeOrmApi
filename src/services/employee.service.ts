@@ -478,6 +478,7 @@ export class EmployeeService {
           familyDetail.relation,
           familyDetail.isDpndnt,
           familyDetail.isNmnee,
+          familyDetail.nomineePerc,
           familyDetail.age,
           familyDetail.userId,
         ],
@@ -531,7 +532,7 @@ export class EmployeeService {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let addedPhysicalDetail: any = await companyDb.query(
-        `EXEC ${constant.P_PhysicalDetails} @action = @0, @formNo = @1, @ht = @2, @htFt = @3, @chest = @4, @chestFt = @5, @wt = @6, @head = @7 @heal = @8,
+        `EXEC ${constant.P_PhysicalDetails} @action = @0, @formNo = @1, @ht = @2, @htFt = @3, @chest = @4, @chestFt = @5, @wt = @6, @head = @7, @heal = @8,
          @shirtChest = @9, @shirtShoulder = @10, @shirtSleeve = @11, @shirtLength = @12, @pantWaist = @13, @pantHip = @14, @pantLength = @15, @cap = @16, @shoe = @17,
          @fullPicture = @18, @condonation = @19, @isVerified = @20, @RQCCAgent = @21, @verifiedOn = @22, @userId = @23`,
         [
@@ -606,7 +607,7 @@ export class EmployeeService {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let addedBankDetail: any = await companyDb.query(
-        `EXEC ${constant.P_BankDetails} @action = @0, @formNo = @1, @ifscCode = @2, @bankName = @3, @accountNo = @4, @bankBranch = @5, @bankBranchAddress = @6, @bankDetail = @7 @bankUpdatedInErp = @8, @userId = @9`,
+        `EXEC ${constant.P_BankDetails} @action = @0, @formNo = @1, @ifscCode = @2, @bankName = @3, @accountNo = @4, @bankBranch = @5, @bankBranchAddress = @6, @bankDetail = @7, @bankUpdatedInErp = @8, @userId = @9`,
         [
           bankDetail.action,
           bankDetail.formNo,
