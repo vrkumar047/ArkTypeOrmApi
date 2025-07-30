@@ -48,4 +48,45 @@ export class ICardController {
     }
     next();
   }
+
+  async getCardStatus(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let regNo: string = req.params.regNo;
+      let userId: string = req.params.userId;
+
+      if (loggedInUser) {
+        let cardDetail: any = await icardService.getCardStatus(
+          loggedInUser,
+          regNo,
+          userId,
+        );
+        res.locals.data = cardDetail;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async postPrintCard(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let cardDetail: any = req.body;
+      if (loggedInUser) {
+        let printedCardDetail: any = await icardService.postPrintCard(
+          loggedInUser,
+          cardDetail,
+        );
+        res.locals.data = printedCardDetail;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
 }

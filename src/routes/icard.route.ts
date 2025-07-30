@@ -11,5 +11,7 @@ icardRoute.use(authenticate);
 
 icardRoute.get('/getCardPrintDetails/:formNo', icardCntrl.getCardPrintDetails);
 icardRoute.post('/GenerateEmployeeRegNo', icardCntrl.generateEmployeeRegNo);
+icardRoute.get('/getCardStatus/:regNo/:userId', icardCntrl.getCardStatus);
+icardRoute.post('/postPrintCard', icardCntrl.postPrintCard);
 
 export { icardRoute };

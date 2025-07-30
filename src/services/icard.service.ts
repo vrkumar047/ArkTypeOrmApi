@@ -130,4 +130,58 @@ export class ICardService {
       throw error;
     }
   }
+
+  async getCardStatus(
+    loggedInUser: any,
+    regNo: string,
+    userId: string,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let cardDetail: any = await companyDb.query(
+        `EXEC ${constant.P_GetICardStatus} @RegNo = @0, @UserId = @1`,
+        [regNo, userId],
+      );
+      return cardDetail;
+    } catch (error: any) {
+      if (error.driverError || error.name == 'RequestError') {
+        Logger.error({
+          clientId: '',
+          src: 'card/getCardStatus',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async postPrintCard(loggedInUser: any, cardDetail: any): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let printCardDetail: any = await companyDb.query(
+        `EXEC ${constant.P_CardPrint} @Action = @0, @RegNo = @1, @MobileNo = @2, @Otp = @3, @IsCardGenerated = @4, @EmpImage = @5, @UserId = @6`,
+        [
+          cardDetail.action,
+          cardDetail.regNo,
+          cardDetail.mobileNo,
+          cardDetail.otp,
+          cardDetail.isCardGenerated,
+          cardDetail.empImage,
+          cardDetail.userId,
+        ],
+      );
+      return printCardDetail;
+    } catch (error: any) {
+      if (error.driverError || error.name == 'RequestError') {
+        Logger.error({
+          clientId: '',
+          src: 'card/getCardPrintDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
 }
