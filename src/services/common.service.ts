@@ -1021,8 +1021,6 @@ export class CommonService {
     loggedInUser: any,
     action: string = '',
     formNo: string = '',
-    filterText: string = '',
-    userId: string = '',
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);

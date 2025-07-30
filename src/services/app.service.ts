@@ -62,7 +62,10 @@ app.use('/docpdf', express.static(path.join(__dirname, '../../Uploads/pdfs/')));
 
 app.use('/icard', express.static(path.join(__dirname, '../../Uploads/icard/')));
 
-app.use(express.static(path.join(__dirname, '../../Uploads/picandsig/')));
+app.use(
+  '/candimg',
+  express.static(path.join(__dirname, '../../Uploads/picandsig/')),
+);
 
 app.use(
   '/reportfiles',

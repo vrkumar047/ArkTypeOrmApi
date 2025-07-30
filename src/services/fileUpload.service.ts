@@ -348,6 +348,92 @@ export class FileUploadService {
     }
   }
 
+  async captureImage(loggedInUser: any, physicalDetail: any): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let documentDetail: any = await companyDb.query(
+        `EXEC ${constant.P_UpdateEmployeePicDetails} @action = @0, @formNo = @1, @image1 = @2, @image2 = @3, @image3 = @4, @image4 = @5, @defImg = @6, @userId = @7`,
+        [
+          'setPicture',
+          physicalDetail.formNo,
+          physicalDetail.image1,
+          physicalDetail.image2,
+          physicalDetail.image3,
+          physicalDetail.image4,
+          physicalDetail.defImg,
+          loggedInUser.userId,
+        ],
+      );
+      return documentDetail;
+    } catch (error: any) {
+      if (error.driverError || error.name == 'RequestError') {
+        Logger.error({
+          clientId: '',
+          src: 'fileupload/captureImage',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async captureSingature(loggedInUser: any, fileDetail: any): Promise<any> {
+    try {
+      let base64Data: string = fileDetail.base64.replace(
+        /^data:image\/png;base64,/,
+        '',
+      );
+      let formNo: string = fileDetail.formNo;
+      let imageId: string = fileDetail.imageId;
+      let encodedFormNo: string = formNo.replace('/', '-');
+      let imageName: string = encodedFormNo + '_' + imageId;
+      let mmyy: string = moment().format('MMYY');
+      let folderPath: string = path.join(
+        __dirname,
+        `../../Uploads/files/${clientId}/${mmyy}`,
+      );
+      if (!existsSync(folderPath)) {
+        mkdirSync(folderPath, { recursive: true });
+      }
+      fs.writeFile(
+        folderPath + '/' + imageName + '.jpg',
+        base64Data,
+        'base64',
+        async function (err) {
+          if (err) {
+            throw err;
+          }
+          let companyDb = await GetCompanyDb(loggedInUser.secret);
+          let fileDetail: any = await companyDb.query(
+            `EXEC ${constant.P_UpdateEmployeePicDetails} @action = @0, @formNo = @1, @signPic = @2, @userId = @3`,
+            [
+              'setSingature',
+              formNo,
+              `docfile/${clientId}/${mmyy}/${imageName}.jpg`,
+              loggedInUser.userId,
+            ],
+          );
+          return {
+            status: 1,
+            msg: 'image uploaded',
+            imageName: `docfile/${clientId}/${mmyy}/${imageName}.jpg`,
+          };
+        },
+      );
+    } catch (error: any) {
+      if (error.driverError || error.name == 'RequestError') {
+        Logger.error({
+          clientId: '',
+          src: 'fileupload/captureSingature',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
   async getImageBase64(
     loggedInUser: any,
     formNo: string,

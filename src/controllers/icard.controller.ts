@@ -1,0 +1,51 @@
+import { Request, Response, NextFunction } from 'express';
+import { ICardService } from '../services/icard.service';
+const icardService = new ICardService();
+export class ICardController {
+  async getCardPrintDetails(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let formNo: string = req.params.formNo;
+      if (loggedInUser) {
+        let states: any[] = [];
+        if (!res.locals.data) {
+          states = await icardService.getCardPrintDetails(loggedInUser, formNo);
+        } else {
+          states = JSON.parse(res.locals.data);
+        }
+
+        res.locals.data = states;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async generateEmployeeRegNo(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let empDetails: string = req.body.empDetails;
+      if (loggedInUser) {
+        let states: any[] = [];
+        if (!res.locals.data) {
+          states = await icardService.generateEmployeeRegNo(
+            loggedInUser,
+            empDetails,
+          );
+        } else {
+          states = JSON.parse(res.locals.data);
+        }
+
+        res.locals.data = states;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+}

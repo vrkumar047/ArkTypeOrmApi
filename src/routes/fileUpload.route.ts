@@ -26,6 +26,21 @@ fileUploadRoute.post(
   authenticate,
   fileUploadCntrl.generatePdf,
 );
+
+fileUploadRoute.post(
+  '/captureImage',
+  validateRequest,
+  authenticate,
+  fileUploadCntrl.captureImage,
+);
+
+fileUploadRoute.post(
+  '/captureSingature',
+  validateRequest,
+  authenticate,
+  fileUploadCntrl.captureSingature,
+);
+
 fileUploadRoute.get(
   '/downloadBase64/:formNo/:fileSeq',
   authenticate,
