@@ -11,12 +11,198 @@ import moment from 'moment';
 import axios from 'axios';
 import * as crypto from 'crypto';
 import * as request from 'request';
+import * as QRCode from 'qrcode';
+import { JSDOM } from 'jsdom';
+import htmlPdf from 'html-pdf';
+import dotenv from 'dotenv';
+dotenv.config();
+const { baseApi } = process.env;
 
 let options: any = {
   excludeExtraneousValues: true,
 };
 
 export class ICardService {
+  async generateQrCode(loggedInUser: any, qrDetail: any): Promise<any> {
+    try {
+      let qrCodeString: string = `${qrDetail.fullName}\n${qrDetail.regNo}\n${qrDetail.lastEdu}${qrDetail.height},${qrDetail.weight},${qrDetail.bloodGroup}\n${qrDetail.doj}\n${qrDetail.expInMonth}\n${qrDetail.branchName}\n${qrDetail.cardExpiryDate}`;
+      let segment: any = [{ data: qrCodeString.toUpperCase(), mode: 'Kanji' }];
+      QRCode.toDataURL(segment, function (err: any, url: any) {
+        if (err) {
+          throw err;
+        } else {
+          return { url: url };
+        }
+      });
+    } catch (error: any) {
+      if (error.driverError || error.name == 'RequestError') {
+        Logger.error({
+          clientId: '',
+          src: 'card/generateQrCode',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async convertPdf(loggedInUser: any, empDetail: any): Promise<any> {
+    try {
+      let empImage: string = baseApi + empDetail.empImage;
+      let empQrCode: string = empDetail.empQrCode;
+      let empSing: string = baseApi + empDetail.empSign;
+      let html: string = fs.readFileSync('./Uploads/public/Icard.html', 'utf8');
+      let htmlDOM: any = new JSDOM(html);
+      htmlDOM.window.document.querySelector('#empImg').src = empImage;
+      htmlDOM.window.document.querySelector('#empQrCode').src = empQrCode;
+      htmlDOM.window.document.querySelector('#empSignImg').src = empSing;
+      // htmlDOM.window.document.querySelector('#logopng').src = logopath;
+      htmlDOM.window.document.querySelector('#empName').innerHTML =
+        empDetail.emp_Name.toUpperCase();
+      htmlDOM.window.document.querySelector('#empDesig').innerHTML =
+        empDetail.desig;
+      htmlDOM.window.document.querySelector('#empRegNo').innerHTML =
+        empDetail.reg_no;
+      htmlDOM.window.document.querySelector('#empBldGrp').innerHTML =
+        empDetail.blood_group;
+      htmlDOM.window.document.querySelector('#icrdIssueDate').innerHTML =
+        empDetail.validFrom;
+      htmlDOM.window.document.querySelector('#iCrdVldUpto').innerHTML =
+        empDetail.validUpto;
+      html = htmlDOM.serialize();
+
+      let options: any = {
+        format: 'Letter',
+        orientation: 'portrait',
+        height: '214',
+        width: '331',
+      };
+      var icardName = empDetail.form_No.replace('/', '-');
+      htmlPdf
+        .create(html, options)
+        .toFile(
+          './Uploads/icard/' + icardName + '_Icard.pdf',
+          function (err: any, result) {
+            if (err) {
+              Logger.error({
+                clientId: '',
+                src: 'card/convertPdf',
+                error: err.message,
+              });
+              err = new CustomError('InternalServerError');
+              throw err;
+            } else {
+              let fileName: string = result.filename.split('\\').reverse()[0];
+              return { filename: fileName };
+            }
+          },
+        );
+      // let companyDb = await GetCompanyDb(loggedInUser.secret);
+      // let cardDetail: any = await companyDb.query(
+      //   `EXEC ${constant.P_GetCardPrintDetails} @formNo = @0`,
+      //   [formNo],
+      // );
+      // return cardDetail;
+    } catch (error: any) {
+      if (error.driverError || error.name == 'RequestError') {
+        Logger.error({
+          clientId: '',
+          src: 'card/getCardPrintDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async convertPdfFromBS64(loggedInUser: any, empDetail: any): Promise<any> {
+    try {
+      let empImage: string = baseApi + empDetail.empImage;
+      let empQrCode: string = empDetail.empQrCode;
+      let empSing: string = baseApi + empDetail.empSign;
+      let html: string = fs.readFileSync('./Uploads/public/Icard.html', 'utf8');
+      let htmlDOM: any = new JSDOM(html);
+      htmlDOM.window.document.querySelector('#empImg').src = empImage;
+      htmlDOM.window.document.querySelector('#empQrCode').src = empQrCode;
+      htmlDOM.window.document.querySelector('#empSignImg').src = empSing;
+      // htmlDOM.window.document.querySelector('#logopng').src = logopath;
+      htmlDOM.window.document.querySelector('#empName').innerHTML =
+        empDetail.emp_Name.toUpperCase();
+      htmlDOM.window.document.querySelector('#empDesig').innerHTML =
+        empDetail.desig;
+      htmlDOM.window.document.querySelector('#empRegNo').innerHTML =
+        empDetail.reg_no;
+      htmlDOM.window.document.querySelector('#empBldGrp').innerHTML =
+        empDetail.blood_group;
+      htmlDOM.window.document.querySelector('#icrdIssueDate').innerHTML =
+        empDetail.validFrom;
+      htmlDOM.window.document.querySelector('#iCrdVldUpto').innerHTML =
+        empDetail.validUpto;
+      html = htmlDOM.serialize();
+
+      let options: any = {
+        format: 'Letter',
+        orientation: 'portrait',
+        height: '214',
+        width: '331',
+      };
+      let icardName: string = empDetail.form_No.replace('/', '-');
+      htmlPdf
+        .create(html, options)
+        .toFile(
+          './Uploads/icard/' + icardName + '_Icard.pdf',
+          function (err, result) {
+            if (err) {
+              throw err;
+            } else {
+              let fileName: any = result.filename.split('\\').reverse()[0];
+              return { filename: fileName };
+            }
+          },
+        );
+    } catch (error: any) {
+      if (error.driverError || error.name == 'RequestError') {
+        Logger.error({
+          clientId: '',
+          src: 'card/convertPdfFromBS64',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async downloadICard(loggedInUser: any, cardDetail: any): Promise<any> {
+    try {
+      var filePath = path.join(__dirname, '../Uploads/icard/testicard.pdf');
+      // var file = fs.createReadStream('./Uploads/pdfs/testicard.pdf');
+      // var stat = fs.statSync('./Uploads/pdfs/testicard.pdf');
+      // res.setHeader('Content-Length', stat.size);
+      // res.setHeader('Content-Type', 'application/pdf');
+      // res.setHeader('Content-Disposition', 'attachment; filename=icard.pdf');
+      // file.pipe(res);
+
+      // fs.readFile(filePath , function (err,data){
+      //     res.contentType("application/pdf");
+      //     res.send(data);
+      // });
+      return filePath;
+    } catch (error: any) {
+      if (error.driverError || error.name == 'RequestError') {
+        Logger.error({
+          clientId: '',
+          src: 'card/downloadICard',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
   async getCardPrintDetails(
     loggedInUser: any,
     formNo: string = '',

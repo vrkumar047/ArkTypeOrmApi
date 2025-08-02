@@ -8,7 +8,7 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import compression from 'compression';
 dotenv.config();
-const { allowedOrigins, feedbackBaseApi } = process.env;
+const { allowedOrigins } = process.env;
 import { CustomError } from '../helpers/customError';
 
 //------------------------------------------------------api Server
@@ -27,6 +27,25 @@ app.use(
     limit: '50mb',
     extended: true,
     parameterLimit: 50000,
+  }),
+);
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        baseUri: ["'self'"],
+        fontSrc: ["'self'", 'https:', 'data:'],
+        formAction: ["'self'"],
+        frameAncestors: ["'self'", 'http://localhost:61695'], // ✅ This is key
+        imgSrc: ["'self'", 'data:'],
+        objectSrc: ["'none'"],
+        scriptSrc: ["'self'"],
+        scriptSrcAttr: ["'none'"],
+        styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
+        upgradeInsecureRequests: [],
+      },
+    },
   }),
 );
 

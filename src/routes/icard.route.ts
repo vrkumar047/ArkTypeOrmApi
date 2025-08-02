@@ -9,6 +9,10 @@ const icardCntrl = new ICardController();
 
 icardRoute.use(authenticate);
 
+icardRoute.post('/generateQrCode', icardCntrl.generateQrCode);
+icardRoute.post('/convertPdf', icardCntrl.convertPdf);
+icardRoute.post('/convertPdfFromBS64', icardCntrl.convertPdfFromBS64);
+icardRoute.post('/downloadIcard', icardCntrl.downloadIcard);
 icardRoute.get('/getCardPrintDetails/:formNo', icardCntrl.getCardPrintDetails);
 icardRoute.post('/GenerateEmployeeRegNo', icardCntrl.generateEmployeeRegNo);
 icardRoute.get('/getCardStatus/:regNo/:userId', icardCntrl.getCardStatus);

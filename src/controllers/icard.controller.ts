@@ -2,6 +2,82 @@ import { Request, Response, NextFunction } from 'express';
 import { ICardService } from '../services/icard.service';
 const icardService = new ICardService();
 export class ICardController {
+  async generateQrCode(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let qrDetail: any = req.body;
+      if (loggedInUser) {
+        let printedCardDetail: any = await icardService.generateQrCode(
+          loggedInUser,
+          qrDetail,
+        );
+        res.locals.data = printedCardDetail;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async convertPdf(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let cardDetail: any = req.body;
+      if (loggedInUser) {
+        let printedCardDetail: any = await icardService.convertPdf(
+          loggedInUser,
+          cardDetail,
+        );
+        res.locals.data = printedCardDetail;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async convertPdfFromBS64(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let empDetail: any = req.body;
+      if (loggedInUser) {
+        let printedCardDetail: any = await icardService.convertPdfFromBS64(
+          loggedInUser,
+          empDetail,
+        );
+        res.locals.data = printedCardDetail;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async downloadIcard(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let formNo: string = req.body.formNo;
+      if (loggedInUser) {
+        let printedCardDetail: any = await icardService.downloadICard(
+          loggedInUser,
+          formNo,
+        );
+        res.locals.data = printedCardDetail;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
   async getCardPrintDetails(req: Request, res: Response, next: NextFunction) {
     try {
       let loggedInUser: any = req['currentUser'];
