@@ -68,9 +68,9 @@ export class FileUploadService {
     fileFilter: this.fileFilters,
   }).any();
 
-  uploadDocumentFile = (req: any, res: any) => {
+  uploadDocumentFile = (loggedInUser: any, req: any, res: any) => {
     return new Promise((resolve, reject) => {
-      this.uploadFile(req, res, (err) => {
+      this.uploadFile(req, res, async (err) => {
         let fileDetail: any,
           actualFilePath: string = '',
           actualFileName: string = '',
@@ -83,8 +83,8 @@ export class FileUploadService {
             status: 'fail',
             error: req.modelError,
           });
-        } else if (req.file) {
-          fileDetail = req.file;
+        } else if (req.files) {
+          fileDetail = req.files[0];
           let filePath: string = '';
           if (fileDetail != undefined) {
             originalName =
@@ -97,10 +97,36 @@ export class FileUploadService {
             let mmyy: string = moment().format('MMYY');
             actualFilePath = `docfile/${clientId}/${mmyy}/${actualFileName}`;
           }
-          resolve({
-            actualFilePath: actualFilePath,
-            originalFileName: originalName,
+          let docsList: any = JSON.parse(req.body.docsList);
+          const xmlDoc = create().ele('docList');
+
+          docsList.forEach((doc) => {
+            const leafNode = xmlDoc.ele('doc');
+            leafNode.ele('formNo').txt(req.params.formNo);
+            leafNode.ele('docTypeId').txt(doc.docTypeId);
+            leafNode.ele('docId').txt(req.params.docCode);
+            leafNode.ele('authority').txt(doc.authority);
+            leafNode.ele('docNo').txt(doc.docNo);
+            leafNode.ele('remarks').txt(doc.remarks);
+            leafNode.ele('validFrom').txt(doc.validFrom);
+            leafNode.ele('validTo').txt(doc.validTo);
+            leafNode.ele('licenseType').txt(doc.licenseType);
+            leafNode.ele('issuingState').txt(doc.issuingState);
+            leafNode.ele('areaOfUse').txt(doc.areaOfUse);
+            leafNode.ele('placeOfUse').txt(doc.placeOfUse);
+            leafNode.ele('file_path').txt(actualFilePath);
           });
+          let xmlString: string = xmlDoc.end({
+            headless: true,
+            prettyPrint: true,
+          });
+          xmlString = xmlString.replace(/[\r\n]+/g, '').trim();
+          let companyDb = await GetCompanyDb(loggedInUser.secret);
+          let documentDetail: any = await companyDb.query(
+            `EXEC ${constant.P_UpdateUploadedFileList} @action = @0, @docsList = @1`,
+            ['insert', xmlString],
+          );
+          resolve(documentDetail);
         }
       });
     });

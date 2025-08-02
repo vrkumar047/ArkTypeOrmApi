@@ -6,7 +6,6 @@ import { CustomError } from '../helpers/customError';
 import { Config } from '../helpers/config';
 import * as path from 'path';
 import * as cmdCammond from 'child_process';
-import xmlBuilder from 'xmlbuilder';
 let cameraStatus: any[] = [];
 
 let options: any = {

@@ -8,11 +8,12 @@ const fileUploadCntrl = new FileUploadController();
 
 //fileUploadRoute.use(authenticate);
 
-// fileUploadRoute.post(
-//   '/uploadDocFile/:formNo/:docCode',
-//   validateRequest,
-//   fileUploadCntrl.uploadDocumentFile,
-// );
+fileUploadRoute.post(
+  '/upload/:formNo/:docCode',
+  validateRequest,
+  authenticate,
+  fileUploadCntrl.uploadDocumentFile,
+);
 fileUploadRoute.post(
   '/captureDocument',
   validateRequest,

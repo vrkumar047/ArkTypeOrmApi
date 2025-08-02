@@ -5,15 +5,21 @@ export class FileUploadController {
   async uploadDocumentFile(req: Request, res: Response, next: NextFunction) {
     try {
       let loggedInUser: any = req['currentUser'];
-      //  if (loggedInUser) {
-      // req['clientId'] = loggedInUser.clientId;
-      let test = req.files;
-      req['clientId'] = 'sis';
-      let userImage: any = await fileUploadService.uploadDocumentFile(req, res);
-      res.locals.data = userImage;
-      // } else {
-      //   res.locals.error = 'Unauthorized';
-      // }
+      if (loggedInUser) {
+        req['clientId'] = loggedInUser.clientId;
+        let documentDetail: any = await fileUploadService.uploadDocumentFile(
+          loggedInUser,
+          req,
+          res,
+        );
+        // let resp: any =
+        //   typeof documentDetail === 'object'
+        //     ? [documentDetail]
+        //     : documentDetail;
+        res.locals.data = documentDetail;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
     } catch (err) {
       res.locals.error = err;
     }
