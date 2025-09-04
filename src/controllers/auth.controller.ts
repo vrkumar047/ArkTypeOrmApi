@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { GetCompanyDb } from '../_dbs/mssql/pgConnection';
+import { GetCompanyDb } from '../_dbs/mssql/sqlConnection';
 //import { UserLogin } from '../entities/master/userLogin.entity';
 import { AuthService } from '../services/auth.service';
 import { PassThrough } from 'stream';

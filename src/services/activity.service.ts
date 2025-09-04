@@ -1,4 +1,4 @@
-import { GetCompanyDb } from '../_dbs/mssql/pgConnection';
+import { GetCompanyDb } from '../_dbs/mssql/sqlConnection';
 import { plainToClass } from 'class-transformer';
 import constant from '../_dbs/mssql/constant';
 import Logger from '../utils/logger';

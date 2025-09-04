@@ -1,5 +1,5 @@
 import * as sql from 'mssql';
-import { GetCompanyDb, getResultSets } from '../_dbs/mssql/pgConnection';
+import { GetCompanyDb, getResultSets } from '../_dbs/mssql/sqlConnection';
 import { DataSource, ILike, Like, In, Not, Raw } from 'typeorm';
 import constant from '../_dbs/mssql/constant';
 import { plainToClass } from 'class-transformer';

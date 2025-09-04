@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { GetCompanyDb } from '../_dbs/mssql/pgConnection';
+import { GetCompanyDb } from '../_dbs/mssql/sqlConnection';
 
 export const authorize = (roles: string[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
