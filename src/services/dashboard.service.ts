@@ -67,7 +67,7 @@ export class DashboardService {
           period: dashBoardDetail.period,
         },
       );
-      let res: any = resultSets[0];
+      let res: any = resultSets;
       return res;
     } catch (error: any) {
       if (error.driverError || error.name == 'RequestError') {

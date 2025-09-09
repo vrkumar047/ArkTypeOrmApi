@@ -103,7 +103,7 @@ export class CommonService {
           userId: userId,
         },
       );
-      let res: any = resultSets[0];
+      let res: any = resultSets;
       return res;
     } catch (error: any) {
       if (error.driverError || error.name == 'RequestError') {
@@ -141,7 +141,7 @@ export class CommonService {
           userId: userId,
         },
       );
-      let res: any = resultSets[0];
+      let res: any = resultSets;
       return res;
     } catch (error: any) {
       if (error.driverError || error.name == 'RequestError') {
@@ -164,7 +164,7 @@ export class CommonService {
         constant.P_Get_State_Master,
         {},
       );
-      let res: any = resultSets[0];
+      let res: any = resultSets;
       return res;
     } catch (error: any) {
       if (error.driverError || error.name == 'RequestError') {
@@ -196,7 +196,7 @@ export class CommonService {
           pcCode: pcCode,
         },
       );
-      let res: any = resultSets[0];
+      let res: any = resultSets;
       return res;
     } catch (error: any) {
       if (error.driverError || error.name == 'RequestError') {
@@ -276,7 +276,7 @@ export class CommonService {
           desigCode: desigCode,
         },
       );
-      let res: any = resultSets[0];
+      let res: any = resultSets;
       return res;
     } catch (error: any) {
       if (error.driverError || error.name == 'RequestError') {
@@ -1061,7 +1061,7 @@ export class CommonService {
           searchText: searchText,
         },
       );
-      let res: any = resultSets[0];
+      let res: any = resultSets;
       return res;
     } catch (error: any) {
       if (error.driverError || error.name == 'RequestError') {
@@ -1345,7 +1345,7 @@ export class CommonService {
           userId: uanDetail.userId,
         },
       );
-      let res: any = uanStatusDetail[0];
+      let res: any = uanStatusDetail;
       return res;
     } catch (error: any) {
       if (error.driverError || error.name == 'RequestError') {
@@ -1379,7 +1379,7 @@ export class CommonService {
           remark: remark,
         },
       );
-      let res: any = electronicDetail[0];
+      let res: any = electronicDetail;
       return res;
     } catch (error: any) {
       if (error.driverError || error.name == 'RequestError') {
@@ -1405,7 +1405,7 @@ export class CommonService {
           userId: userId,
         },
       );
-      let res: any = electronicDetail[0];
+      let res: any = electronicDetail;
       return res;
     } catch (error: any) {
       if (error.driverError || error.name == 'RequestError') {

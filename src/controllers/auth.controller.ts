@@ -33,11 +33,15 @@ export class AuthController {
 
   async logOut(req: Request, res: Response, next: NextFunction) {
     try {
-      let clientId: string = req.body.clientId;
-      let userName: string = req.body.userName;
-      let password: string = req.body.password;
-      let userDetail: any = await authService.checkuser(userName, password);
-      res.locals.data = userDetail;
+      let loggedInUser: any = req['currentUser'];
+      let action: string = req.body.action ?? '';
+      let userId: string = req.body.userId ?? '';
+      let loginStatus: any = await authService.updateLoginStatus(
+        loggedInUser,
+        action,
+        userId,
+      );
+      res.locals.data = loginStatus;
     } catch (err) {
       res.locals.error = err;
     }

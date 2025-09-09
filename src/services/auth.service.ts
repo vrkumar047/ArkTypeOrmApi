@@ -224,6 +224,31 @@ export class AuthService {
     }
   }
 
+  async updateLoginStatus(
+    loggedInUser: any,
+    action: string = '',
+    userId: string = '',
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let formStatuses: any = await companyDb.query(
+        `EXEC ${constant.P_SetLogedInStatus} @Action = @0, @UserName = @1`,
+        [action, userId],
+      );
+      return formStatuses[0];
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'auth/updateLoginStatus',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
   async refreshToken(refreshToken: string, token: string): Promise<any> {
     try {
       let masterDb = await GetCompanyDb();
