@@ -14,6 +14,8 @@ import moment from 'moment';
 import dotenv from 'dotenv';
 import { convert } from 'pdf-poppler';
 dotenv.config();
+//process.env.FONTCONFIG_FILE = path.resolve('./Uploads/fonts/fonts.conf');
+
 const { clientId } = process.env;
 
 export class FileUploadService {
@@ -293,11 +295,7 @@ export class FileUploadService {
         }
         var encodedFormNo = formNo.replace('/', '-');
         _filePath = `docpdf/${clientId}/${mmyy}/${encodedFormNo}_doc.pdf`;
-        var inputFilePath = path.join(`${folderPath}/${_filePath}`);
-        // if (!fs.existsSync(inputFilePath)) {
-        //   _filePath = encodedFormNo + '_doc_1.pdf';
-        // }
-
+        var inputFilePath = path.join(`${folderPath}/${encodedFormNo}_doc.pdf`);
         doc.pipe(fs.createWriteStream(inputFilePath));
         for (var i = 0; i < uploadedFormList.length; i++) {
           try {

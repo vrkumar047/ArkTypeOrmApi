@@ -99,5 +99,5 @@ employeeRoute.post(
   employeeCntrl.updateApprovalStatusDetails,
 );
 // employeeRoute.post('/CheckPreEmployee', employeeCntrl.CheckPreEmployee);
-// employeeRoute.post('/sendOtp', employeeCntrl.sendOtp);
+employeeRoute.post('/sendOtp', employeeCntrl.sendOtp);
 export { employeeRoute };

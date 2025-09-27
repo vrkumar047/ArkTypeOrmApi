@@ -116,7 +116,7 @@ export class EmployeeService {
               aadhar_dob: employeeDetail.aadharDob,
               uanno: employeeDetail.UANNo,
               esino: employeeDetail.ESINo,
-              otp: employeeDetail.Otp,
+              otp: Otp,
               pres_address: employeeDetail.presAddress,
               pres_countryid: employeeDetail.presAddress_Country,
               pres_stateid: employeeDetail.presAddress_State,
@@ -1061,6 +1061,27 @@ export class EmployeeService {
         Logger.error({
           clientId: '',
           src: 'employee/updateApprovalStatusDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async sendOtp(loggedInUser: any, otpDetail: any): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let updatedOtp: any = await companyDb.query(
+        `EXEC ${constant.P_OTP_Validity} @formNo = @0`,
+        [otpDetail.formNo],
+      );
+      return updatedOtp;
+    } catch (error: any) {
+      if (error.driverError || error.name == 'RequestError') {
+        Logger.error({
+          clientId: '',
+          src: 'employee/sendOtp',
           error: error.message,
         });
         error = new CustomError('InternalServerError');

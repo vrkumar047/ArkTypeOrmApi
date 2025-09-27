@@ -103,7 +103,7 @@ export class CommonService {
           userId: userId,
         },
       );
-      let res: any = resultSets;
+      let res: any = resultSets[0];
       return res;
     } catch (error: any) {
       if (error.driverError || error.name == 'RequestError') {
@@ -141,7 +141,7 @@ export class CommonService {
           userId: userId,
         },
       );
-      let res: any = resultSets;
+      let res: any = resultSets[0];
       return res;
     } catch (error: any) {
       if (error.driverError || error.name == 'RequestError') {
@@ -164,7 +164,7 @@ export class CommonService {
         constant.P_Get_State_Master,
         {},
       );
-      let res: any = resultSets;
+      let res: any = resultSets[0];
       return res;
     } catch (error: any) {
       if (error.driverError || error.name == 'RequestError') {
@@ -196,7 +196,7 @@ export class CommonService {
           pcCode: pcCode,
         },
       );
-      let res: any = resultSets;
+      let res: any = resultSets[0];
       return res;
     } catch (error: any) {
       if (error.driverError || error.name == 'RequestError') {
@@ -276,7 +276,7 @@ export class CommonService {
           desigCode: desigCode,
         },
       );
-      let res: any = resultSets;
+      let res: any = resultSets[0];
       return res;
     } catch (error: any) {
       if (error.driverError || error.name == 'RequestError') {

@@ -972,4 +972,24 @@ export class EmployeeController {
     }
     next();
   }
+
+  async sendOtp(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let otpDetail: any = {
+        formNo: req.body.formNo ?? '',
+        otpUrl: req.body.otpUrl ?? '',
+      };
+
+      if (loggedInUser) {
+        let data: any = await employeeService.sendOtp(loggedInUser, otpDetail);
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
 }
