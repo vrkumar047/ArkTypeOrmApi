@@ -371,7 +371,7 @@ export class CommonService {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let documentList: any = await companyDb.query(
-        `EXEC ${constant.Proc_DocumentRequired} @Post = @0, @CandType = @1`,
+        `EXEC ${constant.P_GetRequiredDocument} @Post = @0, @CandType = @1`,
         [post, candidateType],
       );
       return documentList;
@@ -446,7 +446,7 @@ export class CommonService {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let documentList: any = await companyDb.query(
-        `EXEC ${constant.Proc_DocumentRequired} @Post = @0, @CandType = @1`,
+        `EXEC ${constant.P_GetDocumentVerification} @Post = @0, @CandType = @1`,
         [post, candidateType],
       );
       return documentList;

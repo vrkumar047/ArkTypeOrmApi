@@ -11,6 +11,7 @@ import * as fs from 'fs';
 import moment from 'moment';
 import * as crypto from 'crypto';
 import * as request from 'request';
+import axios from 'axios';
 
 let options: any = {
   excludeExtraneousValues: true,
@@ -138,6 +139,12 @@ export class EmployeeService {
               created_by: employeeDetail.userId,
             },
           );
+          let otpDetail: any = {
+            firstName: employeeDetail.firstName,
+            mobileNo: employeeDetail.mobileNo,
+            otp: Otp,
+          };
+          await this.sendSms(otpDetail);
           let res: any = resultSets;
           return { isError: false, recordsets: res };
         } catch (errEmp: any) {}
@@ -1076,12 +1083,45 @@ export class EmployeeService {
         `EXEC ${constant.P_OTP_Validity} @formNo = @0`,
         [otpDetail.formNo],
       );
-      return updatedOtp;
+      await this.sendSms(updatedOtp[0]);
+      return { message: 'Otp sent successfully' };
     } catch (error: any) {
       if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
           src: 'employee/sendOtp',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async sendSms(otpDetail: any): Promise<any> {
+    try {
+      let config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: `http://api.technotch.in/restTrans?username=sisind&password=sisind&campaign-name=SISARKOTP&unicode=false&from=SISARK&to=${otpDetail.mobileNo}&text=Dear ${otpDetail.firstName}, Your OTP is ${otpDetail.otp}. This is valid for next 48 Hrs. Please visit our recruitment center with this OTP, filled application form and all Original Documents. SIS India Ltd`,
+        headers: {
+          Cookie: 'JSESSIONID=A6057DDDE01DB7C29C6FF5FA980C9E87',
+        },
+      };
+
+      axios
+        .request(config)
+        .then((response) => {
+          // console.log(JSON.stringify(response.data));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } catch (error: any) {
+      if (error.driverError || error.name == 'RequestError') {
+        Logger.error({
+          clientId: '',
+          src: 'employee/sendSms',
           error: error.message,
         });
         error = new CustomError('InternalServerError');
