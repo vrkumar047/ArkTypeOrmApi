@@ -107,7 +107,6 @@ export class FileUploadController {
       let loggedInUser: any = req['currentUser'];
       if (loggedInUser) {
         let fileDetail: any = req.body;
-        console.log(`file detail :- `, fileDetail);
         let userImage: any = await fileUploadService.captureSingature(
           loggedInUser,
           fileDetail,
