@@ -86,8 +86,12 @@ employeeRoute.get(
   '/getExpExMEsiDetails/:formNo',
   employeeCntrl.getExpExMEsiDetails,
 );
+employeeRoute.get('/getBMIDetails/:formNo', employeeCntrl.getBMIDetails);
 employeeRoute.post('/updateRqccDocument', employeeCntrl.updateRqccDocument);
-employeeRoute.post('/UpdateApprovalStatus', employeeCntrl.updateApprovalStatus);
+employeeRoute.post(
+  '/getExpExMEsiDetailsUpdateApprovalStatus',
+  employeeCntrl.updateApprovalStatus,
+);
 employeeRoute.post(
   '/UpdateEmployeeDetails',
   employeeCntrl.updateEmployeeDetails,

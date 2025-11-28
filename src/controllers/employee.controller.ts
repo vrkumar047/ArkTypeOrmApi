@@ -424,25 +424,28 @@ export class EmployeeController {
           req.body.heightCm != undefined ? parseFloat(req.body.heightCm) : 0,
         heightFt:
           req.body.heightFt != undefined ? parseFloat(req.body.heightFt) : 0,
-        chestCm:
-          req.body.chestCm != undefined ? parseFloat(req.body.chestCm) : 0,
-        chestFt:
-          req.body.chestFt != undefined ? parseFloat(req.body.chestFt) : 0,
         weightKg:
           req.body.weightKg != undefined ? parseFloat(req.body.weightKg) : 0,
-        head: req.body.head != undefined ? parseFloat(req.body.head) : 0,
-        heal: req.body.heal != undefined ? parseFloat(req.body.heal) : 0,
+        bmi: req.body.bmi != undefined ? parseFloat(req.body.bmi) : 0,
+        recordId:
+          req.body.recordId != undefined ? parseFloat(req.body.recordId) : 0,
+        // chestCm:
+        //   req.body.chestCm != undefined ? parseFloat(req.body.chestCm) : 0,
+        // chestFt:
+        //   req.body.chestFt != undefined ? parseFloat(req.body.chestFt) : 0,
+        // head: req.body.head != undefined ? parseFloat(req.body.head) : 0,
+        // heal: req.body.heal != undefined ? parseFloat(req.body.heal) : 0,
         shirtChest:
           req.body.shirtChest != undefined
             ? parseFloat(req.body.shirtChest)
             : 0,
-        shirtSholder:
-          req.body.shirtSholder != undefined
-            ? parseFloat(req.body.shirtSholder)
+        shirtShoulder:
+          req.body.shirtShoulder != undefined
+            ? parseFloat(req.body.shirtShoulder)
             : 0,
-        shirtSleev:
-          req.body.shirtSleev != undefined
-            ? parseFloat(req.body.shirtSleev)
+        shirtSleeve:
+          req.body.shirtSleeve != undefined
+            ? parseFloat(req.body.shirtSleeve)
             : 0,
         shirtLength:
           req.body.shirtLength != undefined
@@ -464,8 +467,8 @@ export class EmployeeController {
           req.body.shoeSize != undefined ? parseInt(req.body.shoeSize) : 0,
         fullPicture: req.body.fullPicture ?? '',
         condonation: req.body.condonation ?? '',
-        isVrified:
-          req.body.isVrified != undefined ? parseInt(req.body.isVrified) : 0,
+        isVerified:
+          req.body.isVerified != undefined ? parseInt(req.body.isVerified) : 0,
         rqccAgent: req.body.rqccAgent ?? '',
         verifiedOn: req.body.verifiedOn ?? '',
         userId: req.body.userId ?? '',
@@ -695,6 +698,26 @@ export class EmployeeController {
 
       if (loggedInUser) {
         let data: any = await employeeService.getExpExMEsiDetails(
+          loggedInUser,
+          formNo,
+        );
+        res.locals.data = data;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async getBMIDetails(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let formNo: string = req.params.formNo ?? '';
+
+      if (loggedInUser) {
+        let data: any = await employeeService.getBMIDetails(
           loggedInUser,
           formNo,
         );

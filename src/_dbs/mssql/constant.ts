@@ -99,6 +99,7 @@ export default {
   P_OTP_Validity: 'P_OTP_Validity',
   P_ApproveRejectRqccElectronicDetail: 'P_ApproveRejectRqccElectronicDetail',
   P_TempDeployment: 'P_TempDeployment',
+  P_GetBMIDetails: 'P_GetBMIDetails',
 
   //---------------------------------For ERP
   P_ERP_AddNewEmployee: 'P_ERP_AddNewEmployee',

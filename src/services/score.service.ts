@@ -23,7 +23,7 @@ let options: any = {
   excludeExtraneousValues: true,
 };
 
-function CalculateScoreForCenter(recordDetails) {
+async function CalculateScoreForCenter(recordDetails) {
   let scoreMaster: any = recordDetails[0];
   let generalDetails: any = recordDetails[1][0];
   let cvExpDetails: any = recordDetails[2];
@@ -473,7 +473,7 @@ function CalculateScoreForCenter(recordDetails) {
   return result;
 }
 
-function calculateScore(recordDetails) {
+async function calculateScore(recordDetails) {
   let stdDetails: any = recordDetails[5][0];
 
   let result: any = {
@@ -501,7 +501,7 @@ function calculateScore(recordDetails) {
 
   try {
     if (stdDetails.isBranch) {
-      result = CalculateScoreForCenter(recordDetails);
+      result = await CalculateScoreForCenter(recordDetails);
     } else {
       let scoreMaster: any = recordDetails[0];
       let generalDetails: any = recordDetails[1][0];
@@ -971,20 +971,23 @@ function calculateScore(recordDetails) {
 }
 
 export class ScoreService {
-  async calculateScore(loggedInUser: any, scoreDetail: any): Promise<any> {
+  async calculateScore(
+    loggedInUser: any,
+    formNo: string,
+    desigCode: string,
+  ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       const recordDetails = await getResultSets(
         companyDb,
-        constant.P_uploadFormFiles,
+        constant.P_ScoreMaster,
         {
-          action: scoreDetail.action,
-          formNo: scoreDetail.formNo,
-          desigCode: scoreDetail.desigCode,
+          action: 'getdetails',
+          formNo: formNo,
+          desigCode: desigCode,
         },
       );
-      let result: any;
-      // let result: any = calculateScore(recordDetails);
+      let result: any = await calculateScore(recordDetails);
       return result;
     } catch (error: any) {
       if (error.driverError || error.name == 'RequestError') {
@@ -999,27 +1002,193 @@ export class ScoreService {
     }
   }
 
-  async postPrintCard(loggedInUser: any, cardDetail: any): Promise<any> {
+  async getScoerAndWeihttagePercent(
+    loggedInUser: any,
+    formNo: string,
+    desigCode: string,
+  ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
-      let printCardDetail: any = await companyDb.query(
-        `EXEC ${constant.P_CardPrint} @Action = @0, @RegNo = @1, @MobileNo = @2, @Otp = @3, @IsCardGenerated = @4, @EmpImage = @5, @UserId = @6`,
-        [
-          cardDetail.action,
-          cardDetail.regNo,
-          cardDetail.mobileNo,
-          cardDetail.otp,
-          cardDetail.isCardGenerated,
-          cardDetail.empImage,
-          cardDetail.userId,
-        ],
+      let scoreDetail: any = await companyDb.query(
+        `EXEC ${constant.P_ScoreMaster} @action = @0, @formNo = @1, @desigCode = @2`,
+        ['scoredetails', formNo, desigCode],
       );
-      return printCardDetail;
+      return scoreDetail;
     } catch (error: any) {
       if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
-          src: 'card/getCardPrintDetails',
+          src: 'score/getScoerAndWeihttagePercent',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getScoreDetails(
+    loggedInUser: any,
+    action: string,
+    formNo: string,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let scoreDetail = await getResultSets(
+        companyDb,
+        constant.P_ScoreDetails,
+        {
+          action: action,
+          formNo: formNo,
+        },
+      );
+      return scoreDetail;
+    } catch (error: any) {
+      if (error.driverError || error.name == 'RequestError') {
+        Logger.error({
+          clientId: '',
+          src: 'score/getScoreDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getCondonationDetails(
+    loggedInUser: any,
+    action: string,
+    formNo: string,
+    branchCode: string,
+    unitCode: string,
+    customerName: string,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let condoDetail = await getResultSets(
+        companyDb,
+        constant.P_CondonationDetail,
+        {
+          action: action,
+          formNo: formNo,
+          branchCode: branchCode,
+          unitCode: unitCode,
+          customerName: customerName,
+        },
+      );
+      return condoDetail;
+    } catch (error: any) {
+      if (error.driverError || error.name == 'RequestError') {
+        Logger.error({
+          clientId: '',
+          src: 'score/getCondonationDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async addScoreDetails(loggedInUser: any, scoreDetail: any): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let addedScoreDetail: any = await companyDb.query(
+        `EXEC ${constant.P_ScoreDetails} @action = @0,
+         @formNo = @1,
+         @ageScore = @2, 
+         @eduScore = @3, 
+         @expScore = @4, 
+         @heightScore = @5,
+         @weightScore = @6,
+         @chestScore = @7,
+         @ageWeightage = @8,
+         @eduWeightage = @9,
+         @expWeightage = @10,
+         @heightWeightage = @11,
+         @weightWeightage = @12,
+         @chestWeightage = @13,
+         @totalScore = @14,
+         @totalWhtage = @15,
+         @result = @16,
+         @rank = @17, 
+         @userId = @18`,
+        [
+          scoreDetail.action,
+          scoreDetail.formNo,
+          scoreDetail.ageScore,
+          scoreDetail.eduScore,
+          scoreDetail.expScore,
+          scoreDetail.heightScore,
+          scoreDetail.weightScore,
+          scoreDetail.chestScore,
+          scoreDetail.ageWeightage,
+          scoreDetail.eduWeightage,
+          scoreDetail.expWeightage,
+          scoreDetail.heightWeightage,
+          scoreDetail.weightWeightage,
+          scoreDetail.chestWeightage,
+          scoreDetail.totalScore,
+          scoreDetail.totalWhtage,
+          scoreDetail.result,
+          scoreDetail.rank,
+          scoreDetail.userId,
+        ],
+      );
+      return { result: 'Record Inserted' };
+    } catch (error: any) {
+      if (error.driverError || error.name == 'RequestError') {
+        Logger.error({
+          clientId: '',
+          src: 'card/addScoreDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async applyCondonation(loggedInUser: any, condoDetail: any): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let addedCondoDetail = await getResultSets(
+        companyDb,
+        constant.P_CondonationDetail,
+        {
+          action: condoDetail.action,
+          formNo: condoDetail.formNo,
+          branchCode: condoDetail.branchCode,
+          unitCode: condoDetail.unitCode,
+          customerName: condoDetail.customerName,
+          condoReason: condoDetail.condoReason,
+          condoRemark: condoDetail.condoRemark,
+          ageScore: condoDetail.ageScore,
+          eduScore: condoDetail.eduScore,
+          expScore: condoDetail.expScore,
+          heightScore: condoDetail.heightScore,
+          weightScore: condoDetail.weightScore,
+          chestScore: condoDetail.chestScore,
+          ageWeightage: condoDetail.ageWeightage,
+          eduWeightage: condoDetail.eduWeightage,
+          expWeightage: condoDetail.expWeightage,
+          heightWeightage: condoDetail.heightWeightage,
+          weightWeightage: condoDetail.weightWeightage,
+          chestWeightage: condoDetail.chestWeightage,
+          totalScore: condoDetail.totalScore,
+          totalWhtage: condoDetail.totalWhtage,
+          result: condoDetail.result,
+          rank: condoDetail.rank,
+          userId: condoDetail.userId,
+        },
+      );
+      return addedCondoDetail;
+    } catch (error: any) {
+      if (error.driverError || error.name == 'RequestError') {
+        Logger.error({
+          clientId: '',
+          src: 'card/applyCondonation',
           error: error.message,
         });
         error = new CustomError('InternalServerError');

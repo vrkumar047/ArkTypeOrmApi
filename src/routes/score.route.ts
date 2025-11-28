@@ -10,6 +10,16 @@ const scoreCntrl = new ScoreController();
 scoreRoute.use(authenticate);
 
 scoreRoute.get('/calculateScore/:formNo/:desigCode', scoreCntrl.calculateScore);
-scoreRoute.post('/postPrintCard', scoreCntrl.postPrintCard);
+scoreRoute.get(
+  '/getScoerAndWeihttagePercent/:formNo/:desigCode',
+  scoreCntrl.calculateScore,
+);
+scoreRoute.get('/getScoreDetails/:action/:formNo', scoreCntrl.calculateScore);
+scoreRoute.get(
+  '/getCondonationDetails/:action/:formNo/:branchCode/:unitCode/:customerName',
+  scoreCntrl.calculateScore,
+);
+scoreRoute.post('/addScoreDetails', scoreCntrl.addScoreDetails);
+scoreRoute.post('/applyCondonation', scoreCntrl.applyCondonation);
 
 export { scoreRoute };

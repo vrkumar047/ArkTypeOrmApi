@@ -539,22 +539,40 @@ export class EmployeeService {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let addedPhysicalDetail: any = await companyDb.query(
-        `EXEC ${constant.P_PhysicalDetails} @action = @0, @formNo = @1, @ht = @2, @htFt = @3, @chest = @4, @chestFt = @5, @wt = @6, @head = @7, @heal = @8,
-         @shirtChest = @9, @shirtShoulder = @10, @shirtSleeve = @11, @shirtLength = @12, @pantWaist = @13, @pantHip = @14, @pantLength = @15, @cap = @16, @shoe = @17,
-         @fullPicture = @18, @condonation = @19, @isVerified = @20, @RQCCAgent = @21, @verifiedOn = @22, @userId = @23`,
+        `EXEC ${constant.P_PhysicalDetails} 
+        @action = @0, 
+        @formNo = @1, 
+        @ht = @2, 
+        @htFt = @3,  
+        @wt = @4, 
+        @bmi = @5,
+        @recordId = @6, 
+        @shirtChest = @7, 
+        @shirtShoulder = @8, 
+        @shirtSleeve = @9, 
+        @shirtLength = @10, 
+        @paintWaist = @11, 
+        @paintHip = @12, 
+        @paintLength = @13, 
+        @cap = @14, 
+        @shoe = @15,
+        @fullPicture = @16, 
+        @condonation = @17, 
+        @isVerified = @18, 
+        @RQCCAgent = @19, 
+        @verifiedOn = @20, 
+        @userId = @21`,
         [
           physicalDetail.action,
           physicalDetail.formNo,
           physicalDetail.heightCm,
           physicalDetail.heightFt,
-          physicalDetail.chestCm,
-          physicalDetail.chestFt,
           physicalDetail.weightKg,
-          physicalDetail.head,
-          physicalDetail.heal,
+          physicalDetail.bmi,
+          physicalDetail.recordId,
           physicalDetail.shirtChest,
-          physicalDetail.shirtSholder,
-          physicalDetail.shirtSleev,
+          physicalDetail.shirtShoulder,
+          physicalDetail.shirtSleeve,
           physicalDetail.shirtLength,
           physicalDetail.paintWaist,
           physicalDetail.paintHip,
@@ -563,7 +581,7 @@ export class EmployeeService {
           physicalDetail.shoeSize,
           physicalDetail.fullPicture,
           physicalDetail.condonation,
-          physicalDetail.isVrified,
+          physicalDetail.isVerified,
           physicalDetail.rqccAgent,
           physicalDetail.verifiedOn,
           physicalDetail.userId,
@@ -832,6 +850,31 @@ export class EmployeeService {
         Logger.error({
           clientId: '',
           src: 'employee/getExpExMEsiDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+  async getBMIDetails(loggedInUser: any, formNo: string): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let bmiDetail: any = await companyDb.query(
+        `EXEC ${constant.P_GetBMIDetails} @formNo = @0`,
+        [formNo],
+      );
+      let res: any =
+        bmiDetail.length > 0
+          ? bmiDetail[0]
+          : { prospectusNo: '', weight: 0, height: 0, bmi: 0 };
+      return res;
+    } catch (error: any) {
+      if (error.driverError || error.name == 'RequestError') {
+        Logger.error({
+          clientId: '',
+          src: 'employee/getBMIDetails',
           error: error.message,
         });
         error = new CustomError('InternalServerError');
