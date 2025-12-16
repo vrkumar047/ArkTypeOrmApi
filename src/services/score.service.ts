@@ -1002,7 +1002,7 @@ export class ScoreService {
     }
   }
 
-  async getScoerAndWeihttagePercent(
+  async getScoerAndWeihtagePercent(
     loggedInUser: any,
     formNo: string,
     desigCode: string,
@@ -1018,7 +1018,7 @@ export class ScoreService {
       if (error.driverError || error.name == 'RequestError') {
         Logger.error({
           clientId: '',
-          src: 'score/getScoerAndWeihttagePercent',
+          src: 'score/getScoerAndWeihtagePercent',
           error: error.message,
         });
         error = new CustomError('InternalServerError');

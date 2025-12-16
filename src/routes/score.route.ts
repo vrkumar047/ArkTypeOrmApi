@@ -11,8 +11,8 @@ scoreRoute.use(authenticate);
 
 scoreRoute.get('/calculateScore/:formNo/:desigCode', scoreCntrl.calculateScore);
 scoreRoute.get(
-  '/getScoerAndWeihttagePercent/:formNo/:desigCode',
-  scoreCntrl.calculateScore,
+  '/getScoerAndWeihtagePercent/:formNo/:desigCode',
+  scoreCntrl.getScoerAndWeihtagePercent,
 );
 scoreRoute.get('/getScoreDetails/:action/:formNo', scoreCntrl.calculateScore);
 scoreRoute.get(

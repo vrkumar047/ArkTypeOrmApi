@@ -23,7 +23,7 @@ export class ScoreController {
     next();
   }
 
-  async getScoerAndWeihttagePercent(
+  async getScoerAndWeihtagePercent(
     req: Request,
     res: Response,
     next: NextFunction,
@@ -33,7 +33,7 @@ export class ScoreController {
       let formNo: string = req.params.formNo ?? '';
       let desigCode: string = req.params.desigCode ?? '';
       if (loggedInUser) {
-        let cardDetail: any = await scoreService.calculateScore(
+        let cardDetail: any = await scoreService.getScoerAndWeihtagePercent(
           loggedInUser,
           formNo,
           desigCode,

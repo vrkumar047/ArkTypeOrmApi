@@ -12,6 +12,7 @@ import { cmdRoute } from './cmd.route';
 import { icardRoute } from './icard.route';
 import { fingerPrintRoute } from './fingerPrint.route';
 import { scoreRoute } from './score.route';
+import { serviceRoute } from './service.route';
 
 route.use('/account', authRoute);
 route.use('/employee', employeeRoute);
@@ -22,5 +23,6 @@ route.use('/fileupload', fileUploadRoute);
 route.use('/card', icardRoute);
 route.use('/fingerprint', fingerPrintRoute);
 route.use('/score', scoreRoute);
+route.use('/services', serviceRoute);
 
 export { route };
