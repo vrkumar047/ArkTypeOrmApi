@@ -13,5 +13,10 @@ serviceRoute.get(
   '/EmpBasicDetails/:action/:formNo/:userId',
   serviceCntrl.empBasicDetails,
 );
+serviceRoute.get(
+  '/GetArkData/:action/:fromDate/:toDate/:userId',
+  serviceCntrl.getArkData,
+);
+serviceRoute.post('/PostArkData/:userId', serviceCntrl.postArkData);
 
 export { serviceRoute };

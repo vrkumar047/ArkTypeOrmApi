@@ -57,4 +57,79 @@ export class ServiceService {
       throw error;
     }
   }
+  async getArkData(loggedInUser: any, data: any): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      const resultSets = await getResultSets(companyDb, constant.P_GetArkData, {
+        action: data.action,
+        fromDate: data.fromDate,
+        toDate: data.toDate,
+        userId: loggedInUser.userId,
+      });
+
+      let res: any = {
+        data: resultSets[0],
+        // educationDetails: resultSets[1],
+        // experienceDetails: resultSets[2],
+        // physicalDetails: resultSets[3],
+        // scoreDetails: resultSets[4],
+        // familyDetails: resultSets[5],
+        // bankDetails: resultSets[6],
+        // fingerDetail: resultSets[7],
+        // documentDetail: resultSets[8],
+      };
+      return res;
+    } catch (error: any) {
+      if (error.driverError || error.name == 'RequestError') {
+        Logger.error({
+          clientId: '',
+          src: 'services/empBasicDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+  async postArkData(
+    loggedInUser: any,
+    action: string,
+    formNo: string,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      const resultSets = await getResultSets(
+        companyDb,
+        constant.P_GetEmpDetailForRegNo,
+        {
+          action: action,
+          formNo: formNo,
+          userId: loggedInUser.userId,
+        },
+      );
+
+      let res: any = {
+        basicDetails: resultSets[0],
+        educationDetails: resultSets[1],
+        experienceDetails: resultSets[2],
+        physicalDetails: resultSets[3],
+        scoreDetails: resultSets[4],
+        familyDetails: resultSets[5],
+        bankDetails: resultSets[6],
+        fingerDetail: resultSets[7],
+        documentDetail: resultSets[8],
+      };
+      return res;
+    } catch (error: any) {
+      if (error.driverError || error.name == 'RequestError') {
+        Logger.error({
+          clientId: '',
+          src: 'services/empBasicDetails',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
 }
