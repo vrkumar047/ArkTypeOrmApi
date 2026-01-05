@@ -29,15 +29,18 @@ export class CmdService {
         },
       );
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'cmd/execBat',
-          error: error.message,
-        });
-      }
-      let err = new CustomError('InternalServerError');
-      throw err;
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'cmd/execBat',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: ``,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
+      throw error;
     }
   }
 
@@ -60,15 +63,18 @@ export class CmdService {
       }, 180000);
       return { result: '' };
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'cmd/pingCamera',
-          error: error.message,
-        });
-      }
-      let err = new CustomError('InternalServerError');
-      throw err;
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'cmd/pingCamera',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `${companyCode}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
+      throw error;
     }
   }
 
@@ -91,15 +97,18 @@ export class CmdService {
         }
       });
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'cmd/execCommand',
-          error: error.message,
-        });
-      }
-      let err = new CustomError('InternalServerError');
-      throw err;
+      Logger.error({
+        clientId: 'unknown',
+        src: 'cmd/execCommand',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `ip : ${ip}, userId : ${userId}, pwd : ${pwd}, branchCode : ${branchCode}`,
+        loggedBy: 'unknown',
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
+      throw error;
     }
   }
 
@@ -108,15 +117,18 @@ export class CmdService {
       cmdCammond.exec(`taskkill/PID  ${pid}`);
       return { res: 'success' };
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'cmd/closeBat',
-          error: error.message,
-        });
-      }
-      let err = new CustomError('InternalServerError');
-      throw err;
+      Logger.error({
+        clientId: 'unknown',
+        src: 'cmd/closeBat',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `pid : ${pid}`,
+        loggedBy: 'unknown',
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
+      throw error;
     }
   }
 
@@ -125,15 +137,18 @@ export class CmdService {
       cmdCammond.exec('taskkill/im vlc.exe');
       return { res: 'success' };
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'cmd/closeCommand',
-          error: error.message,
-        });
-      }
-      let err = new CustomError('InternalServerError');
-      throw err;
+      Logger.error({
+        clientId: 'unknown',
+        src: 'cmd/closeCommand',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: ``,
+        loggedBy: 'unknown',
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
+      throw error;
     }
   }
 
@@ -159,15 +174,18 @@ export class CmdService {
       );
       return cameraStatusDetails;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'cmd/updateCameraStatus',
-          error: error.message,
-        });
-      }
-      let err = new CustomError('InternalServerError');
-      throw err;
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'cmd/updateCameraStatus',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `cameraDetails : ${cameraDetails}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
+      throw error;
     }
   }
 

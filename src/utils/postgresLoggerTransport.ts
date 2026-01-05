@@ -25,21 +25,25 @@ export class MSSQLTransport extends TransportStream {
     const { level, message, timestamp } = info;
 
     const clientId = message.clientId ?? 'unknown';
-    const src = message.src ?? 'unknown';
-    const error = message.error ?? 'unknown';
+    const errorSource = message.src ?? 'unknown';
+    const errorMessage = message.error ?? 'unknown';
+    const requestPayload = message.requestPayload ?? 'unknown';
     const loggedAt = timestamp ?? new Date();
+    const loggedBy = message.loggedBy ?? 'unknown';
 
     const query = `
-      INSERT INTO error_logs (client_id, error_source, error_message, logged_at)
-      VALUES (@clientId, @src, @error, @loggedAt)
+      INSERT INTO error_logs (client_id,error_source,error_message,request_payload,logged_at,logged_by)
+      VALUES (@clientId, @errorSource,@errorMessage,@requestPayload, @loggedAt, @loggedBy)
     `;
 
     this.pool
       .request()
       .input('clientId', clientId)
-      .input('src', src)
-      .input('error', error)
+      .input('errorSource', errorSource)
+      .input('errorMessage', errorMessage)
+      .input('requestPayload', requestPayload)
       .input('loggedAt', loggedAt)
+      .input('loggedBy', loggedBy)
       .query(query)
       .catch((err) => {
         console.error('Error inserting errorLog into MSSQL:', err);

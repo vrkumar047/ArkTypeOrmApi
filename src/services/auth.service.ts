@@ -95,13 +95,25 @@ export class AuthService {
         // status.userId = userName;
         // // activity.LogInStatus(status);
       } else {
-        let err = new CustomError('IncorrectPassword');
-        throw err;
+        throw new CustomError('IncorrectPassword');
       }
 
       //  console.log(resultSets);
       return resultSets;
     } catch (error: any) {
+      Logger.error({
+        clientId: 'unknown',
+        src: 'account/checkuser',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `userName : ${userName}, password : ${password}`,
+        loggedBy: userName,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
+      throw error;
+
       if (error.driverError) {
         Logger.error({
           src: 'account/checkuser',
