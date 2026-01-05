@@ -58,14 +58,17 @@ export class MasterService {
       );
       return updatedUserDetail;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'master/userDetail',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'master/userDetail',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `${JSON.stringify(userDetail)}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -89,14 +92,17 @@ export class MasterService {
       );
       return updateRoleDetail;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'master/RoleDetails',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'master/roleDetail',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `${JSON.stringify(roleDetail)}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -144,14 +150,17 @@ export class MasterService {
       );
       return { status: 'success' };
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'master/userBranchMapping',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'master/userBranchMapping',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `${JSON.stringify(mappingDetail)}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -192,14 +201,17 @@ export class MasterService {
       );
       return { status: 'success' };
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'master/documentMapping',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'master/documentMapping',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `${JSON.stringify(mappingDetail)}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -249,14 +261,17 @@ export class MasterService {
       );
       return updatedMappingDetail;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'master/documentManagement',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'master/documentManagement',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `${JSON.stringify(docDetail)}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -320,14 +335,17 @@ export class MasterService {
       );
       return updateBranchDetail;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'master/branchMaster',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'master/branchMaster',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `${JSON.stringify(branchDetail)}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -354,14 +372,17 @@ export class MasterService {
       let res: any = { recordsets: resultSets };
       return res;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'master/documentMaster',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'master/documentMaster',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `${JSON.stringify(docDetail)}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -423,14 +444,17 @@ export class MasterService {
       );
       return updatedDesigDetail;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'master/designationMaster',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'master/designationMaster',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `${JSON.stringify(desigDetail)}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -454,14 +478,17 @@ export class MasterService {
       );
       return updateRoleDetail;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'master/schemeMaster',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'master/schemeMaster',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `${JSON.stringify(roleDetail)}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -479,14 +506,17 @@ export class MasterService {
       let res: any = { recordsets: resultSets };
       return res;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'master/getEmployeeDetails',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'master/getEmployeeDetails',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `regNo : ${regNo}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }

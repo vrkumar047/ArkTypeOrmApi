@@ -38,14 +38,17 @@ export class FingerPrintService {
       );
       return addeFingerDetail;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'fingerprint/addFingerPrint',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'fingerprint/addFingerPrint',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `${JSON.stringify(fingerDetail)}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }

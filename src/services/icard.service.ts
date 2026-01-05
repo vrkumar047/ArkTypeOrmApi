@@ -35,14 +35,17 @@ export class ICardService {
         }
       });
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'card/generateQrCode',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'card/generateQrCode',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `${JSON.stringify(qrDetail)}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -105,14 +108,17 @@ export class ICardService {
       // );
       // return cardDetail;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'card/getCardPrintDetails',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'card/convertPdf',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `${JSON.stringify(empDetail)}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -163,14 +169,17 @@ export class ICardService {
           },
         );
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'card/convertPdfFromBS64',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'card/convertPdfFromBS64',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `${JSON.stringify(empDetail)}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -191,14 +200,17 @@ export class ICardService {
       // });
       return filePath;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'card/downloadICard',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'card/downloadICard',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `${JSON.stringify(cardDetail)}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -215,14 +227,17 @@ export class ICardService {
       );
       return cardDetail;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'card/getCardPrintDetails',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'card/getCardPrintDetails',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `formNo : ${formNo}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -305,14 +320,17 @@ export class ICardService {
           throw error;
         });
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'card/generateEmployeeRegNo',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'card/generateEmployeeRegNo',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `${JSON.stringify(empDetails)}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -330,14 +348,17 @@ export class ICardService {
       );
       return cardDetail;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'card/getCardStatus',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'card/getCardStatus',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `regNo : ${regNo}, userId : ${userId}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -359,14 +380,17 @@ export class ICardService {
       );
       return printCardDetail;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'card/getCardPrintDetails',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'card/postPrintCard',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `${JSON.stringify(cardDetail)}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }

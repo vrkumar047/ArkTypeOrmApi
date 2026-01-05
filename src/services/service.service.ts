@@ -46,14 +46,17 @@ export class ServiceService {
       };
       return res;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'services/empBasicDetails',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'services/empBasicDetails',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `action : ${action}, formNo : ${formNo}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -80,14 +83,17 @@ export class ServiceService {
       };
       return res;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'services/empBasicDetails',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'services/getArkData',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `${JSON.stringify(data)}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -121,14 +127,17 @@ export class ServiceService {
       };
       return res;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'services/empBasicDetails',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'services/postArkData',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `action : ${action}, formNo : ${formNo}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }

@@ -149,14 +149,17 @@ export class FileUploadService {
       );
       return fileSequence;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'fileupload/setFileSequence',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'fileupload/setFileSequence',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `formNo : ${formNo}, docId : ${docId}, seq : ${seq}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -198,14 +201,17 @@ export class FileUploadService {
       );
       return documentDetail;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'fileupload/captureDocument',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'fileupload/captureDocument',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `formNo : ${formNo}, docId : ${docId}, fileName : ${fileName}, docsList : ${JSON.stringify(docsList)}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -360,14 +366,17 @@ export class FileUploadService {
         throw err;
       }
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'fileupload/generatePdf',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'fileupload/generatePdf',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `formNo : ${formNo}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -390,14 +399,17 @@ export class FileUploadService {
       );
       return documentDetail;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'fileupload/captureImage',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'fileupload/captureImage',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `${JSON.stringify(physicalDetail)}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -446,14 +458,17 @@ export class FileUploadService {
         },
       );
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'fileupload/captureSingature',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'fileupload/captureSingature',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `${JSON.stringify(fileDetail)}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }
@@ -511,14 +526,17 @@ export class FileUploadService {
       let res: any = { data: imageAsBase64 };
       return res;
     } catch (error: any) {
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'fileupload/getImageBase64',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'fileupload/getImageBase64',
+        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        requestPayload: `formNo : ${formNo}, fileSeq : ${fileSeq}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
       throw error;
     }
   }

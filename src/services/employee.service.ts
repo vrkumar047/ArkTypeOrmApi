@@ -889,25 +889,15 @@ export class EmployeeService {
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/addPhysicalDetails',
+        src: 'employee/getEduLangDetails',
         error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
-        requestPayload: `${JSON.stringify(physicalDetail)}`,
+        requestPayload: `formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
       error =
         error.driverError || error.name == 'RequestError'
           ? new CustomError('InternalServerError')
           : error;
-      throw error;
-
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'employee/getEduLangDetails',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
       throw error;
     }
   }
@@ -927,25 +917,15 @@ export class EmployeeService {
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/addPhysicalDetails',
+        src: 'employee/getExpExMEsiDetails',
         error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
-        requestPayload: `${JSON.stringify(physicalDetail)}`,
+        requestPayload: `formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
       error =
         error.driverError || error.name == 'RequestError'
           ? new CustomError('InternalServerError')
           : error;
-      throw error;
-
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'employee/getExpExMEsiDetails',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
       throw error;
     }
   }
@@ -965,25 +945,15 @@ export class EmployeeService {
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/addPhysicalDetails',
+        src: 'employee/getBMIDetails',
         error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
-        requestPayload: `${JSON.stringify(physicalDetail)}`,
+        requestPayload: `formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
       error =
         error.driverError || error.name == 'RequestError'
           ? new CustomError('InternalServerError')
           : error;
-      throw error;
-
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'employee/getBMIDetails',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
       throw error;
     }
   }
@@ -1026,25 +996,15 @@ export class EmployeeService {
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/addPhysicalDetails',
+        src: 'employee/updateRqccDocument',
         error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
-        requestPayload: `${JSON.stringify(physicalDetail)}`,
+        requestPayload: `${JSON.stringify(documentDetail)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
         error.driverError || error.name == 'RequestError'
           ? new CustomError('InternalServerError')
           : error;
-      throw error;
-
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'employee/updateRqccDocument',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
       throw error;
     }
   }
@@ -1097,25 +1057,15 @@ export class EmployeeService {
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/addPhysicalDetails',
+        src: 'employee/updateApprovalStatus',
         error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
-        requestPayload: `${JSON.stringify(physicalDetail)}`,
+        requestPayload: `${JSON.stringify(statusDetail)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
         error.driverError || error.name == 'RequestError'
           ? new CustomError('InternalServerError')
           : error;
-      throw error;
-
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'employee/updateApprovalStatus',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
       throw error;
     }
   }
@@ -1142,25 +1092,15 @@ export class EmployeeService {
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/addPhysicalDetails',
+        src: 'employee/updateEmployeeDetails',
         error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
-        requestPayload: `${JSON.stringify(physicalDetail)}`,
+        requestPayload: `${JSON.stringify(empDetails)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
         error.driverError || error.name == 'RequestError'
           ? new CustomError('InternalServerError')
           : error;
-      throw error;
-
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'employee/updateEmployeeDetails',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
       throw error;
     }
   }
@@ -1197,25 +1137,15 @@ export class EmployeeService {
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/addPhysicalDetails',
+        src: 'employee/updateAllFormStatus',
         error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
-        requestPayload: `${JSON.stringify(physicalDetail)}`,
+        requestPayload: `${JSON.stringify(statusDetails)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
         error.driverError || error.name == 'RequestError'
           ? new CustomError('InternalServerError')
           : error;
-      throw error;
-
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'employee/updateAllFormStatus',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
       throw error;
     }
   }
@@ -1231,25 +1161,15 @@ export class EmployeeService {
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/addPhysicalDetails',
+        src: 'employee/updateRegNo',
         error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
-        requestPayload: `${JSON.stringify(physicalDetail)}`,
+        requestPayload: `${JSON.stringify(regNoDetails)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
         error.driverError || error.name == 'RequestError'
           ? new CustomError('InternalServerError')
           : error;
-      throw error;
-
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'employee/updateRegNo',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
       throw error;
     }
   }
@@ -1279,25 +1199,15 @@ export class EmployeeService {
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/addPhysicalDetails',
+        src: 'employee/updateApprovalStatusDetails',
         error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
-        requestPayload: `${JSON.stringify(physicalDetail)}`,
+        requestPayload: `${JSON.stringify(statusDetails)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
         error.driverError || error.name == 'RequestError'
           ? new CustomError('InternalServerError')
           : error;
-      throw error;
-
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'employee/updateApprovalStatusDetails',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
       throw error;
     }
   }
@@ -1314,25 +1224,15 @@ export class EmployeeService {
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/addPhysicalDetails',
+        src: 'employee/sendOtp',
         error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
-        requestPayload: `${JSON.stringify(physicalDetail)}`,
+        requestPayload: `${JSON.stringify(otpDetail)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
         error.driverError || error.name == 'RequestError'
           ? new CustomError('InternalServerError')
           : error;
-      throw error;
-
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'employee/sendOtp',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
       throw error;
     }
   }
@@ -1358,26 +1258,16 @@ export class EmployeeService {
         });
     } catch (error: any) {
       Logger.error({
-        clientId: loggedInUser.clientId,
-        src: 'employee/addPhysicalDetails',
+        clientId: 'unknown',
+        src: 'employee/sendSms',
         error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
-        requestPayload: `${JSON.stringify(physicalDetail)}`,
-        loggedBy: loggedInUser.userId,
+        requestPayload: `${JSON.stringify(otpDetail)}`,
+        loggedBy: 'unknown',
       });
       error =
         error.driverError || error.name == 'RequestError'
           ? new CustomError('InternalServerError')
           : error;
-      throw error;
-
-      if (error.driverError || error.name == 'RequestError') {
-        Logger.error({
-          clientId: '',
-          src: 'employee/sendSms',
-          error: error.message,
-        });
-        error = new CustomError('InternalServerError');
-      }
       throw error;
     }
   }
