@@ -38,7 +38,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/getFormNo',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `head : ${head}, branchCode : ${branchCode}, updateBit : ${updateBit}`,
         loggedBy: loggedInUser.userId,
       });
@@ -150,13 +150,15 @@ export class EmployeeService {
           await this.sendSms(otpDetail);
           let res: any = resultSets;
           return { isError: false, recordsets: res };
-        } catch (errEmp: any) {}
+        } catch (errEmp: any) {
+          throw errEmp;
+        }
       }
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/addEmployee',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(employeeDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -186,7 +188,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/getOtpDetail',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}, otpNo : ${otpNo}, userId : ${userId}`,
         loggedBy: loggedInUser.userId,
       });
@@ -221,7 +223,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/addEducationDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(eduDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -250,7 +252,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/removeEducationDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}, classCode : ${classCode}`,
         loggedBy: loggedInUser.userId,
       });
@@ -287,7 +289,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/addLanguageDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(languageDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -328,7 +330,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/addCvExpDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(expDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -357,7 +359,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/removeCvExpDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}, orgType : ${orgType}`,
         loggedBy: loggedInUser.userId,
       });
@@ -395,7 +397,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/addExManExpDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(exManDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -425,7 +427,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/removeExManExpDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}, serviceType : ${serviceType}, org : ${org}`,
         loggedBy: loggedInUser.userId,
       });
@@ -466,7 +468,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/addEsiServerDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(esiDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -496,7 +498,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/removeEsiServerDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}, esiNo : ${esiNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -532,7 +534,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/addFamilyDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(familyDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -562,7 +564,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/removeFamilyDetail',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}, name : ${name}`,
         loggedBy: loggedInUser.userId,
       });
@@ -635,7 +637,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/addPhysicalDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(physicalDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -664,7 +666,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/removePhysicalDetail',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -700,7 +702,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/addBankDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(bankDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -729,7 +731,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/removeBankDetail',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -759,7 +761,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/updateFormStatus',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(formDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -792,7 +794,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/getEmployeeBasicDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -825,7 +827,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/getUploadedFormDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -862,7 +864,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/removedocument',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}, docTypeId : ${docTypeId}, docId : ${docId}`,
         loggedBy: loggedInUser.userId,
       });
@@ -890,7 +892,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/getEduLangDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -918,7 +920,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/getExpExMEsiDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -946,7 +948,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/getBMIDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -997,7 +999,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/updateRqccDocument',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(documentDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1058,7 +1060,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/updateApprovalStatus',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(statusDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1093,7 +1095,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/updateEmployeeDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(empDetails)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1138,7 +1140,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/updateAllFormStatus',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(statusDetails)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1162,7 +1164,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/updateRegNo',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(regNoDetails)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1200,7 +1202,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/updateApprovalStatusDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(statusDetails)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1225,7 +1227,7 @@ export class EmployeeService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/sendOtp',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(otpDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1260,7 +1262,7 @@ export class EmployeeService {
       Logger.error({
         clientId: 'unknown',
         src: 'employee/sendSms',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(otpDetail)}`,
         loggedBy: 'unknown',
       });

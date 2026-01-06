@@ -49,7 +49,7 @@ export class ServiceService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'services/empBasicDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -86,7 +86,7 @@ export class ServiceService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'services/getArkData',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(data)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -130,7 +130,7 @@ export class ServiceService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'services/postArkData',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });

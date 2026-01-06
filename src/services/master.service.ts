@@ -61,7 +61,7 @@ export class MasterService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'master/userDetail',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(userDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -95,7 +95,7 @@ export class MasterService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'master/roleDetail',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(roleDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -153,7 +153,7 @@ export class MasterService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'master/userBranchMapping',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(mappingDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -204,7 +204,7 @@ export class MasterService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'master/documentMapping',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(mappingDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -264,7 +264,7 @@ export class MasterService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'master/documentManagement',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(docDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -338,7 +338,7 @@ export class MasterService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'master/branchMaster',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(branchDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -375,7 +375,7 @@ export class MasterService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'master/documentMaster',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(docDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -447,7 +447,7 @@ export class MasterService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'master/designationMaster',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(desigDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -481,7 +481,7 @@ export class MasterService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'master/schemeMaster',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(roleDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -509,7 +509,7 @@ export class MasterService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'master/getEmployeeDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `regNo : ${regNo}`,
         loggedBy: loggedInUser.userId,
       });

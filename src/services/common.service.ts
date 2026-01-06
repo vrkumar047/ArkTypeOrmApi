@@ -47,7 +47,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getDashboardDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, role : ${role}, userId : ${userId}`,
         loggedBy: loggedInUser.userId,
       });
@@ -80,7 +80,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getBasicTableDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, userId : ${userId}`,
         loggedBy: loggedInUser.userId,
       });
@@ -115,7 +115,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getProspectusNo',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, branchCode : ${branchCode}, userId : ${userId}`,
         loggedBy: loggedInUser.userId,
       });
@@ -156,7 +156,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getAddressDetail',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, countryId : ${countryId}, stateId : ${stateId}, districtId : ${districtId}, cityId : ${cityId}, userId : ${userId}`,
         loggedBy: loggedInUser.userId,
       });
@@ -182,7 +182,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getState',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: ``,
         loggedBy: loggedInUser.userId,
       });
@@ -217,7 +217,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getConstituency',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, stateCode : ${stateCode}, pcCode : ${pcCode}`,
         loggedBy: loggedInUser.userId,
       });
@@ -241,7 +241,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getCasteCategory',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `stateCode : ${stateCode}`,
         loggedBy: loggedInUser.userId,
       });
@@ -269,7 +269,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getCaste',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `casteCategory : ${casteCategory}, stateCode : ${stateCode}`,
         loggedBy: loggedInUser.userId,
       });
@@ -304,7 +304,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getFeeBatchAndSchemeList',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `tableName : ${tableName}, branchCode : ${branchCode}, desigCode : ${desigCode}`,
         loggedBy: loggedInUser.userId,
       });
@@ -328,7 +328,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getReasonList',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}`,
         loggedBy: loggedInUser.userId,
       });
@@ -356,7 +356,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'employee/addPhysicalDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `post : ${post}, candidateType : ${candidateType}`,
         loggedBy: loggedInUser.userId,
       });
@@ -385,7 +385,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getRequiredDocument',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `docType : ${docType}, post : ${post}, candidateType : ${candidateType}`,
         loggedBy: loggedInUser.userId,
       });
@@ -413,7 +413,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getRequiredDocs',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `post : ${post}, candidateType : ${candidateType}`,
         loggedBy: loggedInUser.userId,
       });
@@ -440,7 +440,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getApplicableDocType',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `docCode : ${docCode}`,
         loggedBy: loggedInUser.userId,
       });
@@ -469,7 +469,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getDocumentForVerify',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `post : ${post}, candidateType : ${candidateType}, isBranch : ${isBranch}`,
         loggedBy: loggedInUser.userId,
       });
@@ -497,7 +497,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getMandatoryDocList',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `post :${post}, candidateType : ${candidateType}`,
         loggedBy: loggedInUser.userId,
       });
@@ -525,7 +525,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getEducationDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -553,7 +553,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getLanguageDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -581,7 +581,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getExperienceDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -609,7 +609,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getExManExperienceDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -639,7 +639,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getEsiServerDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}, esiNo : ${esiNo}, userId : ${userId}`,
         loggedBy: loggedInUser.userId,
       });
@@ -667,7 +667,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getFamilyDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -695,7 +695,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getPhysicalDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -723,7 +723,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getBankDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -750,7 +750,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getBankDetailsIFSCWise',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `ifscCode : ${ifscCode}`,
         loggedBy: loggedInUser.userId,
       });
@@ -785,7 +785,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getDesignationList',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, branchCode : ${branchCode}, userId : ${userId}`,
         loggedBy: loggedInUser.userId,
       });
@@ -816,7 +816,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getTempDeploymentFormList',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `userId : ${userId}`,
         loggedBy: loggedInUser.userId,
       });
@@ -847,7 +847,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getUnApprovedDocuments',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -878,7 +878,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getTempDeploymentApplicationDetail',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -906,7 +906,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/updateTempDeploymentDocumentStatus',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `docsStatus : ${docsStatus}, userId : ${userId}`,
         loggedBy: loggedInUser.userId,
       });
@@ -934,7 +934,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/RqccDocumentDetail',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -961,7 +961,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/CandidatTypeList',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `branchCode : ${branchCode}`,
         loggedBy: loggedInUser.userId,
       });
@@ -989,7 +989,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/GetList',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, userId : ${userId}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1022,7 +1022,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/formlist',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, role : ${role}, branchCode : ${branchCode}, desig : ${desig}, month : ${month} year : ${year}, userId : ${userId}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1054,7 +1054,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/esiverificationlist',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, role : ${role}, branchCode : ${branchCode}, fromDate : ${fromDate}, toDate : ${toDate}, userId : ${userId}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1084,7 +1084,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/formstatus',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: ` action : ${action}, role : ${role}, formNo : ${formNo}, userId : ${userId}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1114,7 +1114,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/filteredFormList',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `role : ${role}, formNo : ${formNo}, filterText : ${filterText}, userId : ${userId}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1142,7 +1142,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/empPicDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1179,7 +1179,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getUserDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, agentCode : ${agentCode}, compCode : ${compCode}, searchText : ${searchText}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1209,7 +1209,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/isUserExist',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, checkFor : ${checkFor}, checkText : ${checkText}, userId : ${userId}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1239,7 +1239,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/checkBasicDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `checkFor : ${checkFor}, checkString : ${checkString}, name : ${name}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1269,7 +1269,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/assessmentDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, loginName : ${loginName}, assessmentType : ${assessmentType}, assessmentCode : ${assessmentCode}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1298,7 +1298,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getCondoDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}, branchCode : ${branchCode}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1326,7 +1326,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getFileSequence',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `formNo : ${formNo}, docTypeId : ${docTypeId}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1354,7 +1354,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/industryList',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1382,7 +1382,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/userWiseBranchList',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `userId : ${userId}, compCode : ${compCode}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1418,7 +1418,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getSearchedApplications',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(applicationDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1454,7 +1454,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getSchemeDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : schemedetails, companyCode : ${companyCode}, branchCode : ${branchCode}, desigCode : ${desigCode}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1493,7 +1493,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/postUanStatusDetail',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(uanDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1530,7 +1530,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/postApproveRejectElectronicDetail',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}, defaultImage : ${defaultImage}, remark : ${remark}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1559,7 +1559,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getReportList',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : reportlist, userId : ${userId}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1602,7 +1602,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getAppToken',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `appName : ${appName}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1645,7 +1645,7 @@ export class CommonService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'common/getAppToken',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `appName : ${appName}`,
         loggedBy: loggedInUser.userId,
       });

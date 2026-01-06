@@ -32,7 +32,7 @@ export class CmdService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'cmd/execBat',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: ``,
         loggedBy: loggedInUser.userId,
       });
@@ -66,7 +66,7 @@ export class CmdService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'cmd/pingCamera',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${companyCode}`,
         loggedBy: loggedInUser.userId,
       });
@@ -100,7 +100,7 @@ export class CmdService {
       Logger.error({
         clientId: 'unknown',
         src: 'cmd/execCommand',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `ip : ${ip}, userId : ${userId}, pwd : ${pwd}, branchCode : ${branchCode}`,
         loggedBy: 'unknown',
       });
@@ -120,7 +120,7 @@ export class CmdService {
       Logger.error({
         clientId: 'unknown',
         src: 'cmd/closeBat',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `pid : ${pid}`,
         loggedBy: 'unknown',
       });
@@ -140,7 +140,7 @@ export class CmdService {
       Logger.error({
         clientId: 'unknown',
         src: 'cmd/closeCommand',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: ``,
         loggedBy: 'unknown',
       });
@@ -177,7 +177,7 @@ export class CmdService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'cmd/updateCameraStatus',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `cameraDetails : ${cameraDetails}`,
         loggedBy: loggedInUser.userId,
       });

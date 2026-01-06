@@ -34,7 +34,7 @@ export class DashboardService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'dashboard/dashboardList',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, userId : ${userId}, companyCode : ${companyCode}, branchCode : ${branchCode}`,
         loggedBy: loggedInUser.userId,
       });
@@ -76,7 +76,7 @@ export class DashboardService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'dashboard/dashboardDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(dashBoardDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -103,7 +103,7 @@ export class DashboardService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'dashboard/activeBranchList',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `companyCode : ${companyCode}`,
         loggedBy: loggedInUser.userId,
       });
@@ -130,7 +130,7 @@ export class DashboardService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'dashboard/branchCameraDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `companyCode : ${companyCode}`,
         loggedBy: loggedInUser.userId,
       });
@@ -167,7 +167,7 @@ export class DashboardService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'dashboard/downloadReport',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(reportDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -202,7 +202,7 @@ export class DashboardService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'dashboard/downloadVerifiedESI',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(reportDetail)}`,
         loggedBy: loggedInUser.userId,
       });

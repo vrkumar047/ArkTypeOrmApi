@@ -104,7 +104,7 @@ export class AuthService {
       Logger.error({
         clientId: 'unknown',
         src: 'account/checkuser',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `userName : ${userName}, password : ${password}`,
         loggedBy: userName,
       });

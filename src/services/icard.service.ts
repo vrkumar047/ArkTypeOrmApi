@@ -38,7 +38,7 @@ export class ICardService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'card/generateQrCode',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(qrDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -111,7 +111,7 @@ export class ICardService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'card/convertPdf',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(empDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -172,7 +172,7 @@ export class ICardService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'card/convertPdfFromBS64',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(empDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -203,7 +203,7 @@ export class ICardService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'card/downloadICard',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(cardDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -230,7 +230,7 @@ export class ICardService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'card/getCardPrintDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -323,7 +323,7 @@ export class ICardService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'card/generateEmployeeRegNo',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(empDetails)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -351,7 +351,7 @@ export class ICardService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'card/getCardStatus',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `regNo : ${regNo}, userId : ${userId}`,
         loggedBy: loggedInUser.userId,
       });
@@ -383,7 +383,7 @@ export class ICardService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'card/postPrintCard',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(cardDetail)}`,
         loggedBy: loggedInUser.userId,
       });

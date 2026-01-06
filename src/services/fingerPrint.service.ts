@@ -41,7 +41,7 @@ export class FingerPrintService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'fingerprint/addFingerPrint',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(fingerDetail)}`,
         loggedBy: loggedInUser.userId,
       });

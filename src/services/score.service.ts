@@ -993,7 +993,7 @@ export class ScoreService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'score/calculateScore',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `formNo : ${formNo}, desigCode : ${desigCode}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1021,7 +1021,7 @@ export class ScoreService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'score/getScoerAndWeihtagePercent',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `formNo : ${formNo}, desigCode : ${desigCode}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1053,7 +1053,7 @@ export class ScoreService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'score/getScoreDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1091,7 +1091,7 @@ export class ScoreService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'score/getCondonationDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `action : ${action}, formNo : ${formNo}, branchCode : ${branchCode}, unitCode : ${unitCode}, customerName : ${customerName}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1153,7 +1153,7 @@ export class ScoreService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'score/addScoreDetails',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(scoreDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -1203,7 +1203,7 @@ export class ScoreService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'score/applyCondonation',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(condoDetail)}`,
         loggedBy: loggedInUser.userId,
       });

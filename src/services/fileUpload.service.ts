@@ -152,7 +152,7 @@ export class FileUploadService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'fileupload/setFileSequence',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `formNo : ${formNo}, docId : ${docId}, seq : ${seq}`,
         loggedBy: loggedInUser.userId,
       });
@@ -204,7 +204,7 @@ export class FileUploadService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'fileupload/captureDocument',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `formNo : ${formNo}, docId : ${docId}, fileName : ${fileName}, docsList : ${JSON.stringify(docsList)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -369,7 +369,7 @@ export class FileUploadService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'fileupload/generatePdf',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
@@ -402,7 +402,7 @@ export class FileUploadService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'fileupload/captureImage',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(physicalDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -461,7 +461,7 @@ export class FileUploadService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'fileupload/captureSingature',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `${JSON.stringify(fileDetail)}`,
         loggedBy: loggedInUser.userId,
       });
@@ -529,7 +529,7 @@ export class FileUploadService {
       Logger.error({
         clientId: loggedInUser.clientId,
         src: 'fileupload/getImageBase64',
-        error: `Error :- ${error.message ?? ''}, Detail :- ${error.detail ?? ''}`,
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
         requestPayload: `formNo : ${formNo}, fileSeq : ${fileSeq}`,
         loggedBy: loggedInUser.userId,
       });
