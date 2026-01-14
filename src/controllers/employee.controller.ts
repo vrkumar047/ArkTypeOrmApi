@@ -451,15 +451,13 @@ export class EmployeeController {
           req.body.shirtLength != undefined
             ? parseFloat(req.body.shirtLength)
             : 0,
-        paintWaist:
-          req.body.paintWaist != undefined
-            ? parseFloat(req.body.paintWaist)
-            : 0,
-        paintHip:
-          req.body.paintHip != undefined ? parseFloat(req.body.paintHip) : 0,
-        paintLength:
-          req.body.paintLength != undefined
-            ? parseFloat(req.body.paintLength)
+        pantWaist:
+          req.body.pantWaist != undefined ? parseFloat(req.body.pantWaist) : 0,
+        pantHip:
+          req.body.pantHip != undefined ? parseFloat(req.body.pantHip) : 0,
+        pantLength:
+          req.body.pantLength != undefined
+            ? parseFloat(req.body.pantLength)
             : 0,
         capSize:
           req.body.capSize != undefined ? parseFloat(req.body.capSize) : 0,
