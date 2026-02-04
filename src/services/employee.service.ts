@@ -183,6 +183,9 @@ export class EmployeeService {
         `EXEC ${constant.P_OtpDetails} @action = @0, @formNo = @1, @otpNo = @2, @userId = @3`,
         [action, formNo, otpNo, userId],
       );
+      if (!otpDetail) {
+        otpDetail = { message: 'Record updated' };
+      }
       return otpDetail;
     } catch (error: any) {
       Logger.error({
@@ -218,6 +221,9 @@ export class EmployeeService {
           eduDetail.userId,
         ],
       );
+      if (!addedEduDetail) {
+        addedEduDetail = { message: 'Record updated' };
+      }
       return addedEduDetail;
     } catch (error: any) {
       Logger.error({
@@ -247,6 +253,9 @@ export class EmployeeService {
         `EXEC ${constant.P_EducationDetails} @action = @0, @formNo = @1, @classCode = @2`,
         [action, formNo, classCode],
       );
+      if (!removedEduDetail) {
+        removedEduDetail = { message: 'Record updated' };
+      }
       return removedEduDetail;
     } catch (error: any) {
       Logger.error({
@@ -283,7 +292,9 @@ export class EmployeeService {
           languageDetail.userId,
         ],
       );
-
+      if (!addedLanguageDetail) {
+        addedLanguageDetail = { message: 'Record updated' };
+      }
       return addedLanguageDetail;
     } catch (error: any) {
       Logger.error({
@@ -324,7 +335,9 @@ export class EmployeeService {
           expDetail.userId,
         ],
       );
-
+      if (!exprDetail) {
+        exprDetail = { message: 'Record updated' };
+      }
       return exprDetail;
     } catch (error: any) {
       Logger.error({
@@ -354,6 +367,9 @@ export class EmployeeService {
         `EXEC ${constant.P_CivilianDetails} @action = @0, @formNo = @1, @org_type = @2`,
         [action, formNo, orgType],
       );
+      if (!expDetail) {
+        expDetail = { message: 'Record updated' };
+      }
       return expDetail;
     } catch (error: any) {
       Logger.error({
@@ -391,7 +407,9 @@ export class EmployeeService {
           exManDetail.userId,
         ],
       );
-
+      if (!addedExManDetail) {
+        addedExManDetail = { message: 'Record updated' };
+      }
       return addedExManDetail;
     } catch (error: any) {
       Logger.error({
@@ -422,6 +440,9 @@ export class EmployeeService {
         `EXEC ${constant.P_ExManExpDetails} @action = @0, @formNo = @1, @serviceType = @2, @org = @3`,
         [action, formNo, serviceType, org],
       );
+      if (!removedExManDetail) {
+        removedExManDetail = { message: 'Record updated' };
+      }
       return removedExManDetail;
     } catch (error: any) {
       Logger.error({
@@ -462,7 +483,9 @@ export class EmployeeService {
           esiDetail.userId,
         ],
       );
-
+      if (!addedEsiDetail) {
+        addedEsiDetail = { message: 'Record updated' };
+      }
       return addedEsiDetail;
     } catch (error: any) {
       Logger.error({
@@ -492,7 +515,9 @@ export class EmployeeService {
         `EXEC ${constant.P_EsiServerDetails} @action = @0, @formNo = @1, @esiNo = @2`,
         [action, formNo, esiNo],
       );
-
+      if (!removedEsiDetail) {
+        removedEsiDetail = { message: 'Record updated' };
+      }
       return removedEsiDetail;
     } catch (error: any) {
       Logger.error({
@@ -528,7 +553,9 @@ export class EmployeeService {
           familyDetail.userId,
         ],
       );
-
+      if (!addedFamilyDetail) {
+        addedFamilyDetail = { message: 'Record updated' };
+      }
       return addedFamilyDetail;
     } catch (error: any) {
       Logger.error({
@@ -558,7 +585,9 @@ export class EmployeeService {
         `EXEC ${constant.P_FamilyDetails} @action = @0, @formNo = @1, @name = @2`,
         [action, formNo, name],
       );
-
+      if (!removedFamilyDetail) {
+        removedFamilyDetail = { message: 'Record updated' };
+      }
       return removedFamilyDetail;
     } catch (error: any) {
       Logger.error({
@@ -631,7 +660,9 @@ export class EmployeeService {
           physicalDetail.userId,
         ],
       );
-
+      if (!addedPhysicalDetail) {
+        addedPhysicalDetail = { message: 'Record updated' };
+      }
       return addedPhysicalDetail;
     } catch (error: any) {
       Logger.error({
@@ -660,7 +691,9 @@ export class EmployeeService {
         `EXEC ${constant.P_PhysicalDetails} @action = @0, @formNo = @1`,
         [action, formNo],
       );
-
+      if (!removedPhysicalDetail) {
+        removedPhysicalDetail = { message: 'Record updated' };
+      }
       return removedPhysicalDetail;
     } catch (error: any) {
       Logger.error({
@@ -696,7 +729,9 @@ export class EmployeeService {
           bankDetail.userId,
         ],
       );
-
+      if (!addedBankDetail) {
+        addedBankDetail = { message: 'Record updated' };
+      }
       return addedBankDetail;
     } catch (error: any) {
       Logger.error({
@@ -725,7 +760,9 @@ export class EmployeeService {
         `EXEC ${constant.P_BankDetails} @action = @0, @formNo = @1`,
         [action, formNo],
       );
-
+      if (!removedPhysicalDetail) {
+        removedPhysicalDetail = { message: 'Record updated' };
+      }
       return removedPhysicalDetail;
     } catch (error: any) {
       Logger.error({
@@ -756,6 +793,9 @@ export class EmployeeService {
           formDetail.userId,
         ],
       );
+      if (!updatedFormDetail) {
+        updatedFormDetail = { message: 'Record updated' };
+      }
       return updatedFormDetail;
     } catch (error: any) {
       Logger.error({
@@ -848,7 +888,7 @@ export class EmployeeService {
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
-      const removedDocument = await getResultSets(
+      let removedDocument = await getResultSets(
         companyDb,
         constant.P_uploadFormFiles,
         {
@@ -858,6 +898,9 @@ export class EmployeeService {
           doc_id: docId,
         },
       );
+      if (!removedDocument) {
+        removedDocument = { message: 'Record updated' };
+      }
       let res: any = removedDocument;
       return res;
     } catch (error: any) {
@@ -994,6 +1037,9 @@ export class EmployeeService {
           documentDetail.withPhysical,
         ],
       );
+      if (!rqccDocument) {
+        rqccDocument = { message: 'Record updated' };
+      }
       return rqccDocument;
     } catch (error: any) {
       Logger.error({
@@ -1054,7 +1100,9 @@ export class EmployeeService {
       // sqlReq.input('action', sql.VarChar(50), req.body.action);
       // sqlReq.input('formList', sql.VarChar(sql.MAX), xmlString);
       // sqlReq.input('userId', sql.VarChar(50), req.body.userId);
-
+      if (!rqccDocument) {
+        rqccDocument = { message: 'Record updated' };
+      }
       return rqccDocument;
     } catch (error: any) {
       Logger.error({
@@ -1090,6 +1138,9 @@ export class EmployeeService {
           empDetails.userId,
         ],
       );
+      if (!updatedEmpDetails) {
+        updatedEmpDetails = { message: 'Record updated' };
+      }
       return updatedEmpDetails;
     } catch (error: any) {
       Logger.error({
@@ -1135,6 +1186,9 @@ export class EmployeeService {
           statusDetails.userId,
         ],
       );
+      if (!updatedStatusDetails) {
+        updatedStatusDetails = { message: 'Record updated' };
+      }
       return updatedStatusDetails;
     } catch (error: any) {
       Logger.error({
@@ -1159,6 +1213,9 @@ export class EmployeeService {
         `EXEC ${constant.P_UpdateRegNo} @fromNo = @0, @regNo = @1, @userId = @2`,
         [regNoDetails.formNo, regNoDetails.regNo, regNoDetails.userId],
       );
+      if (!updatedRegNo) {
+        updatedRegNo = { message: 'Record updated' };
+      }
       return updatedRegNo;
     } catch (error: any) {
       Logger.error({
@@ -1197,6 +1254,9 @@ export class EmployeeService {
           statusDetails.userId,
         ],
       );
+      if (!updatedStatusDetail) {
+        updatedStatusDetail = { message: 'Record updated' };
+      }
       return updatedStatusDetail;
     } catch (error: any) {
       Logger.error({

@@ -378,6 +378,9 @@ export class ICardService {
           cardDetail.userId,
         ],
       );
+      if (!printCardDetail) {
+        printCardDetail = { message: 'Record updated' };
+      }
       return printCardDetail;
     } catch (error: any) {
       Logger.error({

@@ -11,7 +11,7 @@ import path from 'path';
 import fs from 'fs';
 import { existsSync, mkdirSync } from 'fs';
 dotenv.config();
-
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const {
   http_port,
   tcp_port,

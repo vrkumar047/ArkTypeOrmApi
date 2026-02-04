@@ -56,6 +56,9 @@ export class MasterService {
           userDetail.createdBy,
         ],
       );
+      if (!updatedUserDetail) {
+        updatedUserDetail = { message: 'Record updated' };
+      }
       return updatedUserDetail;
     } catch (error: any) {
       Logger.error({
@@ -90,6 +93,9 @@ export class MasterService {
           roleDetail.userId,
         ],
       );
+      if (!updateRoleDetail) {
+        updateRoleDetail = { message: 'Record updated' };
+      }
       return updateRoleDetail;
     } catch (error: any) {
       Logger.error({
@@ -259,6 +265,9 @@ export class MasterService {
           docDetail.userId,
         ],
       );
+      if (!updatedMappingDetail) {
+        updatedMappingDetail = { message: 'Record updated' };
+      }
       return updatedMappingDetail;
     } catch (error: any) {
       Logger.error({
@@ -333,6 +342,9 @@ export class MasterService {
           branchDetail.userId,
         ],
       );
+      if (!updateBranchDetail) {
+        updateBranchDetail = { message: 'Record updated' };
+      }
       return updateBranchDetail;
     } catch (error: any) {
       Logger.error({
@@ -442,6 +454,9 @@ export class MasterService {
           desigDetail.userId,
         ],
       );
+      if (!updatedDesigDetail) {
+        updatedDesigDetail = { message: 'Record updated' };
+      }
       return updatedDesigDetail;
     } catch (error: any) {
       Logger.error({
@@ -476,6 +491,9 @@ export class MasterService {
           roleDetail.userId,
         ],
       );
+      if (!updateRoleDetail) {
+        updateRoleDetail = { message: 'Record updated' };
+      }
       return updateRoleDetail;
     } catch (error: any) {
       Logger.error({
