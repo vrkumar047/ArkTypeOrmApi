@@ -105,21 +105,21 @@ export class ICardController {
       let loggedInUser: any = req['currentUser'];
       let empDetails: string = req.body.empDetails;
       if (loggedInUser) {
-        let states: any[] = [];
+        let regDetail: any;
         if (!res.locals.data) {
-          states = await icardService.generateEmployeeRegNo(
+          regDetail = await icardService.generateEmployeeRegNo(
             loggedInUser,
             empDetails,
           );
         } else {
-          states = JSON.parse(res.locals.data);
+          regDetail = JSON.parse(res.locals.data);
         }
 
-        res.locals.data = states;
+        res.locals.data = regDetail;
       } else {
         res.locals.error = 'Unauthorized';
       }
-    } catch (err) {
+    } catch (err) { 
       res.locals.error = err;
     }
     next();

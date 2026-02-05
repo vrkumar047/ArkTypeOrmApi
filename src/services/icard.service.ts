@@ -277,48 +277,50 @@ export class ICardService {
         },
       };
 
-      axios
-        .request(config)
-        .then((response) => {
-          let tokenKey: string = response[0].token;
-          let configReq2 = {
-            method: 'post',
-            url: 'https://siscoresyncapi.sisgroup.in/api/ark',
-            headers: {
-              'content-type': 'application/json; charset=utf-8',
-              'Authorization': tokenKey,
-            },
-            data: JSON.stringify(empDetails),
-          };
-
-          axios
-            .request(configReq2)
-            .then((response) => {
-              return { status: response.data };
-            })
-            .catch((error) => {
-              if (error.driverError || error.name == 'RequestError') {
-                Logger.error({
-                  clientId: '',
-                  src: `api/card/GenerateEmployeeRegNo, having FormNo ${empDetails.formNo}`,
-                  error: error.message,
-                });
-                error = new CustomError('InternalServerError');
-              }
-              throw error;
-            });
-        })
+      const tokenResponse = await axios.request(config).catch((error) => {
+        Logger.error({
+          clientId: loggedInUser.clientId,
+          src: 'common/GetAppToken',
+          error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+          requestPayload: `formNo:${empDetails.formNo}`,
+          loggedBy: loggedInUser.userId,
+        });
+        error =
+          error.driverError || error.name == 'RequestError'
+            ? new CustomError('InternalServerError')
+            : error;
+        throw error;
+      });
+      let tokenKey: string = tokenResponse.data[0].token;
+      let configReq2 = {
+        method: 'post',
+        url: 'https://siscoresyncapi.sisgroup.in/api/ark',
+        headers: {
+          'content-type': 'application/json; charset=utf-8',
+          'Authorization': tokenKey,
+        },
+        data: JSON.stringify(empDetails),
+      };
+      const arkResponse: any = await axios
+        .request(configReq2)
         .catch((error) => {
-          if (error.driverError || error.name == 'RequestError') {
-            Logger.error({
-              clientId: '',
-              src: 'common/GetAppToken',
-              error: error.message,
-            });
-            error = new CustomError('InternalServerError');
-          }
+          console.log(error);
+          Logger.error({
+            clientId: loggedInUser.clientId,
+            src: 'https://siscoresyncapi.sisgroup.in/api/ark',
+            error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+            requestPayload: `formNo:${empDetails.formNo}`,
+            loggedBy: loggedInUser.userId,
+          });
+          error =
+            error.driverError || error.name == 'RequestError'
+              ? new CustomError('InternalServerError')
+              : error;
           throw error;
         });
+      return {
+        status: arkResponse.data.result.status,
+      };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
