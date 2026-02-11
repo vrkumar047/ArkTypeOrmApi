@@ -1016,7 +1016,7 @@ export class ScoreService {
         `EXEC ${constant.P_ScoreMaster} @action = @0, @formNo = @1, @desigCode = @2`,
         ['scoredetails', formNo, desigCode],
       );
-      return scoreDetail;
+      return scoreDetail ?? [];
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
@@ -1048,7 +1048,7 @@ export class ScoreService {
           formNo: formNo,
         },
       );
-      return scoreDetail;
+      return scoreDetail ?? [];
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
@@ -1086,7 +1086,7 @@ export class ScoreService {
           customerName: customerName,
         },
       );
-      return condoDetail;
+      return condoDetail ?? [];
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
@@ -1198,7 +1198,7 @@ export class ScoreService {
           userId: condoDetail.userId,
         },
       );
-      return addedCondoDetail;
+      return addedCondoDetail ?? [];
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
