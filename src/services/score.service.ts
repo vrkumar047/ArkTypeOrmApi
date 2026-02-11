@@ -1048,6 +1048,7 @@ export class ScoreService {
           formNo: formNo,
         },
       );
+      console.log(`score detail`, scoreDetail);
       return scoreDetail ?? [];
     } catch (error: any) {
       Logger.error({
