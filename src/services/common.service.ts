@@ -1262,10 +1262,10 @@ export class CommonService {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let basicDetail: any = await companyDb.query(
-        `EXEC ${constant.P_CheckBasicDetails} @checFor = @0, @checkText = @1, @name = @2, @formNo = @3`,
-        [checkFor, checkString, name, formNo],
+        `EXEC ${constant.P_CheckBasicDetails} @checFor = @0, @checkText = @1, @name = @2`,
+        [checkFor, checkString, name],
       );
-      return { rowCount: basicDetail.length };
+      return { rowCount: basicDetail != undefined ? basicDetail.length : 0 };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
