@@ -3,7 +3,13 @@ import { MSSQLTransport } from './postgresLoggerTransport';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const { db_host, db_port, db_name, db_user, db_password } = process.env;
+const {
+  error_log_db_host,
+  error_log_db_port,
+  error_log_db_name,
+  error_log_db_user,
+  error_log_db_password,
+} = process.env;
 
 const { combine, timestamp, printf, colorize } = format;
 
@@ -22,11 +28,11 @@ const Logger = createLogger({
     new MSSQLTransport({
       connectionConfig: {
         domain: undefined,
-        user: db_user,
-        password: db_password,
-        server: db_host,
-        port: Number(db_port),
-        database: db_name,
+        user: error_log_db_user,
+        password: error_log_db_password,
+        server: error_log_db_host,
+        port: Number(error_log_db_port),
+        database: error_log_db_name,
         options: {
           encrypt: true, // for Azure, otherwise false
           trustServerCertificate: true, // change based on your SSL cert

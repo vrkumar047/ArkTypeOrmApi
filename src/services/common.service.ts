@@ -109,7 +109,12 @@ export class CommonService {
           userId: userId,
         },
       );
-      let res: any = resultSets[0];
+      let res: any;
+      if (!resultSets) {
+        res = [];
+      } else {
+        res = resultSets[0];
+      }
       return res;
     } catch (error: any) {
       Logger.error({
@@ -150,7 +155,12 @@ export class CommonService {
           userId: userId,
         },
       );
-      let res: any = resultSets[0];
+      let res: any;
+      if (!resultSets) {
+        res = [];
+      } else {
+        res = resultSets[0];
+      }
       return res;
     } catch (error: any) {
       Logger.error({
@@ -176,7 +186,12 @@ export class CommonService {
         constant.P_Get_State_Master,
         {},
       );
-      let res: any = resultSets[0];
+      let res: any;
+      if (!resultSets) {
+        res = [];
+      } else {
+        res = resultSets[0];
+      }
       return res;
     } catch (error: any) {
       Logger.error({
@@ -211,7 +226,12 @@ export class CommonService {
           pcCode: pcCode,
         },
       );
-      let res: any = resultSets[0];
+      let res: any;
+      if (!resultSets) {
+        res = [];
+      } else {
+        res = resultSets[0];
+      }
       return res;
     } catch (error: any) {
       Logger.error({
@@ -232,10 +252,13 @@ export class CommonService {
   async getCasteCategory(loggedInUser: any, stateCode: string): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
-      let casteCategory: any = await companyDb.query(
+      let casteCategory: any[] = await companyDb.query(
         'select id,CategoryName from tbl_CasteCategoryMaster_New (nolock) where isActive =1',
         [],
       );
+      if (!casteCategory) {
+        casteCategory = [];
+      }
       return casteCategory;
     } catch (error: any) {
       Logger.error({
@@ -260,10 +283,13 @@ export class CommonService {
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
-      let casteRes: any = await companyDb.query(
+      let casteRes: any[] = await companyDb.query(
         `select id,CasteCategory,caste_name as CasteName from tbl_CasteDetail_New (nolock) where StateCode = '${stateCode}' and CasteCategory= '${casteCategory}' and isActive=1`,
         [],
       );
+      if (!casteRes) {
+        casteRes = [];
+      }
       return casteRes;
     } catch (error: any) {
       Logger.error({
@@ -298,7 +324,12 @@ export class CommonService {
           desigCode: desigCode,
         },
       );
-      let res: any = resultSets[0];
+      let res: any;
+      if (!resultSets) {
+        res = [];
+      } else {
+        res = resultSets[0];
+      }
       return res;
     } catch (error: any) {
       Logger.error({
@@ -323,6 +354,9 @@ export class CommonService {
         `EXEC ${constant.P_getReasonList} @action = @0`,
         [action],
       );
+      if (!reasonList) {
+        reasonList = [];
+      }
       return reasonList;
     } catch (error: any) {
       Logger.error({
@@ -351,6 +385,9 @@ export class CommonService {
         `EXEC ${constant.Proc_DocumentRequired} @Post = @0, @CandType = @1`,
         [post, candidateType],
       );
+      if (!documentList) {
+        documentList = [];
+      }
       return documentList;
     } catch (error: any) {
       Logger.error({
@@ -380,6 +417,9 @@ export class CommonService {
         `EXEC ${constant.Proc_DocumentList}  @DocType = @0, @Post = @1, @CandType = @2`,
         [docType, post, candidateType],
       );
+      if (!documentList) {
+        documentList = [];
+      }
       return documentList;
     } catch (error: any) {
       Logger.error({
@@ -408,6 +448,9 @@ export class CommonService {
         `EXEC ${constant.P_GetRequiredDocument} @Post = @0, @CandType = @1`,
         [post, candidateType],
       );
+      if (!documentList) {
+        documentList = [];
+      }
       return documentList;
     } catch (error: any) {
       Logger.error({
@@ -435,6 +478,9 @@ export class CommonService {
         `EXEC ${constant.P_GetApplicableDocType} @DocId = @0`,
         [docCode],
       );
+      if (!documentList) {
+        documentList = [];
+      }
       return documentList;
     } catch (error: any) {
       Logger.error({
@@ -464,6 +510,9 @@ export class CommonService {
         `EXEC ${constant.Proc_required_document_list} @Post = @0, @CandType = @1, @isBranch = @2`,
         [post, candidateType, isBranch],
       );
+      if (!documentList) {
+        documentList = [];
+      }
       return documentList;
     } catch (error: any) {
       Logger.error({
@@ -492,6 +541,9 @@ export class CommonService {
         `EXEC ${constant.P_GetDocumentVerification} @Post = @0, @CandType = @1`,
         [post, candidateType],
       );
+      if (!documentList) {
+        documentList = [];
+      }
       return documentList;
     } catch (error: any) {
       Logger.error({
@@ -520,6 +572,9 @@ export class CommonService {
         `EXEC ${constant.P_EducationDetails} @action = @0, @formNo = @1`,
         [action, formNo],
       );
+      if (!eduDetails) {
+        eduDetails = [];
+      }
       return eduDetails;
     } catch (error: any) {
       Logger.error({
@@ -548,6 +603,9 @@ export class CommonService {
         `EXEC ${constant.P_LanguageDetails} @action = @0, @formNo = @1`,
         [action, formNo],
       );
+      if (!languageDetails) {
+        languageDetails = [];
+      }
       return languageDetails;
     } catch (error: any) {
       Logger.error({
@@ -576,6 +634,9 @@ export class CommonService {
         `EXEC ${constant.P_CivilianDetails} @action = @0, @formNo = @1`,
         [action, formNo],
       );
+      if (!expDetails) {
+        expDetails = [];
+      }
       return expDetails;
     } catch (error: any) {
       Logger.error({
@@ -604,6 +665,9 @@ export class CommonService {
         `EXEC ${constant.P_ExManExpDetails} @action = @0, @formNo = @1`,
         [action, formNo],
       );
+      if (!exManExpDetails) {
+        exManExpDetails = [];
+      }
       return exManExpDetails;
     } catch (error: any) {
       Logger.error({
@@ -634,6 +698,9 @@ export class CommonService {
         `EXEC ${constant.P_EsiServerDetails} @action = @0, @formNo = @1, @esiNo = @2, @userId = @3`,
         [action, formNo, esiNo, userId],
       );
+      if (!esiDetails) {
+        esiDetails = [];
+      }
       return esiDetails;
     } catch (error: any) {
       Logger.error({
@@ -662,6 +729,9 @@ export class CommonService {
         `EXEC ${constant.P_FamilyDetails} @action = @0, @formNo = @1`,
         [action, formNo],
       );
+      if (!familyDetails) {
+        familyDetails = [];
+      }
       return familyDetails;
     } catch (error: any) {
       Logger.error({
@@ -690,6 +760,9 @@ export class CommonService {
         `EXEC ${constant.P_PhysicalDetails} @action = @0, @formNo = @1`,
         [action, formNo],
       );
+      if (!physicalDetails) {
+        physicalDetails = [];
+      }
       return physicalDetails;
     } catch (error: any) {
       Logger.error({
@@ -718,6 +791,9 @@ export class CommonService {
         `EXEC ${constant.P_BankDetails} @action = @0, @formNo = @1`,
         [action, formNo],
       );
+      if (!bankDetails) {
+        bankDetails = [];
+      }
       return bankDetails;
     } catch (error: any) {
       Logger.error({
@@ -745,6 +821,9 @@ export class CommonService {
         `EXEC ${constant.P_GetBankDetailIFSCCodeWise} @ifscCode = @0`,
         [ifscCode],
       );
+      if (!bankDetails) {
+        bankDetails = [];
+      }
       return bankDetails;
     } catch (error: any) {
       Logger.error({
@@ -901,6 +980,9 @@ export class CommonService {
         `EXEC ${constant.p_updateTempDeploymentDocStatus} @docsStatus = @0, @userId = @1`,
         [docsStatus, userId],
       );
+      if (!documentStatus) {
+        documentStatus = [];
+      }
       return documentStatus;
     } catch (error: any) {
       Logger.error({
@@ -929,6 +1011,9 @@ export class CommonService {
         `EXEC ${constant.P_RqccDocumentDetail} @action = @0, @formNo = @1`,
         [action, formNo],
       );
+      if (!documentDetails) {
+        documentDetails = [];
+      }
       return documentDetails;
     } catch (error: any) {
       Logger.error({
@@ -956,6 +1041,9 @@ export class CommonService {
         `EXEC ${constant.P_GetCandidateTypeMaster} @branchCode = @0`,
         [branchCode == 'null' ? null : branchCode],
       );
+      if (!typeList) {
+        typeList = [];
+      }
       return typeList;
     } catch (error: any) {
       Logger.error({
@@ -984,6 +1072,9 @@ export class CommonService {
         `EXEC ${constant.P_GetList} @action = @0, @userId = @1`,
         [action, userId],
       );
+      if (!list) {
+        list = [];
+      }
       return list;
     } catch (error: any) {
       Logger.error({
@@ -1017,6 +1108,9 @@ export class CommonService {
         `EXEC ${constant.P_GetFormListRoleWise} @action = @0, @role = @1, @branchCode = @2, @desig = @3, @month = @4, @year = @5, @userId = @6`,
         [action, role, branchCode, desig, month, year, userId],
       );
+      if (!list) {
+        list = [];
+      }
       return list;
     } catch (error: any) {
       Logger.error({
@@ -1049,6 +1143,9 @@ export class CommonService {
         `EXEC ${constant.P_GetEsiVerificationFormList} @action = @0, @role = @1, @branchCode = @2, @fromDate = @3, @toDate = @4, @userId = @5`,
         [action, role, branchCode, fromDate, toDate, userId],
       );
+      if (!formList) {
+        formList = [];
+      }
       return formList;
     } catch (error: any) {
       Logger.error({
@@ -1079,6 +1176,9 @@ export class CommonService {
         `EXEC ${constant.P_FormStatusDetails} @action = @0, @role = @1, @formNo = @2, @userId = @3`,
         [action, role, formNo, userId],
       );
+      if (!formStatuses) {
+        formStatuses = [];
+      }
       return formStatuses;
     } catch (error: any) {
       Logger.error({
@@ -1109,6 +1209,9 @@ export class CommonService {
         `EXEC ${constant.P_GetFilteredFormStatusDetails} @role = @0, @formNo = @1, @filterText = @2, @userId = @3`,
         [role, formNo, filterText, userId],
       );
+      if (!formList) {
+        formList = [];
+      }
       return formList;
     } catch (error: any) {
       Logger.error({
@@ -1137,6 +1240,9 @@ export class CommonService {
         `EXEC ${constant.P_UpdateEmployeePicDetails} @action = @0, @formNo = @1`,
         [action, formNo],
       );
+      if (!picDetail) {
+        picDetail = [];
+      }
       return picDetail;
     } catch (error: any) {
       Logger.error({
@@ -1173,7 +1279,12 @@ export class CommonService {
           searchText: searchText,
         },
       );
-      let res: any = resultSets;
+      let res: any;
+      if (!resultSets) {
+        res = [];
+      } else {
+        res = resultSets;
+      }
       return res;
     } catch (error: any) {
       Logger.error({
@@ -1264,6 +1375,9 @@ export class CommonService {
         `EXEC ${constant.P_AssessmentDetails} @action = @0, @loginName = @1, @assessmentType = @2, @assessmentCode = @3`,
         [action, loginName, assessmentType, assessmentCode],
       );
+      if (!assessmentDetail) {
+        assessmentDetail = [];
+      }
       return assessmentDetail;
     } catch (error: any) {
       Logger.error({
@@ -1293,6 +1407,9 @@ export class CommonService {
         `EXEC ${constant.P_getCondoDetails} @action = @0, @formNo = @1, @branchCode = @2`,
         [action, formNo, branchCode],
       );
+      if (!assessmentDetail) {
+        assessmentDetail = [];
+      }
       return assessmentDetail;
     } catch (error: any) {
       Logger.error({
@@ -1321,6 +1438,9 @@ export class CommonService {
         `EXEC ${constant.P_GetFileSequence} @formNo = @0, @docTypeId = @1`,
         [formNo, docTypeId],
       );
+      if (!assessmentDetail) {
+        assessmentDetail = [];
+      }
       return assessmentDetail;
     } catch (error: any) {
       Logger.error({
@@ -1345,10 +1465,13 @@ export class CommonService {
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
-      let industryList: any = await companyDb.query(
+      let industryList: any[] = await companyDb.query(
         `EXEC ${constant.P_GetIndustryList} @action = @0, @formNo = @1`,
         [action, formNo],
       );
+      if (!industryList) {
+        industryList = [];
+      }
       return industryList;
     } catch (error: any) {
       Logger.error({
@@ -1377,6 +1500,9 @@ export class CommonService {
         `EXEC ${constant.P_UserWiseBranchList} @userId = @0, @compCode = @1`,
         [userId, compCode],
       );
+      if (!branchList) {
+        branchList = [];
+      }
       return branchList;
     } catch (error: any) {
       Logger.error({
@@ -1413,6 +1539,9 @@ export class CommonService {
           applicationDetail.userId,
         ],
       );
+      if (!applications) {
+        applications = [];
+      }
       return applications;
     } catch (error: any) {
       Logger.error({
@@ -1448,7 +1577,12 @@ export class CommonService {
           desig_code: desigCode,
         },
       );
-      let res: any = schemeDetail;
+      let res: any;
+      if (!schemeDetail) {
+        res = [];
+      } else {
+        res = schemeDetail;
+      }
       return res;
     } catch (error: any) {
       Logger.error({
@@ -1487,7 +1621,12 @@ export class CommonService {
           userId: uanDetail.userId,
         },
       );
-      let res: any = uanStatusDetail;
+      let res: any;
+      if (!uanStatusDetail) {
+        res = [];
+      } else {
+        res = uanStatusDetail;
+      }
       return res;
     } catch (error: any) {
       Logger.error({
@@ -1524,7 +1663,12 @@ export class CommonService {
           remark: remark,
         },
       );
-      let res: any = electronicDetail;
+      let res: any;
+      if (!electronicDetail) {
+        res = [];
+      } else {
+        res = electronicDetail;
+      }
       return res;
     } catch (error: any) {
       Logger.error({
@@ -1553,7 +1697,12 @@ export class CommonService {
           userId: userId,
         },
       );
-      let res: any = electronicDetail;
+      let res: any;
+      if (!electronicDetail) {
+        res = [];
+      } else {
+        res = electronicDetail;
+      }
       return res;
     } catch (error: any) {
       Logger.error({

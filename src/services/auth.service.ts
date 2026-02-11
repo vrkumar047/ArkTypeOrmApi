@@ -247,7 +247,11 @@ export class AuthService {
         `EXEC ${constant.P_SetLogedInStatus} @Action = @0, @UserName = @1`,
         [action, userId],
       );
-      return formStatuses[0];
+      let loginStatus: any;
+      if (!formStatuses) {
+        loginStatus = { message: 'Record updated' };
+      }
+      return loginStatus;
     } catch (error: any) {
       if (error.driverError) {
         Logger.error({

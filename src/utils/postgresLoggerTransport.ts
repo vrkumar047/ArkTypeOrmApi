@@ -14,7 +14,7 @@ export class MSSQLTransport extends TransportStream {
     this.pool
       .connect()
       .then(() => {
-        //console.log('Connected to MSSQL');
+        console.log('Connected to MSSQL');
       })
       .catch((err) => console.error('Error connecting to MSSQL:', err));
   }
@@ -46,7 +46,7 @@ export class MSSQLTransport extends TransportStream {
       .input('loggedBy', loggedBy)
       .query(query)
       .catch((err) => {
-        console.error('Error inserting errorLog into MSSQL:', err);
+        console.error('Error inserting error_logs into MSSQL:', err);
       })
       .finally(() => callback());
   }
