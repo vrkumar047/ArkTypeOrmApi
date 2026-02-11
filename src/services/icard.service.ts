@@ -247,67 +247,44 @@ export class ICardService {
     empDetails: any,
   ): Promise<any> {
     try {
-      if (empDetails.basicDetails[0].lsm_status != 'Approve') {
-        return {
-          status: `{"result":[{"candidateNo":"${empDetails.basicDetails[0].form_No}","prospectusNo":"${empDetails.basicDetails[0].prospectus_no}","isError":true,"errorMsg":"UAN verification is pending for (Form No- ${empDetails.basicDetails[0].form_No}),(Prospectus No- ${empDetails.basicDetails[0].prospectus_no})","regNo":""}]}`,
-        };
-      }
-      if (empDetails.bankDetails[0].is_verified != 1) {
-        let strMessage: string;
-        if (empDetails.bankDetails[0].is_verified == 0) {
-          strMessage = 'Bank Account verification is pending for ';
-        } else if (empDetails.bankDetails[0].is_verified == 2) {
-          strMessage =
-            'Bank Account verification is rejected and reopen for update at stage for ';
-        } else {
-          strMessage =
-            'Bank Account detail not listed for verification yet. Please try after some time or check for entered detail for ';
+      if (
+        empDetails.basicDetails != undefined &&
+        empDetails.bankDetails != undefined
+      ) {
+        if (empDetails.basicDetails[0].lsm_status != 'Approve') {
+          return {
+            status: `{"result":[{"candidateNo":"${empDetails.basicDetails[0].form_No}","prospectusNo":"${empDetails.basicDetails[0].prospectus_no}","isError":true,"errorMsg":"UAN verification is pending for (Form No- ${empDetails.basicDetails[0].form_No}),(Prospectus No- ${empDetails.basicDetails[0].prospectus_no})","regNo":""}]}`,
+          };
         }
+        if (empDetails.bankDetails[0].is_verified != 1) {
+          let strMessage: string;
+          if (empDetails.bankDetails[0].is_verified == 0) {
+            strMessage = 'Bank Account verification is pending for ';
+          } else if (empDetails.bankDetails[0].is_verified == 2) {
+            strMessage =
+              'Bank Account verification is rejected and reopen for update at stage for ';
+          } else {
+            strMessage =
+              'Bank Account detail not listed for verification yet. Please try after some time or check for entered detail for ';
+          }
 
-        return {
-          status: `{"result":[{"candidateNo":"${empDetails.basicDetails[0].form_No}","prospectusNo":"${empDetails.basicDetails[0].prospectus_no}","isError":true,"errorMsg":"${strMessage} (Form No- ${empDetails.basicDetails[0].form_No}),(Prospectus No- ${empDetails.basicDetails[0].prospectus_no})","regNo":""}]}`,
+          return {
+            status: `{"result":[{"candidateNo":"${empDetails.basicDetails[0].form_No}","prospectusNo":"${empDetails.basicDetails[0].prospectus_no}","isError":true,"errorMsg":"${strMessage} (Form No- ${empDetails.basicDetails[0].form_No}),(Prospectus No- ${empDetails.basicDetails[0].prospectus_no})","regNo":""}]}`,
+          };
+        }
+        let config = {
+          method: 'get',
+          url: 'http://10.10.1.222:81/api/common/GetAppToken',
+          headers: {
+            'content-type': 'text/plain',
+            'appname': 'Coresyncapi',
+          },
         };
-      }
-      let config = {
-        method: 'get',
-        url: 'http://10.10.1.222:81/api/common/GetAppToken',
-        headers: {
-          'content-type': 'text/plain',
-          'appname': 'Coresyncapi',
-        },
-      };
 
-      const tokenResponse = await axios.request(config).catch((error) => {
-        Logger.error({
-          clientId: loggedInUser.clientId,
-          src: 'common/GetAppToken',
-          error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
-          requestPayload: `formNo:${empDetails.formNo}`,
-          loggedBy: loggedInUser.userId,
-        });
-        error =
-          error.driverError || error.name == 'RequestError'
-            ? new CustomError('InternalServerError')
-            : error;
-        throw error;
-      });
-      let tokenKey: string = tokenResponse.data[0].token;
-      let configReq2 = {
-        method: 'post',
-        url: 'https://siscoresyncapi.sisgroup.in/api/ark',
-        headers: {
-          'content-type': 'application/json; charset=utf-8',
-          'Authorization': tokenKey,
-        },
-        data: JSON.stringify(empDetails),
-      };
-      const arkResponse: any = await axios
-        .request(configReq2)
-        .catch((error) => {
-          console.log(error);
+        const tokenResponse = await axios.request(config).catch((error) => {
           Logger.error({
             clientId: loggedInUser.clientId,
-            src: 'https://siscoresyncapi.sisgroup.in/api/ark',
+            src: 'common/GetAppToken',
             error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
             requestPayload: `formNo:${empDetails.formNo}`,
             loggedBy: loggedInUser.userId,
@@ -318,9 +295,40 @@ export class ICardService {
               : error;
           throw error;
         });
-      return {
-        status: arkResponse.data.result.status,
-      };
+        let tokenKey: string = tokenResponse.data[0].token;
+        let configReq2 = {
+          method: 'post',
+          url: 'https://siscoresyncapi.sisgroup.in/api/ark',
+          headers: {
+            'content-type': 'application/json; charset=utf-8',
+            'Authorization': tokenKey,
+          },
+          data: JSON.stringify(empDetails),
+        };
+        const arkResponse: any = await axios
+          .request(configReq2)
+          .catch((error) => {
+            Logger.error({
+              clientId: loggedInUser.clientId,
+              src: 'https://siscoresyncapi.sisgroup.in/api/ark',
+              error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+              requestPayload: `formNo:${empDetails.formNo}`,
+              loggedBy: loggedInUser.userId,
+            });
+            error =
+              error.driverError || error.name == 'RequestError'
+                ? new CustomError('InternalServerError')
+                : error;
+            throw error;
+          });
+        return {
+          status: arkResponse.data.result.status,
+        };
+      } else {
+        return {
+          status: [{ isError: true, errorMsg: 'Invalid Detail' }],
+        };
+      }
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,

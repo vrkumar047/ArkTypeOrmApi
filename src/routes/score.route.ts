@@ -14,10 +14,10 @@ scoreRoute.get(
   '/getScoerAndWeihtagePercent/:formNo/:desigCode',
   scoreCntrl.getScoerAndWeihtagePercent,
 );
-scoreRoute.get('/getScoreDetails/:action/:formNo', scoreCntrl.calculateScore);
+scoreRoute.get('/getScoreDetails/:action/:formNo', scoreCntrl.getScoreDetails);
 scoreRoute.get(
   '/getCondonationDetails/:action/:formNo/:branchCode/:unitCode/:customerName',
-  scoreCntrl.calculateScore,
+  scoreCntrl.getCondonationDetails,
 );
 scoreRoute.post('/addScoreDetails', scoreCntrl.addScoreDetails);
 scoreRoute.post('/applyCondonation', scoreCntrl.applyCondonation);
