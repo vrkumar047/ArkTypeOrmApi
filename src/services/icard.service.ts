@@ -253,7 +253,15 @@ export class ICardService {
       ) {
         if (empDetails.basicDetails[0].lsm_status != 'Approve') {
           return {
-            status: `{"result":[{"candidateNo":"${empDetails.basicDetails[0].form_No}","prospectusNo":"${empDetails.basicDetails[0].prospectus_no}","isError":true,"errorMsg":"UAN verification is pending for (Form No- ${empDetails.basicDetails[0].form_No}),(Prospectus No- ${empDetails.basicDetails[0].prospectus_no})","regNo":""}]}`,
+            status: [
+              {
+                candidateNo: `${empDetails.basicDetails[0].form_No}`,
+                prospectusNo: `${empDetails.basicDetails[0].prospectus_no}`,
+                isError: true,
+                errorMsg: `UAN verification is pending for (Form No- ${empDetails.basicDetails[0].form_No}),(Prospectus No- ${empDetails.basicDetails[0].prospectus_no})`,
+                regNo: '',
+              },
+            ],
           };
         }
         if (empDetails.bankDetails[0].is_verified != 1) {
@@ -269,7 +277,15 @@ export class ICardService {
           }
 
           return {
-            status: `{"result":[{"candidateNo":"${empDetails.basicDetails[0].form_No}","prospectusNo":"${empDetails.basicDetails[0].prospectus_no}","isError":true,"errorMsg":"${strMessage} (Form No- ${empDetails.basicDetails[0].form_No}),(Prospectus No- ${empDetails.basicDetails[0].prospectus_no})","regNo":""}]}`,
+            status: [
+              {
+                candidateNo: `${empDetails.basicDetails[0].form_No}`,
+                prospectusNo: `${empDetails.basicDetails[0].prospectus_no}`,
+                isError: true,
+                errorMsg: `${strMessage} (Form No- ${empDetails.basicDetails[0].form_No}),(Prospectus No- ${empDetails.basicDetails[0].prospectus_no})`,
+                regNo: '',
+              },
+            ],
           };
         }
         let config = {
@@ -322,11 +338,16 @@ export class ICardService {
             throw error;
           });
         return {
-          status: arkResponse.data.result.status,
+          status: arkResponse.data.result,
         };
       } else {
         return {
-          status: [{ isError: true, errorMsg: 'Invalid Detail' }],
+          status: [
+            {
+              isError: true,
+              errorMsg: 'Invalid Detail',
+            },
+          ],
         };
       }
     } catch (error: any) {
