@@ -7,6 +7,7 @@ import { Config } from '../helpers/config';
 import * as path from 'path';
 import * as http from 'http';
 import * as fs from 'fs';
+import { stat } from 'fs/promises';
 import moment from 'moment';
 import axios from 'axios';
 import * as crypto from 'crypto';
@@ -27,13 +28,15 @@ export class ICardService {
     try {
       let qrCodeString: string = `${qrDetail.fullName}\n${qrDetail.regNo}\n${qrDetail.lastEdu}${qrDetail.height},${qrDetail.weight},${qrDetail.bloodGroup}\n${qrDetail.doj}\n${qrDetail.expInMonth}\n${qrDetail.branchName}\n${qrDetail.cardExpiryDate}`;
       let segment: any = [{ data: qrCodeString.toUpperCase(), mode: 'Kanji' }];
-      QRCode.toDataURL(segment, function (err: any, url: any) {
-        if (err) {
-          throw err;
-        } else {
-          return { url: url };
-        }
-      });
+      // await QRCode.toDataURL(segment, function (err: any, url: any) {
+      //   if (err) {
+      //     throw err;
+      //   } else {
+      //     return { url: url };
+      //   }
+      // });
+      let url: string = await QRCode.toDataURL(segment);
+      return { url: url };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
@@ -50,12 +53,17 @@ export class ICardService {
     }
   }
 
-  async convertPdf(loggedInUser: any, empDetail: any): Promise<any> {
+  async convertPdf(loggedInUser: any, cardDetail: any): Promise<any> {
     try {
-      let empImage: string = baseApi + empDetail.empImage;
-      let empQrCode: string = empDetail.empQrCode;
-      let empSing: string = baseApi + empDetail.empSign;
-      let html: string = fs.readFileSync('./Uploads/public/Icard.html', 'utf8');
+      let empDetail: any = cardDetail.empDetail;
+      let empImage: string = baseApi + cardDetail.empImage;
+      let empQrCode: string = cardDetail.empQrCode;
+      let empSing: string = baseApi + cardDetail.empSign;
+      let filePath: string = path.join(
+        __dirname,
+        '../../Uploads/public/Icard.html',
+      );
+      let html: string = await fs.readFileSync(filePath, 'utf8');
       let htmlDOM: any = new JSDOM(html);
       htmlDOM.window.document.querySelector('#empImg').src = empImage;
       htmlDOM.window.document.querySelector('#empQrCode').src = empQrCode;
@@ -81,26 +89,31 @@ export class ICardService {
         height: '214',
         width: '331',
       };
-      var icardName = empDetail.form_No.replace('/', '-');
-      htmlPdf
-        .create(html, options)
-        .toFile(
-          './Uploads/icard/' + icardName + '_Icard.pdf',
-          function (err: any, result) {
+      let icardName: string = empDetail.form_No.replace('/', '-');
+      let pdfFilePath: string = path.join(
+        './Uploads/icard',
+        `${icardName}_Icard.pdf`,
+      );
+      console.log(pdfFilePath);
+      let result: any = await new Promise((resolve, reject) => {
+        htmlPdf
+          .create(html, options)
+          .toFile(pdfFilePath, (err: any, result: any) => {
             if (err) {
               Logger.error({
                 clientId: '',
-                src: 'card/convertPdf',
+                src: 'card/convertPdf, htmlPdf',
                 error: err.message,
               });
-              err = new CustomError('InternalServerError');
-              throw err;
+              reject(err);
             } else {
-              let fileName: string = result.filename.split('\\').reverse()[0];
-              return { filename: fileName };
+              resolve(result);
             }
-          },
-        );
+          });
+      });
+      //const fileName = result.filename ?? '';
+      return { filename: `${icardName}_Icard.pdf` };
+      //-----------------------------------------------
       // let companyDb = await GetCompanyDb(loggedInUser.secret);
       // let cardDetail: any = await companyDb.query(
       //   `EXEC ${constant.P_GetCardPrintDetails} @formNo = @0`,
@@ -112,7 +125,7 @@ export class ICardService {
         clientId: loggedInUser.clientId,
         src: 'card/convertPdf',
         error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
-        requestPayload: `${JSON.stringify(empDetail)}`,
+        requestPayload: `${JSON.stringify(cardDetail)}`,
         loggedBy: loggedInUser.userId,
       });
       error =

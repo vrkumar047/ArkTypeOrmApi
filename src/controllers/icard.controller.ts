@@ -11,7 +11,7 @@ export class ICardController {
           loggedInUser,
           qrDetail,
         );
-        res.locals.data = printedCardDetail;
+        res.locals.data = { url: printedCardDetail };
       } else {
         res.locals.error = 'Unauthorized';
       }
@@ -30,6 +30,8 @@ export class ICardController {
           loggedInUser,
           cardDetail,
         );
+        console.log('controller response');
+        console.log(printedCardDetail);
         res.locals.data = printedCardDetail;
       } else {
         res.locals.error = 'Unauthorized';
@@ -119,7 +121,7 @@ export class ICardController {
       } else {
         res.locals.error = 'Unauthorized';
       }
-    } catch (err) { 
+    } catch (err) {
       res.locals.error = err;
     }
     next();
