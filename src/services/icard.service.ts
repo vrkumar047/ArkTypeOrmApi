@@ -112,7 +112,7 @@ export class ICardService {
           });
       });
       //const fileName = result.filename ?? '';
-      return { filename: `${icardName}_Icard.pdf` };
+      return { filename: `icard/${icardName}_Icard.pdf` };
       //-----------------------------------------------
       // let companyDb = await GetCompanyDb(loggedInUser.secret);
       // let cardDetail: any = await companyDb.query(
