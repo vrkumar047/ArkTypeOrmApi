@@ -33,6 +33,7 @@ app.use((req, res, next) => {
   );
   next();
 });
+//------ to removed '/api/fileupload/upload' if '/api/fileupload/uploadDocFile' and '/api/fileupload/uploadEmpImg' are start working
 app.post('/api/fileupload/upload', (req, res) => {
   const form = new IncomingForm();
 
@@ -90,6 +91,140 @@ app.post('/api/fileupload/upload', (req, res) => {
           res.status(200).json({
             status: 200,
             filePath: `docfile/${filePath}`,
+          });
+        });
+      });
+    } catch (e: any) {
+      return res
+        .status(500)
+        .json({ error: 'Unexpected error', details: e.message });
+    }
+  });
+});
+app.post('/api/fileupload/uploadDocFile', (req, res) => {
+  const form = new IncomingForm();
+
+  form.parse(req, (err, fields, files: any) => {
+    if (err) {
+      return res
+        .status(400)
+        .json({ error: 'Form parse error', details: err.message });
+    }
+
+    try {
+      const uploadedFile = files.RemoteFile?.[0];
+
+      if (!uploadedFile) {
+        return res
+          .status(400)
+          .json({ error: 'No file uploaded under "RemoteFile"' });
+      }
+
+      fs.readFile(uploadedFile.filepath, (err, data) => {
+        if (err) {
+          return res.status(500).json({
+            error: 'Error reading uploaded file',
+            details: err.message,
+          });
+        }
+
+        const mmyy = moment().format('MMYY');
+        const filePath = `${clientId}/${mmyy}/${uploadedFile.originalFilename}`;
+        const folderPath = path.join(
+          __dirname,
+          `../Uploads/files/${clientId}/${mmyy}`,
+        );
+
+        if (!existsSync(folderPath)) {
+          mkdirSync(folderPath, { recursive: true });
+        }
+
+        const newPath = path.join(folderPath, uploadedFile.originalFilename);
+
+        fs.writeFile(newPath, data, (err) => {
+          if (err) {
+            return res
+              .status(500)
+              .json({ error: 'Error saving file', details: err.message });
+          }
+
+          // Clean up temp file
+          fs.unlink(uploadedFile.filepath, (unlinkErr) => {
+            if (unlinkErr && unlinkErr.code !== 'ENOENT') {
+              console.error('Error deleting temp file:', unlinkErr);
+            }
+          });
+
+          res.status(200).json({
+            status: 200,
+            filePath: `docfile/${filePath}`,
+          });
+        });
+      });
+    } catch (e: any) {
+      return res
+        .status(500)
+        .json({ error: 'Unexpected error', details: e.message });
+    }
+  });
+});
+app.post('/api/fileupload/uploadEmpImg', (req, res) => {
+  const form = new IncomingForm();
+
+  form.parse(req, (err, fields, files: any) => {
+    if (err) {
+      return res
+        .status(400)
+        .json({ error: 'Form parse error', details: err.message });
+    }
+
+    try {
+      const uploadedFile = files.RemoteFile?.[0];
+
+      if (!uploadedFile) {
+        return res
+          .status(400)
+          .json({ error: 'No file uploaded under "RemoteFile"' });
+      }
+
+      fs.readFile(uploadedFile.filepath, (err, data) => {
+        if (err) {
+          return res.status(500).json({
+            error: 'Error reading uploaded file',
+            details: err.message,
+          });
+        }
+
+        const mmyy = moment().format('MMYY');
+        const filePath = `${clientId}/${mmyy}/${uploadedFile.originalFilename}`;
+        const folderPath = path.join(
+          __dirname,
+          `../Uploads/picandsig/${clientId}/${mmyy}`,
+        );
+
+        if (!existsSync(folderPath)) {
+          mkdirSync(folderPath, { recursive: true });
+        }
+
+        const newPath = path.join(folderPath, uploadedFile.originalFilename);
+
+        fs.writeFile(newPath, data, (err) => {
+          if (err) {
+            return res
+              .status(500)
+              .json({ error: 'Error saving file', details: err.message });
+          }
+
+          // Clean up temp file
+          fs.unlink(uploadedFile.filepath, (unlinkErr) => {
+            if (unlinkErr && unlinkErr.code !== 'ENOENT') {
+              console.error('Error deleting temp file:', unlinkErr);
+            }
+          });
+
+          res.status(200).json({
+            status: 200,
+            filePath: `candimg/${filePath}`,
           });
         });
       });

@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { FileUploadService } from '../services/fileUpload.service';
+import { BlobFileService } from '../services/blobFile.service';
 const fileUploadService = new FileUploadService();
+const blobFileService = new BlobFileService();
 export class FileUploadController {
   async uploadDocumentFile(req: Request, res: Response, next: NextFunction) {
     try {
@@ -136,6 +138,48 @@ export class FileUploadController {
       } else {
         res.locals.error = 'Unauthorized';
       }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async uploadFileToS3(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      // if (loggedInUser) {
+        let applicationNo: string = req.body.applicationNo;
+        if (!req.file) throw new Error('No file uploaded');
+        if (applicationNo == undefined || applicationNo == '')
+          throw new Error('Application No. is required');
+        let uploadedFile: any = await blobFileService.uploadFile(
+          applicationNo,
+          req.file,
+        );
+        res.locals.data = uploadedFile;
+      // } else {
+      //   res.locals.error = 'Unauthorized';
+      // }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+  async getSignedUrl(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      // if (loggedInUser) {
+        let filePath: string = req.body.filePath;
+        if (filePath == undefined || filePath == '')
+          throw new Error('File path is required');
+        let signedUrl: any = await blobFileService.getFileUrl(
+          filePath
+        );
+        res.locals.data = signedUrl;
+      // } else {
+      //   res.locals.error = 'Unauthorized';
+      // }
     } catch (err) {
       res.locals.error = err;
     }

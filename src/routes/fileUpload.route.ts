@@ -2,9 +2,31 @@ import { Router } from 'express';
 import { FileUploadController } from '../controllers/fileUpload.controller';
 import { authenticate } from '../middlewares/authenticate.middleware';
 import { SchemaValidator } from '../middlewares/validateSchema.middleware';
+import multer, { FileFilterCallback } from 'multer';
 const validateRequest = SchemaValidator(true);
 const fileUploadRoute = Router();
 const fileUploadCntrl = new FileUploadController();
+const blobUpload = multer({
+    storage: multer.memoryStorage(), // store file in buffer
+    limits: {
+        fileSize: 5 * 1024 * 1024, // 5MB limit (optional)
+    },
+        fileFilter: (req, file, cb: FileFilterCallback) => {
+        const allowedMimeTypes = [
+            'image/jpeg',
+            'image/png',
+            'image/jpg',
+            'image/webp',
+            'application/pdf'
+        ];
+
+        if (allowedMimeTypes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only images and PDF files are allowed'));
+        }
+    }
+});
 
 //fileUploadRoute.use(authenticate);
 
@@ -47,5 +69,14 @@ fileUploadRoute.get(
   authenticate,
   fileUploadCntrl.getImageBase64,
 );
+
+fileUploadRoute.post(
+  '/uploadFileToS3', blobUpload.single("file"),  fileUploadCntrl.uploadFileToS3,
+);
+
+fileUploadRoute.post(
+  '/getSignedUrl', fileUploadCntrl.getSignedUrl,
+);
+
 
 export { fileUploadRoute };

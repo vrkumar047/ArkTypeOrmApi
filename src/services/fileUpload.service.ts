@@ -427,7 +427,7 @@ export class FileUploadService {
       let mmyy: string = moment().format('MMYY');
       let folderPath: string = path.join(
         __dirname,
-        `../../Uploads/files/${clientId}/${mmyy}`,
+        `../../Uploads/picandsig/${clientId}/${mmyy}`,
       );
       if (!existsSync(folderPath)) {
         mkdirSync(folderPath, { recursive: true });
@@ -446,14 +446,14 @@ export class FileUploadService {
             [
               'setSingature',
               formNo,
-              `docfile/${clientId}/${mmyy}/${imageName}.jpg`,
+              `candimg/${clientId}/${mmyy}/${imageName}.jpg`,
               loggedInUser.userId,
             ],
           );
           return {
             status: 1,
             msg: 'image uploaded',
-            imageName: `docfile/${clientId}/${mmyy}/${imageName}.jpg`,
+            imageName: `candimg/${clientId}/${mmyy}/${imageName}.jpg`,
           };
         },
       );
