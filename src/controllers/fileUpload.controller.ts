@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { FileUploadService } from '../services/fileUpload.service';
 import { BlobFileService } from '../services/blobFile.service';
+import { forEach } from 'lodash';
 const fileUploadService = new FileUploadService();
 const blobFileService = new BlobFileService();
 export class FileUploadController {
@@ -9,16 +10,28 @@ export class FileUploadController {
       let loggedInUser: any = req['currentUser'];
       if (loggedInUser) {
         req['clientId'] = loggedInUser.clientId;
-        let documentDetail: any = await fileUploadService.uploadDocumentFile(
-          loggedInUser,
-          req,
-          res,
+        // let documentDetail: any = await fileUploadService.uploadDocumentFile(
+        //   loggedInUser,
+        //   req,
+        //   res,
+        // );
+        let docsList: any[] = JSON.parse(req.body.docsList);
+        let documentDetail: any = await blobFileService.uploadFile(
+          req.params.formNo,
+          req.file,
         );
-        // let resp: any =
-        //   typeof documentDetail === 'object'
-        //     ? [documentDetail]
-        //     : documentDetail;
-        res.locals.data = documentDetail;
+        if (documentDetail && documentDetail.filePath.indexOf('SIS') != -1) {
+          documentDetail.formNo = req.params.formNo;
+          documentDetail.docCode = req.params.docCode;
+        } else {
+          throw Error('Unable to upload file');
+        }
+        let uploadedDocList = await fileUploadService.saveDocumentFile(
+          loggedInUser,
+          docsList,
+          documentDetail,
+        );
+        res.locals.data = uploadedDocList;
       } else {
         res.locals.error = 'Unauthorized';
       }
@@ -35,14 +48,20 @@ export class FileUploadController {
         let formNo: string = req.body.formNo;
         let docId: number = parseInt(req.body.docId ?? '0');
         let fileName: string = req.body.fileName;
+        let fileUrl: string = req.body.fileUrl;
         let docList: any[] = req.body.docsList ?? [];
-        let userImage: any = await fileUploadService.captureDocument(
+        let userImage: any[] = await fileUploadService.captureDocument(
           loggedInUser,
           formNo,
           docId,
           fileName,
           docList,
         );
+        if (userImage.length > 0) {
+          userImage.forEach((e) => {
+            e.fileUrl = fileUrl;
+          });
+        }
         res.locals.data = userImage;
       } else {
         res.locals.error = 'Unauthorized';
@@ -148,15 +167,15 @@ export class FileUploadController {
     try {
       let loggedInUser: any = req['currentUser'];
       // if (loggedInUser) {
-        let applicationNo: string = req.body.applicationNo;
-        if (!req.file) throw new Error('No file uploaded');
-        if (applicationNo == undefined || applicationNo == '')
-          throw new Error('Application No. is required');
-        let uploadedFile: any = await blobFileService.uploadFile(
-          applicationNo,
-          req.file,
-        );
-        res.locals.data = uploadedFile;
+      let applicationNo: string = req.body.applicationNo;
+      if (!req.file) throw new Error('No file uploaded');
+      if (applicationNo == undefined || applicationNo == '')
+        throw new Error('Application No. is required');
+      let uploadedFile: any = await blobFileService.uploadFile(
+        applicationNo,
+        req.file,
+      );
+      res.locals.data = uploadedFile;
       // } else {
       //   res.locals.error = 'Unauthorized';
       // }
@@ -170,13 +189,11 @@ export class FileUploadController {
     try {
       let loggedInUser: any = req['currentUser'];
       // if (loggedInUser) {
-        let filePath: string = req.body.filePath;
-        if (filePath == undefined || filePath == '')
-          throw new Error('File path is required');
-        let signedUrl: any = await blobFileService.getFileUrl(
-          filePath
-        );
-        res.locals.data = signedUrl;
+      let filePath: string = req.body.filePath;
+      if (filePath == undefined || filePath == '')
+        throw new Error('File path is required');
+      let signedUrl: any = await blobFileService.getFileUrl(filePath);
+      res.locals.data = signedUrl;
       // } else {
       //   res.locals.error = 'Unauthorized';
       // }
