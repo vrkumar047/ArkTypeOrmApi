@@ -55,6 +55,34 @@ export class BlobFileService {
     }
   }
 
+  async uploadBase64(
+    applicationNo: string,
+    fileName: string,
+    base64: string,
+  ): Promise<any> {
+    try {
+      let year = moment().format('YYYY'); // e.g. 2026
+      let month = moment().format('MM');
+      let s3filePath: string = `SIS/${year}/${month}/${applicationNo}/${fileName}`;
+      const base64Data = base64.replace(/^data:image\/png;base64,/, '');
+      const buffer = Buffer.from(base64Data, 'base64');
+      const params = {
+        Bucket: blobBucketName,
+        Key: s3filePath,
+        Body: buffer,
+        ContentEncoding: 'base64',
+        ContentType: 'image/jpg',
+      };
+      const command = new PutObjectCommand(params);
+      let uploadedFile: any = await s3Client.send(command);
+      uploadedFile.actualFilePath = `${s3filePath}`;
+      return { filePath: uploadedFile.actualFilePath, eTag: uploadedFile.ETag };
+    } catch (err) {
+      console.error('Error uploading in s3 :', err);
+      return err;
+    }
+  }
+
   async uploadPdfFile(fileName: string, filePath: string): Promise<any> {
     try {
       let year = moment().format('YYYY'); // e.g. 2026

@@ -137,7 +137,7 @@ export class FileUploadService {
       });
     });
   };
-  // //------------- uploading document file to S3
+  // //------------- uploading document file on S3 Server
   saveDocumentFile = async (
     loggedInUser: any,
     docsList: any[],
@@ -260,7 +260,7 @@ export class FileUploadService {
     }
   }
 
-  // //----------------- this will generate pdf if file will upload to same server
+  // //----------------- this will generate pdf if files are uploaded on same server
   async generatePdf_1(loggedInUser: any, formNo: string): Promise<any> {
     try {
       let _filePath: string = '';
@@ -426,7 +426,7 @@ export class FileUploadService {
       throw error;
     }
   }
-  // //----------------- this will generate pdf if file will upload to S3 server
+  // //----------------- this will generate pdf if files are uploaded on S3 server
   async generatePdf(loggedInUser: any, formNo: string): Promise<any> {
     try {
       let _filePath: string = '';
@@ -633,8 +633,8 @@ export class FileUploadService {
       throw error;
     }
   }
-
-  async captureSingature(loggedInUser: any, fileDetail: any): Promise<any> {
+  // ------------------------------- save file on same server
+  async captureSingature_1(loggedInUser: any, fileDetail: any): Promise<any> {
     try {
       let base64Data: string = fileDetail.base64.replace(
         /^data:image\/png;base64,/,
@@ -693,7 +693,54 @@ export class FileUploadService {
     }
   }
 
-  // ------------------------------- working for file is on same server
+  // ------------------------------- save file on S3 server
+  async captureSingature(loggedInUser: any, fileDetail: any): Promise<any> {
+    try {
+      let base64Data: string = fileDetail.base64;
+      let formNo: string = fileDetail.formNo;
+      let imageId: string = fileDetail.imageId;
+      let encodedFormNo: string = formNo.replace('/', '-');
+      let imageName: string = `${encodedFormNo}_${imageId}.jpg`;
+      let formBaseNo: string = formNo.split('/')[0];
+      let uploadedFile: any = await blobFileService.uploadBase64(
+        formBaseNo,
+        imageName,
+        base64Data,
+      );
+      if (
+        uploadedFile != undefined &&
+        uploadedFile.filePath.indexOf('SIS') != -1
+      ) {
+        let companyDb = await GetCompanyDb(loggedInUser.secret);
+        let fileDetail: any = await companyDb.query(
+          `EXEC ${constant.P_UpdateEmployeePicDetails} @action = @0, @formNo = @1, @signPic = @2, @userId = @3`,
+          ['setSingature', formNo, uploadedFile.filePath, loggedInUser.userId],
+        );
+        return {
+          status: 1,
+          msg: 'image uploaded',
+          imageName: uploadedFile.filePath,
+        };
+      } else {
+        throw Error('Unable to upload signature');
+      }
+    } catch (error: any) {
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'fileupload/captureSingature',
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        requestPayload: `${JSON.stringify(fileDetail)}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
+      throw error;
+    }
+  }
+
+  // ------------------------------- save file on same server
   async getImageBase64_1(
     loggedInUser: any,
     formNo: string,
@@ -763,7 +810,7 @@ export class FileUploadService {
     }
   }
 
-  //------------------------------------- working for file is on S3 server
+  //------------------------------------- save file on S3 server
   async getImageBase64(
     loggedInUser: any,
     formNo: string,
