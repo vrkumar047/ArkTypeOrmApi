@@ -16,8 +16,9 @@ export class FileUploadController {
         //   res,
         // );
         let docsList: any[] = JSON.parse(req.body.docsList);
+        let formNo: string = (req.params.formNo ?? '').split('/')[0];
         let documentDetail: any = await blobFileService.uploadFile(
-          req.params.formNo,
+          formNo,
           req.file,
         );
         if (documentDetail && documentDetail.filePath.indexOf('SIS') != -1) {
@@ -84,7 +85,6 @@ export class FileUploadController {
           loggedInUser,
           formNo,
         );
-        console.log(userImage);
         res.locals.data = userImage;
       } else {
         res.locals.error = 'Unauthorized';

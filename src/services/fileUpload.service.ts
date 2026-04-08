@@ -492,7 +492,6 @@ export class FileUploadService {
 
               uploadedFormList.push(obj);
             }
-            //console.log('My Seq : ' + uploadedFormList.length+1);
           }
         }
       }
@@ -503,14 +502,10 @@ export class FileUploadService {
           size: 'A4', // 'A4' [450,500]
           margin: 5,
         });
-        let mmyy: string = moment().format('MMYY');
         let folderPath: string = path.join(
           __dirname,
-          `../../Uploads/pdfs/${clientId}/${mmyy}`,
+          `../../Uploads/pdfs/${clientId}`,
         );
-        if (!existsSync(folderPath)) {
-          mkdirSync(folderPath, { recursive: true });
-        }
         var encodedFormNo = formNo.replace('/', '-');
         let pdfFileName: string = `${encodedFormNo}_doc.pdf`;
         var inputFilePath = path.join(`${folderPath}/${pdfFileName}`);
@@ -698,6 +693,77 @@ export class FileUploadService {
     }
   }
 
+  // ------------------------------- working for file is on same server
+  async getImageBase64_1(
+    loggedInUser: any,
+    formNo: string,
+    fileSeq: number,
+  ): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let fileDetail: any = await companyDb.query(
+        `EXEC ${constant.P_FileDetailsFormWise} @action = @0, @formNo = @1`,
+        ['pdfdetails', formNo],
+      );
+      let fileUrl: string = fileDetail[0].file_path;
+
+      fileUrl = fileUrl.replace('docpdf/', '');
+      let inputFilePath: string = path.join(
+        __dirname,
+        '../../Uploads/pdfs/' + fileUrl,
+      );
+      let outputfleName: string = path.basename(
+        inputFilePath,
+        path.extname(inputFilePath),
+      );
+      let outputFilePath = path.join(
+        __dirname,
+        '../../Uploads/tmpSign/' + outputfleName,
+      );
+      let opts = {
+        format: 'jpeg',
+        out_dir: path.dirname(outputFilePath),
+        out_prefix: path.basename(inputFilePath, path.extname(inputFilePath)),
+        page: fileSeq,
+      };
+      let imageAsBase64;
+      await convert(inputFilePath, opts)
+        .then((fileInfo) => {
+          var fileName =
+            outputFilePath + '-' + ('00' + fileSeq).slice(-2) + '.jpg';
+          var inputFilePath = path.join(
+            __dirname,
+            '../../Uploads/pdfs/' + fileUrl,
+          );
+          if (fs.existsSync(fileName)) {
+            const fileBuffer = fs.readFileSync(fileName);
+            const base64 = fileBuffer.toString('base64');
+            const ext = path.extname(fileName).slice(1); // e.g., 'png', 'jpg'
+            imageAsBase64 = `data:image/${ext};base64,${base64}`;
+          }
+        })
+        .catch((err) => {
+          throw err;
+        });
+      let res: any = { data: imageAsBase64 };
+      return res;
+    } catch (error: any) {
+      Logger.error({
+        clientId: loggedInUser.clientId,
+        src: 'fileupload/getImageBase64',
+        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        requestPayload: `formNo : ${formNo}, fileSeq : ${fileSeq}`,
+        loggedBy: loggedInUser.userId,
+      });
+      error =
+        error.driverError || error.name == 'RequestError'
+          ? new CustomError('InternalServerError')
+          : error;
+      throw error;
+    }
+  }
+
+  //------------------------------------- working for file is on S3 server
   async getImageBase64(
     loggedInUser: any,
     formNo: string,
@@ -710,11 +776,16 @@ export class FileUploadService {
         ['pdfdetails', formNo],
       );
       let fileUrl: string = fileDetail[0].file_path;
-      fileUrl = fileUrl.replace('docpdf/', '');
+      let fileName: string = fileUrl.split('/').pop();
       let inputFilePath: string = path.join(
         __dirname,
-        '../../Uploads/pdfs/' + fileUrl,
+        `../../Uploads/pdfs/${clientId}/${fileName}`,
       );
+      if (!fs.existsSync(inputFilePath)) {
+        let imageBuffer = await blobFileService.getImageBuffer(fileUrl);
+        await fs.promises.writeFile(inputFilePath, imageBuffer);
+      }
+
       let outputfleName: string = path.basename(
         inputFilePath,
         path.extname(inputFilePath),
