@@ -16,6 +16,7 @@ import { Readable } from 'stream';
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const {
   http_port,
+  alt_http_port,
   tcp_port,
   mqtt_host,
   mqtt_port,
@@ -144,7 +145,7 @@ app.post('/api/fileupload/upload', (req, res) => {
 });
 //#endregion ------------------------ uploading file to S3 server through dynamsoft
 //#region ------------------------ uploading file to same server through dynamsoft
-app.post('/api/fileupload/uploadDocFile_old', (req, res) => {
+app.post('/api/fileupload/uploadLocalDocFile', (req, res) => {
   const form = new IncomingForm();
 
   form.parse(req, async (err, fields, files: any) => {
@@ -314,12 +315,44 @@ app.post('/api/fileupload/uploadEmpImg', (req, res) => {
     }
   });
 });
+
+app.get('/testRequestTimeOut', async (req, res) => {
+    await new Promise(resolve => setTimeout(resolve, 300000));
+    res.json({ success: true });
+});
 app.use(CustomResponse);
 //--------------------------------------------------------------------------------------------- HTTP Server
 const httpServer = createServer(app);
-
+//const altHttpServer = createServer(app);
+httpServer.requestTimeout = 5 * 60 * 1000; // for 5 minute
 httpServer.listen(http_port, async () => {
   console.log(`HTTP server is running on http://localhost:${http_port}`);
   //connectMqtt();
 });
+
+// altHttpServer.listen(alt_http_port, async () => {
+//   console.log(`HTTP server is running on https://localhost:${alt_http_port}`);
+//   //connectMqtt();
+// });
+
 //--------------------------------------------------------------------------------------------- end HTTP Serve r
+//--------------------------------------------------------for handling global 'unhandledRejection' and 'uncaughtException' error
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('========== UNHANDLED REJECTION ==========');
+  console.error('Reason:', reason);
+  console.error('Promise:', promise);
+
+  if (reason instanceof Error) {
+    console.error('Message:', reason.message);
+    console.error('Stack:', reason.stack);
+  }
+
+  console.error('==========================================');
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('========== UNCAUGHT EXCEPTION ==========');
+  console.error(error);
+  console.error('Stack:', error.stack);
+  console.error('========================================');
+});

@@ -7,6 +7,11 @@ const validateRequest = SchemaValidator(true);
 const commonRoute = Router();
 const commonCntrl = new CommonController();
 
+commonRoute.get('/getMachines', commonCntrl.getMachines);
+commonRoute.get('/getInstalledMachines', commonCntrl.getInstalledMachines);
+commonRoute.get('/getRecruitmentCount', commonCntrl.getRecruitmentCount);
+commonRoute.get('/GetAppToken', commonCntrl.getAppToken);
+commonRoute.get('/UpdateAppToken', commonCntrl.updateAppToken);
 commonRoute.use(authenticate);
 commonRoute.get(
   '/getDashboardDetails/:action/:role/:userId',
@@ -214,8 +219,8 @@ commonRoute.post(
 
 commonRoute.get('/GetReportList/:userId', commonCntrl.getReportList);
 
-commonRoute.get('/GetAppToken', commonCntrl.getAppToken);
 
-commonRoute.get('/UpdateAppToken', commonCntrl.updateAppToken);
+
+
 
 export { commonRoute };

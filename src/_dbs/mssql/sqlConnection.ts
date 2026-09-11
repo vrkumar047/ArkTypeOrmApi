@@ -10,6 +10,7 @@ dotenv.config();
 let { db_host, db_port, db_name, db_user, db_password, node_env } = process.env;
 
 let CompanyDb: DataSource | null = null;
+let pool: sql.ConnectionPool | null = null;
 
 const GetCompanyDb = async (secret: string = ''): Promise<DataSource> => {
   if (CompanyDb && CompanyDb.isInitialized) return CompanyDb; // Ensure singleton
@@ -42,17 +43,20 @@ const GetCompanyDb = async (secret: string = ''): Promise<DataSource> => {
       options: {
         encrypt: false, // true if you're using Azure or SSL
         enableArithAbort: true,
+        appName: "Recruitment-App",
       },
       keepAlive: true,
       max: 50,
       min: 10,
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 5000,
+      idleTimeoutMillis: 120000,
+      connectionTimeoutMillis: 120000,
     },
   });
 
   try {
     await CompanyDb.initialize();
+    const driver: any = CompanyDb.driver;
+    pool = driver.master;
     // console.log('Database connected successfully!');
     return CompanyDb;
   } catch (error) {
@@ -62,29 +66,91 @@ const GetCompanyDb = async (secret: string = ''): Promise<DataSource> => {
   }
 };
 
+async function getMssqlPool(): Promise<sql.ConnectionPool> {
+  if (pool && pool.connected) {
+    return pool;
+  }
+
+  if (pool && pool.connecting) {
+    return pool;
+  }
+
+  const config: sql.config = {
+    user: db_user,
+    password: db_password,
+    server: db_host!,
+    database: db_name,
+    port: Number(db_port || 1433),
+
+    pool: {
+      max: 20,
+      min: 2,
+      idleTimeoutMillis: 120000,
+    },
+
+    options: {
+      encrypt: false,
+      trustServerCertificate: true,
+    },
+  };
+
+  pool = await sql.connect(config);
+
+  return pool;
+}
+
+// async function getResultSets(
+//   dataSource: DataSource,
+//   procedureName: string,
+//   parameters: { [key: string]: any } = {},
+// ): Promise<any> {
+//   const queryRunner = dataSource.createQueryRunner();
+//   await queryRunner.connect();
+
+//   try {
+//     const driver: any = queryRunner.connection.driver;
+//     const rawPool = driver.master as sql.ConnectionPool;
+//     const request = rawPool.request();
+
+//     // Add parameters to the request
+//     for (const [key, value] of Object.entries(parameters)) {
+//       request.input(key, value);
+//     }
+
+//     const result = await request.execute(procedureName);
+//     return result.recordsets;
+//   } finally {
+//     await queryRunner.release();
+//   }
+// }
+
 async function getResultSets(
   dataSource: DataSource,
   procedureName: string,
   parameters: { [key: string]: any } = {},
 ): Promise<any> {
-  const queryRunner = dataSource.createQueryRunner();
-  await queryRunner.connect();
 
-  try {
-    const driver: any = queryRunner.connection.driver;
-    const rawPool = driver.master as sql.ConnectionPool;
-    const request = rawPool.request();
-
-    // Add parameters to the request
-    for (const [key, value] of Object.entries(parameters)) {
-      request.input(key, value);
-    }
-
-    const result = await request.execute(procedureName);
-    return result.recordsets;
-  } finally {
-    await queryRunner.release();
+  if (!dataSource.isInitialized) {
+    console.log('Database connection issue dbSource is not initialized ');
+    //throw new Error('DataSource is not initialized');
   }
+
+  // Get TypeORM's existing MSSQL connection pool
+  const driver: any = dataSource.driver;
+  const rawPool = driver.master as sql.ConnectionPool;
+
+  // Use the existing pool
+  const request = rawPool.request();
+
+  // Add parameters
+  for (const [key, value] of Object.entries(parameters)) {
+    request.input(key, value);
+  }
+
+  // Execute stored procedure
+  const result = await request.execute(procedureName);
+
+  return result.recordsets;
 }
 
 export { GetCompanyDb, ILike, Like, In, Not, Raw, getResultSets };

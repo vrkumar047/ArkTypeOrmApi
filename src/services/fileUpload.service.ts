@@ -1,21 +1,21 @@
-import { GetCompanyDb, getResultSets } from '../_dbs/mssql/sqlConnection';
-import { plainToClass } from 'class-transformer';
-import constant from '../_dbs/mssql/constant';
-import Logger from '../utils/logger';
-import { CustomError } from '../helpers/customError';
-import { create } from 'xmlbuilder2';
-import PDFDocument from 'pdfkit';
-import axios from 'axios';
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
-import { existsSync, mkdirSync } from 'fs';
-import * as mime from 'mime-types';
-import moment from 'moment';
-import dotenv from 'dotenv';
-import { convert } from 'pdf-poppler';
-import { BlobFileService } from '../services/blobFile.service';
-import { PassThrough } from 'stream';
+import { GetCompanyDb, getResultSets } from "../_dbs/mssql/sqlConnection";
+import { plainToClass } from "class-transformer";
+import constant from "../_dbs/mssql/constant";
+import Logger from "../utils/logger";
+import { CustomError } from "../helpers/customError";
+import { create } from "xmlbuilder2";
+import PDFDocument from "pdfkit";
+import axios from "axios";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import { existsSync, mkdirSync } from "fs";
+import * as mime from "mime-types";
+import moment from "moment";
+import dotenv from "dotenv";
+import { convert } from "pdf-poppler";
+import { BlobFileService } from "../services/blobFile.service";
+import { PassThrough } from "stream";
 dotenv.config();
 //process.env.FONTCONFIG_FILE = path.resolve('./Uploads/fonts/fonts.conf');
 
@@ -26,10 +26,10 @@ export class FileUploadService {
   //#region ---------------------------------------------------------------- document image storage
   fileStorage = multer.diskStorage({
     destination: function (req: any, file: any, cb) {
-      let mmyy: string = moment().format('MMYY');
+      let mmyy: string = moment().format("MMYY");
       let folderPath: string = path.join(
         __dirname,
-        `../../Uploads/files/${clientId}/${mmyy}`,
+        `../../Uploads/files/${clientId}/${mmyy}`
       );
       if (!existsSync(folderPath)) {
         mkdirSync(folderPath, { recursive: true });
@@ -37,10 +37,10 @@ export class FileUploadService {
       cb(null, folderPath);
     },
     filename: function (req: any, file: any, cb) {
-      let splitedFileName: string[] = file.originalname.split('.');
+      let splitedFileName: string[] = file.originalname.split(".");
       let fileExt: string = splitedFileName[splitedFileName.length - 1];
       //let newFileName: string = req.params.formNo.replace('/', '-');
-      let newFileName: string = `${moment().format('HHmmss')}`;
+      let newFileName: string = `${moment().format("HHmmss")}`;
       //cb(null, `${newFileName}_doc_${req.params.docCode}.${fileExt}`);
       cb(null, `${newFileName}_doc_1.${fileExt}`);
     },
@@ -48,18 +48,18 @@ export class FileUploadService {
 
   fileFilters = (req: any, file: any, cb: any) => {
     if (
-      file.mimetype == 'image/jpeg' ||
-      file.mimetype == 'image/jpg' ||
-      file.mimetype == 'image/png' ||
-      file.mimetype == 'image/gif'
+      file.mimetype == "image/jpeg" ||
+      file.mimetype == "image/jpg" ||
+      file.mimetype == "image/png" ||
+      file.mimetype == "image/gif"
     ) {
       cb(null, true);
     } else {
-      cb(null, false, new Error('Wrong MIME Type'));
+      cb(null, false, new Error("Wrong MIME Type"));
       req.modelError = {
         details: [
           {
-            message: 'Unsupported file extension',
+            message: "Unsupported file extension",
           },
         ],
       };
@@ -78,59 +78,59 @@ export class FileUploadService {
     return new Promise((resolve, reject) => {
       this.uploadFile(req, res, async (err) => {
         let fileDetail: any,
-          actualFilePath: string = '',
-          actualFileName: string = '',
-          originalName: string = '';
+          actualFilePath: string = "",
+          actualFileName: string = "",
+          originalName: string = "";
         if (err) {
           return reject(err);
         }
         if (req.modelError) {
           return res.status(422).json({
-            status: 'fail',
+            status: "fail",
             error: req.modelError,
           });
         } else if (req.files) {
           fileDetail = req.files[0];
-          let filePath: string = '';
+          let filePath: string = "";
           if (fileDetail != undefined) {
             originalName =
               fileDetail.originalname != undefined
                 ? fileDetail.originalname
-                : '';
-            filePath = fileDetail.path.replace(/\\/g, '/');
-            let arrFileName: string[] = filePath.split('/');
+                : "";
+            filePath = fileDetail.path.replace(/\\/g, "/");
+            let arrFileName: string[] = filePath.split("/");
             actualFileName = arrFileName[arrFileName.length - 1];
-            let mmyy: string = moment().format('MMYY');
+            let mmyy: string = moment().format("MMYY");
             actualFilePath = `docfile/${clientId}/${mmyy}/${actualFileName}`;
           }
           let docsList: any = JSON.parse(req.body.docsList);
-          const xmlDoc = create().ele('docList');
+          const xmlDoc = create().ele("docList");
 
-          docsList.forEach((doc) => {
-            const leafNode = xmlDoc.ele('doc');
-            leafNode.ele('formNo').txt(req.params.formNo);
-            leafNode.ele('docTypeId').txt(doc.docTypeId);
-            leafNode.ele('docId').txt(req.params.docCode);
-            leafNode.ele('authority').txt(doc.authority);
-            leafNode.ele('docNo').txt(doc.docNo);
-            leafNode.ele('remarks').txt(doc.remarks);
-            leafNode.ele('validFrom').txt(doc.validFrom);
-            leafNode.ele('validTo').txt(doc.validTo);
-            leafNode.ele('licenseType').txt(doc.licenseType);
-            leafNode.ele('issuingState').txt(doc.issuingState);
-            leafNode.ele('areaOfUse').txt(doc.areaOfUse);
-            leafNode.ele('placeOfUse').txt(doc.placeOfUse);
-            leafNode.ele('file_path').txt(actualFilePath);
+          docsList.forEach((doc: any) => {
+            const leafNode = xmlDoc.ele("doc");
+            leafNode.ele("formNo").txt(req.params.formNo);
+            leafNode.ele("docTypeId").txt(doc.docTypeId);
+            leafNode.ele("docId").txt(req.params.docCode);
+            leafNode.ele("authority").txt(doc.authority);
+            leafNode.ele("docNo").txt(doc.docNo);
+            leafNode.ele("remarks").txt(doc.remarks);
+            leafNode.ele("validFrom").txt(doc.validFrom);
+            leafNode.ele("validTo").txt(doc.validTo);
+            leafNode.ele("licenseType").txt(doc.licenseType);
+            leafNode.ele("issuingState").txt(doc.issuingState);
+            leafNode.ele("areaOfUse").txt(doc.areaOfUse);
+            leafNode.ele("placeOfUse").txt(doc.placeOfUse);
+            leafNode.ele("file_path").txt(actualFilePath);
           });
           let xmlString: string = xmlDoc.end({
             headless: true,
             prettyPrint: true,
           });
-          xmlString = xmlString.replace(/[\r\n]+/g, '').trim();
+          xmlString = xmlString.replace(/[\r\n]+/g, "").trim();
           let companyDb = await GetCompanyDb(loggedInUser.secret);
           let documentDetail: any = await companyDb.query(
             `EXEC ${constant.P_UpdateUploadedFileList} @action = @0, @docsList = @1`,
-            ['insert', xmlString],
+            ["insert", xmlString]
           );
           resolve(documentDetail);
         }
@@ -141,40 +141,53 @@ export class FileUploadService {
   saveDocumentFile = async (
     loggedInUser: any,
     docsList: any[],
-    documentDetail: any,
+    documentDetail: any
   ) => {
     try {
-      const xmlDoc = create().ele('docList');
+      const xmlDoc = create().ele("docList");
 
       docsList.forEach((doc) => {
-        const leafNode = xmlDoc.ele('doc');
-        leafNode.ele('formNo').txt(documentDetail.formNo);
-        leafNode.ele('docTypeId').txt(doc.docTypeId);
-        leafNode.ele('docId').txt(documentDetail.docCode);
-        leafNode.ele('authority').txt(doc.authority);
-        leafNode.ele('docNo').txt(doc.docNo);
-        leafNode.ele('remarks').txt(doc.remarks);
-        leafNode.ele('validFrom').txt(doc.validFrom);
-        leafNode.ele('validTo').txt(doc.validTo);
-        leafNode.ele('licenseType').txt(doc.licenseType);
-        leafNode.ele('issuingState').txt(doc.issuingState);
-        leafNode.ele('areaOfUse').txt(doc.areaOfUse);
-        leafNode.ele('placeOfUse').txt(doc.placeOfUse);
-        leafNode.ele('file_path').txt(documentDetail.filePath);
+        const leafNode = xmlDoc.ele("doc");
+        leafNode.ele("formNo").txt(documentDetail.formNo);
+        leafNode.ele("docTypeId").txt(doc.docTypeId);
+        leafNode.ele("docId").txt(documentDetail.docCode);
+        leafNode.ele("authority").txt(doc.authority);
+        leafNode.ele("docNo").txt(doc.docNo);
+        leafNode.ele("remarks").txt(doc.remarks);
+        leafNode.ele("validFrom").txt(doc.validFrom);
+        leafNode.ele("validTo").txt(doc.validTo);
+        leafNode.ele("licenseType").txt(doc.licenseType);
+        leafNode.ele("issuingState").txt(doc.issuingState);
+        leafNode.ele("areaOfUse").txt(doc.areaOfUse);
+        leafNode.ele("placeOfUse").txt(doc.placeOfUse);
+        leafNode.ele("file_path").txt(documentDetail.filePath);
       });
       let xmlString: string = xmlDoc.end({
         headless: true,
         prettyPrint: true,
       });
-      xmlString = xmlString.replace(/[\r\n]+/g, '').trim();
+      xmlString = xmlString.replace(/[\r\n]+/g, "").trim();
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let savedDocumentDetail: any = await companyDb.query(
         `EXEC ${constant.P_UpdateUploadedFileList} @action = @0, @docsList = @1`,
-        ['insert', xmlString],
+        ["insert", xmlString]
       );
       return savedDocumentDetail;
     } catch (err: any) {
-      throw err;
+      if(err.name != undefined && err.name =='QueryFailedError')
+      {
+        return {
+          isError: true,
+          errMsg: err.message,
+        };
+      }
+      else {
+        let customError:any={
+          isError: true,
+          errMsg: err.message,
+        }
+        throw customError;
+      }
     }
   };
   //#endregion ---------------------------------------------------------------- document image storage
@@ -183,26 +196,32 @@ export class FileUploadService {
     loggedInUser: any,
     formNo: string,
     docId: number,
-    seq: number,
+    seq: number
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let fileSequence: any = await companyDb.query(
         `EXEC ${constant.P_SetFileSequence} @formNo = @0, @docId = @1, @sequence = @2`,
-        [formNo, docId, seq],
+        [formNo, docId, seq]
       );
       return fileSequence;
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'fileupload/setFileSequence',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "fileupload/setFileSequence",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `formNo : ${formNo}, docId : ${docId}, seq : ${seq}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -213,70 +232,87 @@ export class FileUploadService {
     formNo: string,
     docId: number,
     fileName: string,
-    docsList: any[] = [],
+    docsList: any[] = []
   ): Promise<any> {
     try {
-      const xmlDoc = create().ele('docList');
+      const xmlDoc = create().ele("docList");
 
       docsList.forEach((doc) => {
-        const leafNode = xmlDoc.ele('doc');
-        leafNode.ele('formNo').txt(formNo);
-        leafNode.ele('docTypeId').txt(doc.docTypeId);
-        leafNode.ele('docId').txt(docId.toString());
-        leafNode.ele('authority').txt(doc.authority);
-        leafNode.ele('docNo').txt(doc.docNo);
-        leafNode.ele('remarks').txt(doc.remarks);
-        leafNode.ele('validFrom').txt(doc.validFrom);
-        leafNode.ele('validTo').txt(doc.validTo);
-        leafNode.ele('licenseType').txt(doc.licenseType);
-        leafNode.ele('issuingState').txt(doc.issuingState);
-        leafNode.ele('areaOfUse').txt(doc.areaOfUse);
-        leafNode.ele('placeOfUse').txt(doc.placeOfUse);
-        leafNode.ele('file_path').txt(fileName);
+        const leafNode = xmlDoc.ele("doc");
+        leafNode.ele("formNo").txt(formNo);
+        leafNode.ele("docTypeId").txt(doc.docTypeId);
+        leafNode.ele("docId").txt(docId.toString());
+        leafNode.ele("authority").txt(doc.authority);
+        leafNode.ele("docNo").txt(doc.docNo);
+        leafNode.ele("remarks").txt(doc.remarks);
+        leafNode.ele("validFrom").txt(doc.validFrom);
+        leafNode.ele("validTo").txt(doc.validTo);
+        leafNode.ele("licenseType").txt(doc.licenseType);
+        leafNode.ele("issuingState").txt(doc.issuingState);
+        leafNode.ele("areaOfUse").txt(doc.areaOfUse);
+        leafNode.ele("placeOfUse").txt(doc.placeOfUse);
+        leafNode.ele("file_path").txt(fileName);
       });
 
       let xmlString: string = xmlDoc.end({ headless: true, prettyPrint: true });
-      xmlString = xmlString.replace(/[\r\n]+/g, '').trim();
+      xmlString = xmlString.replace(/[\r\n]+/g, "").trim();
 
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let documentDetail: any = await companyDb.query(
         `EXEC ${constant.P_UpdateUploadedFileList} @action = @0, @docsList = @1`,
-        ['insert', xmlString],
+        ["insert", xmlString]
       );
       return documentDetail;
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'fileupload/captureDocument',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
-        requestPayload: `formNo : ${formNo}, docId : ${docId}, fileName : ${fileName}, docsList : ${JSON.stringify(docsList)}`,
+        src: "fileupload/captureDocument",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
+        requestPayload: `formNo : ${formNo}, docId : ${docId}, fileName : ${fileName}, docsList : ${JSON.stringify(
+          docsList
+        )}`,
         loggedBy: loggedInUser.userId,
       });
-      error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
-          : error;
-      throw error;
+      if(error.name != undefined && error.name =='QueryFailedError')
+      {
+        return {
+          isError: true,
+          errMsg: error.message,
+        };
+      }
+      else {
+        let customError:any={
+          isError: true,
+          errMsg: error.message,
+        }
+        throw customError;
+      }
     }
   }
 
   // //----------------- this will generate pdf if files are uploaded on same server
   async generatePdf_1(loggedInUser: any, formNo: string): Promise<any> {
     try {
-      let _filePath: string = '';
-      var _docname: string = '';
+      let _filePath: string = "";
+      var _docname: string = "";
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let totalUploadedFormList: any[] = await companyDb.query(
         `EXEC ${constant.P_GetUploadedFiles} @formNo = @0`,
-        [formNo],
+        [formNo]
       );
       let uploadedFormList: any[] = [];
       if (totalUploadedFormList && totalUploadedFormList.length > 0) {
         for (let i = 0; i < totalUploadedFormList.length; i++) {
           var prevdocid = 0;
-          var prevfilename = '';
+          var prevfilename = "";
           var doc_used = 0;
-          _docname = '';
+          _docname = "";
 
           if (i == 0) {
             prevdocid = totalUploadedFormList[i].doc_id;
@@ -287,7 +323,7 @@ export class FileUploadService {
             for (var j = i + 1; j < totalUploadedFormList.length; j++) {
               if (totalUploadedFormList[j].doc_id == prevdocid) {
                 _docname =
-                  _docname + totalUploadedFormList[j].document_type + ', ';
+                  _docname + totalUploadedFormList[j].document_type + ", ";
               }
             }
             obj.document_type = _docname;
@@ -319,7 +355,7 @@ export class FileUploadService {
                   totalUploadedFormList[i].doc_id
                 ) {
                   _docname =
-                    _docname + ', ' + totalUploadedFormList[j].document_type;
+                    _docname + ", " + totalUploadedFormList[j].document_type;
                 }
               }
               obj.document_type = _docname;
@@ -333,19 +369,19 @@ export class FileUploadService {
 
       try {
         var doc = new PDFDocument({
-          layout: 'portrait',
-          size: 'A4', // 'A4' [450,500]
+          layout: "portrait",
+          size: "A4", // 'A4' [450,500]
           margin: 5,
         });
-        let mmyy: string = moment().format('MMYY');
+        let mmyy: string = moment().format("MMYY");
         let folderPath: string = path.join(
           __dirname,
-          `../../Uploads/pdfs/${clientId}/${mmyy}`,
+          `../../Uploads/pdfs/${clientId}/${mmyy}`
         );
         if (!existsSync(folderPath)) {
           mkdirSync(folderPath, { recursive: true });
         }
-        var encodedFormNo = formNo.replace('/', '-');
+        var encodedFormNo = formNo.replace("/", "-");
         _filePath = `docpdf/${clientId}/${mmyy}/${encodedFormNo}_doc.pdf`;
         var inputFilePath = path.join(`${folderPath}/${encodedFormNo}_doc.pdf`);
         doc.pipe(fs.createWriteStream(inputFilePath));
@@ -353,45 +389,45 @@ export class FileUploadService {
           try {
             // var filePath = './Uploads/files/' + uploadedFormList[i].file_path;
             let filePath: string = uploadedFormList[i].file_path;
-            filePath = filePath.replace('docfile', './Uploads/files');
+            filePath = filePath.replace("docfile", "./Uploads/files");
             _docname = uploadedFormList[i].document_name;
             //console.log(filePath + _docname);
             if (i == 0) {
               doc
                 .image(filePath, 0, 15, {
                   fit: [595.28, 841.89],
-                  align: 'center',
-                  valign: 'center',
+                  align: "center",
+                  valign: "center",
                 })
                 .text(
-                  uploadedFormList[i].document_type + ' : ' + _docname,
+                  uploadedFormList[i].document_type + " : " + _docname,
                   5,
-                  5,
+                  5
                 ); //doc.image(filePath, 0, 15, {width: 300});
               this.setFileSequence(
                 loggedInUser,
                 uploadedFormList[i].form_no,
                 uploadedFormList[i].doc_id,
-                uploadedFormList[i].file_sequence,
+                uploadedFormList[i].file_sequence
               );
             } else {
               doc
                 .addPage()
                 .image(filePath, 0, 15, {
                   fit: [595.28, 841.89],
-                  align: 'center',
-                  valign: 'center',
+                  align: "center",
+                  valign: "center",
                 })
                 .text(
-                  uploadedFormList[i].document_type + ' : ' + _docname,
+                  uploadedFormList[i].document_type + " : " + _docname,
                   5,
-                  5,
+                  5
                 ); //.image(filePath, 0, 15, {width: 300});
               this.setFileSequence(
                 loggedInUser,
                 uploadedFormList[i].form_no,
                 uploadedFormList[i].doc_id,
-                uploadedFormList[i].file_sequence,
+                uploadedFormList[i].file_sequence
               );
             }
           } catch (pgErr) {
@@ -405,7 +441,7 @@ export class FileUploadService {
         let companyDb = await GetCompanyDb(loggedInUser.secret);
         let pdfDetails: any = await companyDb.query(
           `EXEC ${constant.P_FileDetailsFormWise} @action = @0, @formNo = @1, @filePath = @2, @userId = @3`,
-          ['updatepdfdetails', formNo, _filePath, loggedInUser.userId],
+          ["updatepdfdetails", formNo, _filePath, loggedInUser.userId]
         );
         return pdfDetails;
       } catch (err) {
@@ -414,14 +450,20 @@ export class FileUploadService {
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'fileupload/generatePdf',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "fileupload/generatePdf",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -429,20 +471,20 @@ export class FileUploadService {
   // //----------------- this will generate pdf if files are uploaded on S3 server
   async generatePdf(loggedInUser: any, formNo: string): Promise<any> {
     try {
-      let _filePath: string = '';
-      var _docname: string = '';
+      let _filePath: string = "";
+      var _docname: string = "";
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let totalUploadedFormList: any[] = await companyDb.query(
         `EXEC ${constant.P_GetUploadedFiles} @formNo = @0`,
-        [formNo],
+        [formNo]
       );
       let uploadedFormList: any[] = [];
       if (totalUploadedFormList && totalUploadedFormList.length > 0) {
         for (let i = 0; i < totalUploadedFormList.length; i++) {
           var prevdocid = 0;
-          var prevfilename = '';
+          var prevfilename = "";
           var doc_used = 0;
-          _docname = '';
+          _docname = "";
 
           if (i == 0) {
             prevdocid = totalUploadedFormList[i].doc_id;
@@ -453,7 +495,7 @@ export class FileUploadService {
             for (var j = i + 1; j < totalUploadedFormList.length; j++) {
               if (totalUploadedFormList[j].doc_id == prevdocid) {
                 _docname =
-                  _docname + totalUploadedFormList[j].document_type + ', ';
+                  _docname + totalUploadedFormList[j].document_type + ", ";
               }
             }
             obj.document_type = _docname;
@@ -485,7 +527,7 @@ export class FileUploadService {
                   totalUploadedFormList[i].doc_id
                 ) {
                   _docname =
-                    _docname + ', ' + totalUploadedFormList[j].document_type;
+                    _docname + ", " + totalUploadedFormList[j].document_type;
                 }
               }
               obj.document_type = _docname;
@@ -498,15 +540,15 @@ export class FileUploadService {
 
       try {
         var doc = new PDFDocument({
-          layout: 'portrait',
-          size: 'A4', // 'A4' [450,500]
+          layout: "portrait",
+          size: "A4", // 'A4' [450,500]
           margin: 5,
         });
         let folderPath: string = path.join(
           __dirname,
-          `../../Uploads/pdfs/${clientId}`,
+          `../../Uploads/pdfs/${clientId}`
         );
-        var encodedFormNo = formNo.replace('/', '-');
+        var encodedFormNo = formNo.replace("/", "-");
         let pdfFileName: string = `${encodedFormNo}_doc.pdf`;
         var inputFilePath = path.join(`${folderPath}/${pdfFileName}`);
         const writeStream = fs.createWriteStream(inputFilePath);
@@ -514,45 +556,45 @@ export class FileUploadService {
         for (var i = 0; i < uploadedFormList.length; i++) {
           try {
             let imageBuffer = await blobFileService.getImageBuffer(
-              uploadedFormList[i].file_path,
+              uploadedFormList[i].file_path
             );
             _docname = uploadedFormList[i].document_name;
             if (i == 0) {
               doc
                 .image(imageBuffer, 0, 15, {
                   fit: [595.28, 841.89],
-                  align: 'center',
-                  valign: 'center',
+                  align: "center",
+                  valign: "center",
                 })
                 .text(
-                  uploadedFormList[i].document_type + ' : ' + _docname,
+                  uploadedFormList[i].document_type + " : " + _docname,
                   5,
-                  5,
+                  5
                 ); //doc.image(filePath, 0, 15, {width: 300});
               this.setFileSequence(
                 loggedInUser,
                 uploadedFormList[i].form_no,
                 uploadedFormList[i].doc_id,
-                uploadedFormList[i].file_sequence,
+                uploadedFormList[i].file_sequence
               );
             } else {
               doc
                 .addPage()
                 .image(imageBuffer, 0, 15, {
                   fit: [595.28, 841.89],
-                  align: 'center',
-                  valign: 'center',
+                  align: "center",
+                  valign: "center",
                 })
                 .text(
-                  uploadedFormList[i].document_type + ' : ' + _docname,
+                  uploadedFormList[i].document_type + " : " + _docname,
                   5,
-                  5,
+                  5
                 ); //.image(filePath, 0, 15, {width: 300});
               this.setFileSequence(
                 loggedInUser,
                 uploadedFormList[i].form_no,
                 uploadedFormList[i].doc_id,
-                uploadedFormList[i].file_sequence,
+                uploadedFormList[i].file_sequence
               );
             }
           } catch (pgErr) {
@@ -562,16 +604,16 @@ export class FileUploadService {
         doc.flushPages();
         doc.end();
         await new Promise<void>((resolve, reject) => {
-          writeStream.on('finish', resolve);
-          writeStream.on('error', reject);
+          writeStream.on("finish", resolve);
+          writeStream.on("error", reject);
         });
         let uploadedPdfFile = await blobFileService.uploadPdfFile(
           pdfFileName,
-          inputFilePath,
+          inputFilePath
         );
         if (
           uploadedPdfFile != undefined &&
-          uploadedPdfFile.filePath.indexOf('SIS') != -1
+          uploadedPdfFile.filePath.indexOf("SIS") != -1
         ) {
           _filePath = uploadedPdfFile.filePath;
         }
@@ -579,7 +621,7 @@ export class FileUploadService {
         let companyDb = await GetCompanyDb(loggedInUser.secret);
         let pdfDetails: any = await companyDb.query(
           `EXEC ${constant.P_FileDetailsFormWise} @action = @0, @formNo = @1, @filePath = @2, @userId = @3`,
-          ['updatepdfdetails', formNo, _filePath, loggedInUser.userId],
+          ["updatepdfdetails", formNo, _filePath, loggedInUser.userId]
         );
         return pdfDetails;
       } catch (err) {
@@ -588,14 +630,20 @@ export class FileUploadService {
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'fileupload/generatePdf',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "fileupload/generatePdf",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -607,7 +655,7 @@ export class FileUploadService {
       let documentDetail: any = await companyDb.query(
         `EXEC ${constant.P_UpdateEmployeePicDetails} @action = @0, @formNo = @1, @image1 = @2, @image2 = @3, @image3 = @4, @image4 = @5, @defImg = @6, @userId = @7`,
         [
-          'setPicture',
+          "setPicture",
           physicalDetail.formNo,
           physicalDetail.image1,
           physicalDetail.image2,
@@ -615,20 +663,26 @@ export class FileUploadService {
           physicalDetail.image4,
           physicalDetail.defImg,
           loggedInUser.userId,
-        ],
+        ]
       );
       return documentDetail;
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'fileupload/captureImage',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "fileupload/captureImage",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `${JSON.stringify(physicalDetail)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -638,24 +692,24 @@ export class FileUploadService {
     try {
       let base64Data: string = fileDetail.base64.replace(
         /^data:image\/png;base64,/,
-        '',
+        ""
       );
       let formNo: string = fileDetail.formNo;
       let imageId: string = fileDetail.imageId;
-      let encodedFormNo: string = formNo.replace('/', '-');
-      let imageName: string = encodedFormNo + '_' + imageId;
-      let mmyy: string = moment().format('MMYY');
+      let encodedFormNo: string = formNo.replace("/", "-");
+      let imageName: string = encodedFormNo + "_" + imageId;
+      let mmyy: string = moment().format("MMYY");
       let folderPath: string = path.join(
         __dirname,
-        `../../Uploads/picandsig/${clientId}/${mmyy}`,
+        `../../Uploads/picandsig/${clientId}/${mmyy}`
       );
       if (!existsSync(folderPath)) {
         mkdirSync(folderPath, { recursive: true });
       }
       fs.writeFile(
-        folderPath + '/' + imageName + '.jpg',
+        folderPath + "/" + imageName + ".jpg",
         base64Data,
-        'base64',
+        "base64",
         async function (err) {
           if (err) {
             throw err;
@@ -664,30 +718,36 @@ export class FileUploadService {
           let fileDetail: any = await companyDb.query(
             `EXEC ${constant.P_UpdateEmployeePicDetails} @action = @0, @formNo = @1, @signPic = @2, @userId = @3`,
             [
-              'setSingature',
+              "setSingature",
               formNo,
               `candimg/${clientId}/${mmyy}/${imageName}.jpg`,
               loggedInUser.userId,
-            ],
+            ]
           );
           return {
             status: 1,
-            msg: 'image uploaded',
+            msg: "image uploaded",
             imageName: `candimg/${clientId}/${mmyy}/${imageName}.jpg`,
           };
-        },
+        }
       );
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'fileupload/captureSingature',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "fileupload/captureSingature",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `${JSON.stringify(fileDetail)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -699,42 +759,48 @@ export class FileUploadService {
       let base64Data: string = fileDetail.base64;
       let formNo: string = fileDetail.formNo;
       let imageId: string = fileDetail.imageId;
-      let encodedFormNo: string = formNo.replace('/', '-');
+      let encodedFormNo: string = formNo.replace("/", "-");
       let imageName: string = `${encodedFormNo}_${imageId}.jpg`;
-      let formBaseNo: string = formNo.split('/')[0];
+      let formBaseNo: string = formNo.split("/")[0];
       let uploadedFile: any = await blobFileService.uploadBase64(
         formBaseNo,
         imageName,
-        base64Data,
+        base64Data
       );
       if (
         uploadedFile != undefined &&
-        uploadedFile.filePath.indexOf('SIS') != -1
+        uploadedFile.filePath.indexOf("SIS") != -1
       ) {
         let companyDb = await GetCompanyDb(loggedInUser.secret);
         let fileDetail: any = await companyDb.query(
           `EXEC ${constant.P_UpdateEmployeePicDetails} @action = @0, @formNo = @1, @signPic = @2, @userId = @3`,
-          ['setSingature', formNo, uploadedFile.filePath, loggedInUser.userId],
+          ["setSingature", formNo, uploadedFile.filePath, loggedInUser.userId]
         );
         return {
           status: 1,
-          msg: 'image uploaded',
+          msg: "image uploaded",
           imageName: uploadedFile.filePath,
         };
       } else {
-        throw Error('Unable to upload signature');
+        throw Error("Unable to upload signature");
       }
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'fileupload/captureSingature',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "fileupload/captureSingature",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `${JSON.stringify(fileDetail)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -744,31 +810,31 @@ export class FileUploadService {
   async getImageBase64_1(
     loggedInUser: any,
     formNo: string,
-    fileSeq: number,
+    fileSeq: number
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let fileDetail: any = await companyDb.query(
         `EXEC ${constant.P_FileDetailsFormWise} @action = @0, @formNo = @1`,
-        ['pdfdetails', formNo],
+        ["pdfdetails", formNo]
       );
       let fileUrl: string = fileDetail[0].file_path;
 
-      fileUrl = fileUrl.replace('docpdf/', '');
+      fileUrl = fileUrl.replace("docpdf/", "");
       let inputFilePath: string = path.join(
         __dirname,
-        '../../Uploads/pdfs/' + fileUrl,
+        "../../Uploads/pdfs/" + fileUrl
       );
       let outputfleName: string = path.basename(
         inputFilePath,
-        path.extname(inputFilePath),
+        path.extname(inputFilePath)
       );
       let outputFilePath = path.join(
         __dirname,
-        '../../Uploads/tmpSign/' + outputfleName,
+        "../../Uploads/tmpSign/" + outputfleName
       );
       let opts = {
-        format: 'jpeg',
+        format: "jpeg",
         out_dir: path.dirname(outputFilePath),
         out_prefix: path.basename(inputFilePath, path.extname(inputFilePath)),
         page: fileSeq,
@@ -777,14 +843,14 @@ export class FileUploadService {
       await convert(inputFilePath, opts)
         .then((fileInfo) => {
           var fileName =
-            outputFilePath + '-' + ('00' + fileSeq).slice(-2) + '.jpg';
+            outputFilePath + "-" + ("00" + fileSeq).slice(-2) + ".jpg";
           var inputFilePath = path.join(
             __dirname,
-            '../../Uploads/pdfs/' + fileUrl,
+            "../../Uploads/pdfs/" + fileUrl
           );
           if (fs.existsSync(fileName)) {
             const fileBuffer = fs.readFileSync(fileName);
-            const base64 = fileBuffer.toString('base64');
+            const base64 = fileBuffer.toString("base64");
             const ext = path.extname(fileName).slice(1); // e.g., 'png', 'jpg'
             imageAsBase64 = `data:image/${ext};base64,${base64}`;
           }
@@ -797,14 +863,20 @@ export class FileUploadService {
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'fileupload/getImageBase64',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "fileupload/getImageBase64",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `formNo : ${formNo}, fileSeq : ${fileSeq}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -814,19 +886,19 @@ export class FileUploadService {
   async getImageBase64(
     loggedInUser: any,
     formNo: string,
-    fileSeq: number,
+    fileSeq: number
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let fileDetail: any = await companyDb.query(
         `EXEC ${constant.P_FileDetailsFormWise} @action = @0, @formNo = @1`,
-        ['pdfdetails', formNo],
+        ["pdfdetails", formNo]
       );
       let fileUrl: string = fileDetail[0].file_path;
-      let fileName: string = fileUrl.split('/').pop();
+      let fileName: string = fileUrl.split("/").pop();
       let inputFilePath: string = path.join(
         __dirname,
-        `../../Uploads/pdfs/${clientId}/${fileName}`,
+        `../../Uploads/pdfs/${clientId}/${fileName}`
       );
       if (!fs.existsSync(inputFilePath)) {
         let imageBuffer = await blobFileService.getImageBuffer(fileUrl);
@@ -835,14 +907,14 @@ export class FileUploadService {
 
       let outputfleName: string = path.basename(
         inputFilePath,
-        path.extname(inputFilePath),
+        path.extname(inputFilePath)
       );
       let outputFilePath = path.join(
         __dirname,
-        '../../Uploads/tmpSign/' + outputfleName,
+        "../../Uploads/tmpSign/" + outputfleName
       );
       let opts = {
-        format: 'jpeg',
+        format: "jpeg",
         out_dir: path.dirname(outputFilePath),
         out_prefix: path.basename(inputFilePath, path.extname(inputFilePath)),
         page: fileSeq,
@@ -851,14 +923,14 @@ export class FileUploadService {
       await convert(inputFilePath, opts)
         .then((fileInfo) => {
           var fileName =
-            outputFilePath + '-' + ('00' + fileSeq).slice(-2) + '.jpg';
+            outputFilePath + "-" + ("00" + fileSeq).slice(-2) + ".jpg";
           var inputFilePath = path.join(
             __dirname,
-            '../../Uploads/pdfs/' + fileUrl,
+            "../../Uploads/pdfs/" + fileUrl
           );
           if (fs.existsSync(fileName)) {
             const fileBuffer = fs.readFileSync(fileName);
-            const base64 = fileBuffer.toString('base64');
+            const base64 = fileBuffer.toString("base64");
             const ext = path.extname(fileName).slice(1); // e.g., 'png', 'jpg'
             imageAsBase64 = `data:image/${ext};base64,${base64}`;
           }
@@ -871,14 +943,20 @@ export class FileUploadService {
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'fileupload/getImageBase64',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "fileupload/getImageBase64",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `formNo : ${formNo}, fileSeq : ${fileSeq}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }

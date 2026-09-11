@@ -6,11 +6,13 @@ import { plainToClass } from 'class-transformer';
 import { JWT } from '../helpers/jwt';
 import { Encrypt } from '../helpers/encrypt';
 import { CustomError } from '../helpers/customError';
+import { create } from 'xmlbuilder2';
 import ErrorMessage from '../_configs/errors/customError.json';
 import appConfig from '../_configs/app/appConfig.json';
 import dotenv from 'dotenv';
 import Logger from '../utils/logger';
 import moment from 'moment';
+import { string } from 'joi';
 const jwt = new JWT();
 dotenv.config();
 const {
@@ -20,6 +22,7 @@ const {
   db_user,
   db_password,
   refreshTokenExpireTime,
+  clientSecret
 } = process.env;
 export class AuthService {
   async checkuser(userName: string, password: string): Promise<any> {
@@ -117,6 +120,105 @@ export class AuthService {
       if (error.driverError) {
         Logger.error({
           src: 'account/checkuser',
+          error: error.message,
+        });
+        error = new CustomError('InternalServerError');
+      }
+      throw error;
+    }
+  }
+
+    async signUp(
+    userDetail: any
+  ): Promise<any> {
+    try {
+      let hashPwd: string = Encrypt.encryptPass(userDetail.pwd);  
+       userDetail.hashPwd = hashPwd;
+      //#region ----------------------------------generating xml for Role
+        let roleList:any = userDetail.permittedRole;
+        let roleXmlNode:any = create().ele('role');
+        for(var i = 0; i <= roleList.length-1; i++)
+        {
+          const leafNode =  roleXmlNode.ele('id');
+          leafNode.ele('roleId').txt(roleList[i].roleId);
+        }
+       let  roleXmlString :string = roleXmlNode.end({
+            headless: true,
+            prettyPrint: true,
+        });
+        roleXmlString = roleXmlString.replace(/[\r\n]+/g, '').trim();
+        userDetail.roleXmlString = roleXmlString;
+      //#endregion ------------------------------------------------end generating xml for Role
+
+      //#region ----------------------------------------------generating xml for Branch
+        let branchList:any = userDetail.premittedBranch;
+        let branchXmlNode:any = create().ele('branch');
+          for(var i = 0; i <= branchList.length-1; i++)
+          {
+              const leafNode =  branchXmlNode.ele('code');
+              leafNode.ele('branchCode').txt(branchList[i].code);
+          }
+        let branchXmlString:string = branchXmlNode.end({
+            headless: true,
+            prettyPrint: true,
+        });
+        branchXmlString = branchXmlString.replace(/[\r\n]+/g, '').trim();
+        userDetail.branchXmlString = branchXmlString;
+      //#endregion------------------------------------------------end generating xml for Branch
+      let companyDb = await GetCompanyDb(clientSecret);
+      let updateUser: any = await companyDb.query(
+        `EXEC ${constant.P_NewUser} 
+        @Action = @0,
+        @user_id = @1,
+        @regNo = @2,
+        @password = @3,
+        @hash_password = @4,
+        @companyCode = @5,
+        @branch_id = @6,
+        @department_id = @7,                                    
+        @name = @8,
+        @role_id = @9,
+        @email_id = @10,
+        @mobile = @11,
+        @address = @12,
+        @country_id = @13,
+        @state_id = @14,
+        @district_id = @15,
+        @city_id = @16,
+        @expDate = @17,
+        @permittedRole = @18,
+        @permittedBranch = @19,
+        @created_by = @20`,
+        [
+         userDetail.action,
+         userDetail.userId,
+         userDetail.regNo,
+         userDetail.pwd,
+         userDetail.hashPwd,
+         userDetail.companyCode,
+         userDetail.branch.code,
+         userDetail.departmentId,
+         userDetail.name,
+         userDetail.roleId,
+         userDetail.emailId,
+         userDetail.mobile,
+         userDetail.address,
+         userDetail.countryId,
+         userDetail.stateId,
+         userDetail.districtId,
+         userDetail.cityId,
+         userDetail.expDate,
+         userDetail.roleXmlString,
+         userDetail.branchXmlString,
+         userDetail.createdBy
+        ],
+      );
+      return updateUser;
+    } catch (error: any) {
+      if (error.driverError) {
+        Logger.error({
+          clientId: '',
+          src: 'auth/updateLoginStatus',
           error: error.message,
         });
         error = new CustomError('InternalServerError');

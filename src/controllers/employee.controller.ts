@@ -810,9 +810,9 @@ export class EmployeeController {
     try {
       let loggedInUser: any = req['currentUser'];
       let statusDetail: any = {
-        action: req.body.action ?? [],
+        action: req.body.action ?? '',
         formLists: req.body.formLists ?? [],
-        userId: req.body.userId ?? [],
+        userId: req.body.userId ?? '',
       };
 
       if (loggedInUser) {
@@ -998,8 +998,11 @@ export class EmployeeController {
     try {
       let loggedInUser: any = req['currentUser'];
       let otpDetail: any = {
+        action:req.body.action ?? '',
         formNo: req.body.formNo ?? '',
         otpUrl: req.body.otpUrl ?? '',
+        otp: req.body.otp ?? '',
+        userId: req.body.userId ?? '',
       };
 
       if (loggedInUser) {

@@ -23,35 +23,33 @@ let options: any = {
   excludeExtraneousValues: true,
 };
 
-async function CalculateScoreForCenter(recordDetails) {
+async function CalculateScoreForCenter(recordDetails:any) {
   let scoreMaster: any = recordDetails[0];
   let generalDetails: any = recordDetails[1][0];
   let cvExpDetails: any = recordDetails[2];
   let exManExpDetails: any = recordDetails[3];
   let eduDetails: any = recordDetails[4];
   let stdDetails: any = recordDetails[5][0];
-  let maxScore: any;
+  let maxScore: number;
   let diff: number = 0;
-  let empAgeScore: any = 0;
-  let empEduScore: any = 0;
-  let empExpScore: any = 0;
-  let empHtScore: any = 0;
-  let empWtScore: any = 0;
-  let empChtScore: any = 0;
-  let lessScore: any = 0;
-  let addScore: any = 0;
-  let maxEdu: any = 0;
-  let totalCvExpOfEmp: any = 0;
-  let totalExMExpOfEmp: any = 0;
-  let totalExpInMonth: any = 0;
-
-  let age_weightage: any = 0;
-  let edu_weightage: any = 0;
-  let exp_weightage: any = 0;
-  let hgt_weightage: any = 0;
-  let wht_weightage: any = 0;
-  let chst_weightage: any = 0;
-
+  let empAgeScore: number = 0;
+  let empEduScore: number = 0;
+  let empExpScore: number = 0;
+  let empHtScore: number = 0;
+  let empWtScore: number = 0;
+  let empChtScore: number = 0;
+  let lessScore: number = 0;
+  let addScore: number = 0;
+  let maxEdu: number = 0;
+  let totalCvExpOfEmp: number = 0;
+  let totalExMExpOfEmp: number = 0;
+  let totalExpInMonth: number = 0;
+  let age_weightage: number = 0;
+  let edu_weightage: number = 0;
+  let exp_weightage: number = 0;
+  let hgt_weightage: number = 0;
+  let wht_weightage: number = 0;
+  let chst_weightage: number = 0;
   let totalEmpScore: number = 0;
   let totalEmpScore_whtage: number = 0;
 
@@ -78,27 +76,18 @@ async function CalculateScoreForCenter(recordDetails) {
     },
   };
 
-  let ageScoreDetails: any = scoreMaster.find((x) => x.parameterType == 'Age');
-  let eduScoreDetails: any = scoreMaster.find(
-    (x) => x.parameterType == 'Education',
-  );
-  let expScoreDetails: any = scoreMaster.find(
-    (x) => x.parameterType == 'Experience',
-  );
-  let heightScoreDetails: any = scoreMaster.find(
-    (x) => x.parameterType == 'Height',
-  );
-  let weightScoreDetails: any = scoreMaster.find(
-    (x) => x.parameterType == 'Weight',
-  );
-  let chestScoreDetails: any = scoreMaster.find(
-    (x) => x.parameterType == 'Chest',
-  );
+
+  let ageScoreDetails: any = scoreMaster.find((x:any) => x.parameterType == 'Age');
+  let eduScoreDetails: any = scoreMaster.find((x:any) => x.parameterType == 'Education');
+  let expScoreDetails: any = scoreMaster.find((x:any) => x.parameterType == 'Experience');
+  let heightScoreDetails: any = scoreMaster.find((x:any) => x.parameterType == 'Height');
+  let weightScoreDetails: any = scoreMaster.find((x:any) => x.parameterType == 'Weight');
+  let chestScoreDetails: any = scoreMaster.find((x:any) => x.parameterType == 'Chest');
 
   /* Civilian Experience change by samant on 29-Apr-2019*/
   if (cvExpDetails.length != undefined && cvExpDetails.length != 0) {
-    let totalExpInMonth: any = 0;
-    cvExpDetails.forEach((element) => {
+    let totalExpInMonth: number = 0;
+    cvExpDetails.forEach((element:any) => {
       if (element.fromdate != undefined && element.todate != undefined) {
         totalExpInMonth += moment(element.todate).diff(
           moment(element.fromdate),
@@ -108,12 +97,12 @@ async function CalculateScoreForCenter(recordDetails) {
       }
     });
 
-    totalCvExpOfEmp = math.round(totalExpInMonth.toFixed(1), 1);
+   totalCvExpOfEmp = Number(totalExpInMonth.toFixed(1));  
   }
   /* Ex-Man experiance change by Samant on 29-Apr-2019 */
   if (exManExpDetails.length != undefined && exManExpDetails.length != 0) {
-    let totalExpInMonth: any = 0;
-    exManExpDetails.forEach((element) => {
+    let totalExpInMonth: number = 0;
+    exManExpDetails.forEach((element:any) => {
       if (element.fromdate != undefined && element.todate != undefined) {
         totalExpInMonth += moment(element.todate).diff(
           moment(element.fromdate),
@@ -122,7 +111,7 @@ async function CalculateScoreForCenter(recordDetails) {
         //totalExpInMonth += element.exp_month;
       }
     });
-    totalExMExpOfEmp = math.round(totalExpInMonth.toFixed(1), 1);
+    totalExMExpOfEmp = Number(totalExpInMonth.toFixed(1));
   }
 
   try {
@@ -165,7 +154,7 @@ async function CalculateScoreForCenter(recordDetails) {
     addScore = 0;
 
     if (eduDetails.length != undefined && eduDetails.length != 0) {
-      eduDetails.forEach((element) => {
+      eduDetails.forEach((element:any) => {
         if (element.class_code > maxEdu) {
           maxEdu = element.class_code;
         }
@@ -188,7 +177,7 @@ async function CalculateScoreForCenter(recordDetails) {
       empEduScore = empEduScore < 0 ? 0 : empEduScore;
 
       // --if Condonation
-      let eduCondoAllow: boolean;
+      let eduCondoAllow: boolean=false;
       if (eduCondoAllow) {
         empEduScore = maxScore;
       }
@@ -335,44 +324,63 @@ async function CalculateScoreForCenter(recordDetails) {
       maxScore = chestScoreDetails.maxScore;
       lessScore = 0;
       addScore = 0;
+      let isBMI:number = generalDetails.isBMI;
+      if(isBMI == 0)
+      {
+                     if(generalDetails.gender == 'Female')
+                     {
+                         empChtScore= 10;
+                     }
+                     else if(generalDetails.gender == 'Male')
+                     {
+                        if(generalDetails.chest < stdDetails.min_chst)
+                        {
+                            addScore = 0;
+                            lessScore = maxScore;
+                        }
+                        else if(generalDetails.chest >= stdDetails.min_chst && generalDetails.chest < stdDetails.std_chst)
+                        {
+                            let chtDiff:number = math.round((stdDetails.std_chst - generalDetails.chest),1);
+                            addScore =0;
+                            lessScore = chtDiff;
+                        }
+                        else if(generalDetails.chest >= stdDetails.std_chst)
+                        {
+                            let chtDiff:number = math.round((generalDetails.chest - stdDetails.std_chst),1);
+                            addScore = chtDiff;
+                            lessScore = 0;
+                        }
 
-      if (generalDetails.gender == 'Female') {
-        empChtScore = 10;
-      } else if (generalDetails.gender == 'Male') {
-        if (generalDetails.chest < stdDetails.min_chst) {
-          addScore = 0;
-          lessScore = maxScore;
-        } else if (
-          generalDetails.chest >= stdDetails.min_chst &&
-          generalDetails.chest < stdDetails.std_chst
-        ) {
-          let chtDiff: number = math.round(
-            stdDetails.std_chst - generalDetails.chest,
-            1,
-          );
-          addScore = 0;
-          lessScore = chtDiff;
-        } else if (generalDetails.chest >= stdDetails.std_chst) {
-          let chtDiff: number = math.round(
-            generalDetails.chest - stdDetails.std_chst,
-            1,
-          );
-          addScore = chtDiff;
-          lessScore = 0;
-        }
-
-        addScore = addScore > 1 ? 1 : addScore;
-        empChtScore = maxScore + addScore - lessScore;
-        empChtScore = empChtScore < 0 ? 0 : empChtScore;
+                        addScore = (addScore > 1)?1:addScore;
+                        empChtScore= maxScore + addScore - lessScore;
+                        empChtScore= (empChtScore < 0)?0:empChtScore;
+                     }
       }
-      //------------applying condo;
-      let alwchtcondo: boolean = false;
-      empChtScore = alwchtcondo ? maxScore : empChtScore;
-      chst_weightage = math.round(
-        empChtScore *
-          Number((chestScoreDetails.weightagePercent / 100).toFixed(1)),
-        1,
-      );
+      else{
+						empChtScore= 10;
+						if (generalDetails.chest >24 && generalDetails.chest <=25)
+							empChtScore=11;
+						else if (generalDetails.chest >=18.5 && generalDetails.chest <=24)
+							empChtScore= 10;
+						else if (generalDetails.chest >=18 && generalDetails.chest <18.5)
+							empChtScore= 8;
+						else if (generalDetails.chest >=17 && generalDetails.chest <18)
+							empChtScore= 6;
+						else if (generalDetails.chest >=16 && generalDetails.chest <17)
+							empChtScore= 4;
+						else if (generalDetails.chest >25 && generalDetails.chest <27)
+							empChtScore= 8;
+						else if (generalDetails.chest >=27 && generalDetails.chest <28)
+							empChtScore= 6;
+						else if (generalDetails.chest >=28 && generalDetails.chest <30)
+							empChtScore= 4;
+						else
+							empChtScore= 0;
+      }
+                           //------------applying condo;
+                           let alwchtcondo:boolean = false;
+                           empChtScore = (alwchtcondo)?maxScore:empChtScore;
+                           chst_weightage = Number((empChtScore * (chestScoreDetails.weightagePercent / 100)).toFixed(1));
       /* #endregion -----------------------end chest calculation */
 
       totalEmpScore =
@@ -403,68 +411,61 @@ async function CalculateScoreForCenter(recordDetails) {
       ) {
         result.isError = true;
       } else {
-        result.score.empAgeScore = math.round(empAgeScore, 1);
-        result.score.empEduScore = math.round(empEduScore, 1);
-        result.score.empExpScore = math.round(empExpScore, 1);
-        result.score.empHtScore = math.round(empHtScore, 1);
-        result.score.empWtScore = math.round(empWtScore, 1);
-        result.score.empChtScore = math.round(empChtScore, 1);
-        result.score.totalScore = math.round(
+        result.score.empAgeScore = Number(empAgeScore.toFixed(1));
+        result.score.empEduScore = Number(empEduScore.toFixed(1));
+        result.score.empExpScore = Number(empExpScore.toFixed(1));
+        result.score.empHtScore = Number(empHtScore.toFixed(1));
+        result.score.empWtScore = Number(empWtScore.toFixed(1));
+        result.score.empChtScore = Number(empChtScore.toFixed(1));
+        result.score.totalScore = Number((
           empAgeScore +
             empEduScore +
             empExpScore +
             empHtScore +
             empWtScore +
-            empChtScore,
-          1,
-        );
-        result.weightage.age_weightage = math.round(age_weightage, 1);
-        result.weightage.edu_weightage = math.round(edu_weightage, 1);
-        result.weightage.exp_weightage = math.round(exp_weightage, 1);
-        result.weightage.hgt_weightage = math.round(hgt_weightage, 1);
-        result.weightage.wht_weightage = math.round(wht_weightage, 1);
-        result.weightage.chst_weightage = math.round(chst_weightage, 1);
-        result.weightage.totalWeightage = math.round(
+            empChtScore).toFixed(1));
+        result.weightage.age_weightage = Number(age_weightage.toFixed(1));
+        result.weightage.edu_weightage = Number(edu_weightage.toFixed(1));
+        result.weightage.exp_weightage = Number(exp_weightage.toFixed(1));
+        result.weightage.hgt_weightage = Number(hgt_weightage.toFixed(1));
+        result.weightage.wht_weightage = Number(wht_weightage.toFixed(1));
+        result.weightage.chst_weightage = Number(chst_weightage.toFixed(1));
+        result.weightage.totalWeightage = Number((
           age_weightage +
             edu_weightage +
             exp_weightage +
             hgt_weightage +
             wht_weightage +
-            chst_weightage,
-          1,
-        );
+            chst_weightage).toFixed(1));
       }
     } else {
-      result.score.empAgeScore = math.round(empAgeScore, 1);
-      result.score.empEduScore = math.round(empEduScore, 1);
-      result.score.empExpScore = math.round(empExpScore, 1);
-      result.score.empHtScore = math.round(empHtScore, 1);
-      result.score.empWtScore = math.round(empWtScore, 1);
-      result.score.empChtScore = math.round(empChtScore, 1);
-      result.score.totalScore = math.round(
+      result.score.empAgeScore = Number(empAgeScore.toFixed(1));
+      result.score.empEduScore = Number(empEduScore.toFixed(1));
+      result.score.empExpScore = Number(empExpScore.toFixed(1));
+      result.score.empHtScore = Number(empHtScore.toFixed(1));
+      result.score.empWtScore = Number(empWtScore.toFixed(1));
+      result.score.empChtScore = Number(empChtScore.toFixed(1));
+      result.score.totalScore = Number((
         empAgeScore +
           empEduScore +
           empExpScore +
           empHtScore +
           empWtScore +
-          empChtScore,
-        1,
+          empChtScore).toFixed(1)
       );
-      result.weightage.age_weightage = math.round(age_weightage, 1);
-      result.weightage.edu_weightage = math.round(edu_weightage, 1);
-      result.weightage.exp_weightage = math.round(exp_weightage, 1);
-      result.weightage.hgt_weightage = math.round(hgt_weightage, 1);
-      result.weightage.wht_weightage = math.round(wht_weightage, 1);
-      result.weightage.chst_weightage = math.round(chst_weightage, 1);
-      result.weightage.totalWeightage = math.round(
+      result.weightage.age_weightage = Number(age_weightage.toFixed(1));
+      result.weightage.edu_weightage = Number(edu_weightage.toFixed(1));
+      result.weightage.exp_weightage = Number(exp_weightage.toFixed(1));
+      result.weightage.hgt_weightage = Number(hgt_weightage.toFixed(1));
+      result.weightage.wht_weightage = Number(wht_weightage.toFixed(1));
+      result.weightage.chst_weightage = Number(chst_weightage.toFixed(1));
+      result.weightage.totalWeightage = Number((
         age_weightage +
           edu_weightage +
           exp_weightage +
           hgt_weightage +
           wht_weightage +
-          chst_weightage,
-        1,
-      );
+          chst_weightage).toFixed(1));
     }
   } catch (ex) {
     result.isError = true;
@@ -473,8 +474,9 @@ async function CalculateScoreForCenter(recordDetails) {
   return result;
 }
 
-async function calculateScore(recordDetails) {
+async function calculateScore(recordDetails:any) {
   let stdDetails: any = recordDetails[5][0];
+  let acd:any = recordDetails[6][0];
 
   let result: any = {
     isError: false,
@@ -502,6 +504,7 @@ async function calculateScore(recordDetails) {
   try {
     if (stdDetails.isBranch) {
       result = await CalculateScoreForCenter(recordDetails);
+      result.autoCondonationDetail = acd;
     } else {
       let scoreMaster: any = recordDetails[0];
       let generalDetails: any = recordDetails[1][0];
@@ -517,10 +520,10 @@ async function calculateScore(recordDetails) {
       let empHtScore: number = 0;
       let empWtScore: number = 0;
       let empChtScore: number = 0;
-      let lessScore: number;
-      let addScore: number;
+      let lessScore: number = 0;
+      let addScore: number = 0;
       let maxEdu: number = 0;
-      let totalCvExpOfEmp: number;
+      let totalCvExpOfEmp: number=0;
       let totalExMExpOfEmp: number = 0;
       let totalExpInMonth: number = 0;
 
@@ -532,31 +535,31 @@ async function calculateScore(recordDetails) {
       let chst_weightage: number = 0;
 
       let totalEmpScore: number = 0;
-      let totalEmpScore_whtage = 0;
+      let totalEmpScore_whtage:number = 0;
 
       let ageScoreDetails: any = scoreMaster.find(
-        (x) => x.parameterType == 'Age',
+        (x:any) => x.parameterType == 'Age',
       );
       let eduScoreDetails: any = scoreMaster.find(
-        (x) => x.parameterType == 'Education',
+        (x:any) => x.parameterType == 'Education',
       );
       let expScoreDetails: any = scoreMaster.find(
-        (x) => x.parameterType == 'Experience',
+        (x:any) => x.parameterType == 'Experience',
       );
       let heightScoreDetails: any = scoreMaster.find(
-        (x) => x.parameterType == 'Height',
+        (x:any) => x.parameterType == 'Height',
       );
       let weightScoreDetails: any = scoreMaster.find(
-        (x) => x.parameterType == 'Weight',
+        (x:any) => x.parameterType == 'Weight',
       );
       let chestScoreDetails: any = scoreMaster.find(
-        (x) => x.parameterType == 'Chest',
+        (x:any) => x.parameterType == 'Chest',
       );
 
       /*Change by samant on 29-Apr-2019 remove /12 as exp is in month*/
       if (cvExpDetails.length != undefined && cvExpDetails.length != 0) {
         let totalExpInMonth: number = 0;
-        cvExpDetails.forEach((element) => {
+        cvExpDetails.forEach((element:any) => {
           if (element.fromdate != undefined && element.todate != undefined) {
             totalExpInMonth += moment(element.todate).diff(
               moment(element.fromdate),
@@ -571,7 +574,7 @@ async function calculateScore(recordDetails) {
       /*Change by samant on 29-Apr-2019 remove /12 as exp is in month and Exp data set changhe from Civilian to Ex-Man*/
       if (exManExpDetails.length != undefined && exManExpDetails.length != 0) {
         let totalExpInMonth: number = 0;
-        exManExpDetails.forEach((element) => {
+        exManExpDetails.forEach((element:any) => {
           if (element.fromdate != undefined && element.todate != undefined) {
             totalExpInMonth += moment(element.todate).diff(
               moment(element.fromdate),
@@ -625,7 +628,7 @@ async function calculateScore(recordDetails) {
       addScore = 0;
 
       if (eduDetails.length != undefined && eduDetails.length != 0) {
-        eduDetails.forEach((element) => {
+        eduDetails.forEach((element:any) => {
           if (element.class_code > maxEdu) {
             maxEdu = element.class_code;
           }
@@ -651,7 +654,7 @@ async function calculateScore(recordDetails) {
         empEduScore = empEduScore < 0 ? 0 : empEduScore;
 
         // --if Condonation
-        let eduCondoAllow: boolean;
+        let eduCondoAllow: boolean=false;
         if (eduCondoAllow) {
           empEduScore = maxScore;
         }
@@ -835,34 +838,59 @@ async function calculateScore(recordDetails) {
         /* #endregion -----------------------end weight calculation */
         /* #region ------------------------------Chest calculation */
         maxScore = chestScoreDetails.maxScore;
-        if (generalDetails.gender == 'Female') {
-          empChtScore = 10;
-        } else if (generalDetails.gender == 'Male') {
-          if (generalDetails.chest < stdDetails.min_chst) {
-            addScore = 0;
-            lessScore = maxScore;
-          } else if (
-            generalDetails.chest >= stdDetails.min_chst &&
-            generalDetails.chest < stdDetails.std_chst
-          ) {
-            let chtDiff = math.round(
-              stdDetails.std_chst - generalDetails.chest,
-              1,
-            );
-            addScore = 0;
-            lessScore = chtDiff;
-          } else if (generalDetails.chest >= stdDetails.std_chst) {
-            let chtDiff = math.round(
-              generalDetails.chest - stdDetails.std_chst,
-              1,
-            );
-            addScore = chtDiff;
-            lessScore = 0;
-          }
+        let isBMI:number = generalDetails.isBMI;
+        if(isBMI==0)
+        {
+                    if(generalDetails.gender == 'Female')
+                     {
+                         empChtScore= 10;
+                     }
+                     else if(generalDetails.gender == 'Male')
+                     {
+                        if(generalDetails.chest < stdDetails.min_chst)
+                        {
+                            addScore = 0;
+                            lessScore = maxScore;
+                        }
+                        else if(generalDetails.chest >= stdDetails.min_chst && generalDetails.chest < stdDetails.std_chst)
+                        {
+                            let chtDiff:number = Number((stdDetails.std_chst - generalDetails.chest).toFixed(1));
+                            addScore =0;
+                            lessScore = chtDiff;
+                        }
+                        else if(generalDetails.chest >= stdDetails.std_chst)
+                        {
+                            let chtDiff:number = Number((generalDetails.chest - stdDetails.std_chst).toFixed(1));
+                            addScore = chtDiff;
+                            lessScore = 0;
+                        }
 
-          addScore = addScore > 1 ? 1 : addScore;
-          empChtScore = maxScore + addScore - lessScore;
-          empChtScore = empChtScore < 0 ? 0 : empChtScore;
+                        addScore = (addScore > 1)?1:addScore;
+                        empChtScore= maxScore + addScore - lessScore;
+                        empChtScore= (empChtScore < 0)?0:empChtScore;
+                     }
+        }
+        else
+        {
+						empChtScore= 10;
+						if (generalDetails.chest >24 && generalDetails.chest <=25)
+							empChtScore=11;
+						else if (generalDetails.chest >=18.5 && generalDetails.chest <=24)
+							empChtScore= 10;
+						else if (generalDetails.chest >=18 && generalDetails.chest <18.5)
+							empChtScore= 8;
+						else if (generalDetails.chest >=17 && generalDetails.chest <18)
+							empChtScore= 6;
+						else if (generalDetails.chest >=16 && generalDetails.chest <17)
+							empChtScore= 4;
+						else if (generalDetails.chest >25 && generalDetails.chest <27)
+							empChtScore= 8;
+						else if (generalDetails.chest >=27 && generalDetails.chest <28)
+							empChtScore= 6;
+						else if (generalDetails.chest >=28 && generalDetails.chest <30)
+							empChtScore= 4;
+						else
+							empChtScore= 0;
         }
         //------------applying condo;
         let alwchtcondo = false;
@@ -1106,6 +1134,7 @@ export class ScoreService {
   async addScoreDetails(loggedInUser: any, scoreDetail: any): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
+      
       let addedScoreDetail: any = await companyDb.query(
         `EXEC ${constant.P_ScoreDetails} @action = @0,
          @formNo = @1,

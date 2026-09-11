@@ -7,6 +7,7 @@ import { Config } from '../helpers/config';
 import * as path from 'path';
 import * as http from 'http';
 import * as fs from 'fs';
+import ExcelJS from 'exceljs';
 import moment from 'moment';
 import * as crypto from 'crypto';
 import * as request from 'request';
@@ -149,7 +150,7 @@ export class DashboardService {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let result: any = await companyDb.query(
-        `exec ${constant.P_GetLiveCameraDetails} @UserId = @0, @Company = @1, @Zone = @2, @Region = @3, @Branch = @4, @Desig = @5, @fromDate = @6, @toDate = @7`,
+        `exec ${reportDetail.procName} @UserId = @0, @Company = @1, @Zone = @2, @Region = @3, @Branch = @4, @Desig = @5, @fromDate = @6, @toDate = @7`,
         [
           reportDetail.userId,
           reportDetail.company,
@@ -161,8 +162,44 @@ export class DashboardService {
           reportDetail.toDate,
         ],
       );
+//#region--------------------------------------------------------- getting json data to into excel
+                  const resObj = result;
 
-      return result;
+                  const workbook = new ExcelJS.Workbook();
+                  const worksheet = workbook.addWorksheet('Report');
+
+                  if (resObj.length > 0) {
+
+                    // Get column names dynamically
+                    const columns = Object.keys(resObj[0]);
+
+                    worksheet.columns = columns.map((column) => ({
+                      header: column,
+                      key: column,
+                      width: 20
+                    }));
+
+                    // Add JSON/SQL result to Excel
+                    resObj.forEach((row: Record<string, any>) => {
+                      worksheet.addRow(row);
+                    });
+
+                    // Header formatting
+                    worksheet.getRow(1).font = {
+                      bold: true
+                    };
+                  }
+
+                  const outputFileName = `reportfiles/${reportDetail.reportName}.xlsx`;
+
+                  await workbook.xlsx.writeFile(
+                    `./Uploads/${outputFileName}`
+                  );
+//#endregion--------------------------------------------------------- end getting json data to into excel
+      return {
+        res: outputFileName
+      };
+
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,

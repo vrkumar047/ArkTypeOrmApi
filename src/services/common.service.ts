@@ -14,6 +14,9 @@ import * as request from 'request';
 import axios from 'axios';
 //import Redis from 'ioredis';
 //const redis = new Redis();
+import dotenv from 'dotenv';
+dotenv.config();
+const { clientSecret } = process.env;
 
 let options: any = {
   excludeExtraneousValues: true,
@@ -1576,7 +1579,7 @@ export class CommonService {
   async getReportList(loggedInUser: any, userId: string = ''): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
-      const electronicDetail = await getResultSets(
+      const resultsets = await getResultSets(
         companyDb,
         constant.P_getReportList,
         {
@@ -1584,7 +1587,7 @@ export class CommonService {
           userId: userId,
         },
       );
-      let res: any = electronicDetail;
+      let res: any = resultsets[0];
       return res ?? [];
     } catch (error: any) {
       Logger.error({
@@ -1604,12 +1607,12 @@ export class CommonService {
 
   async getAppToken(loggedInUser: any, appName: string = ''): Promise<any> {
     try {
-      let companyDb = await GetCompanyDb(loggedInUser.secret);
+      let companyDb = await GetCompanyDb(clientSecret);
       let resultSet: any = await companyDb.query(
-        `EXEC ${constant.P_SearchedApplications} @appname = @0`,
+        `EXEC ${constant.P_Web_App_Token} @appname = @0`,
         [appName],
       );
-
+     
       if (resultSet[0].key_expired == 1) {
         try {
           const response = await axios.get(
@@ -1630,61 +1633,183 @@ export class CommonService {
         return res;
       }
     } catch (error: any) {
-      Logger.error({
-        clientId: loggedInUser.clientId,
-        src: 'common/getAppToken',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
-        requestPayload: `appName : ${appName}`,
-        loggedBy: loggedInUser.userId,
-      });
-      error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
-          : error;
-      throw error;
+      // Logger.error({
+      //   clientId: 'sis',
+      //   src: 'common/getAppToken',
+      //   error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+      //   requestPayload: `appName : ${appName}`,
+      //   loggedBy: '',
+      // });
+      if(error.name != undefined && error.name =='QueryFailedError')
+      {
+        return {
+          isError: true,
+          errMsg: error.message,
+        };
+      }
+      else {
+        let customError:any={
+          isError: true,
+          errMsg: error.message,
+        }
+        throw customError;
+      }
     }
   }
 
   async updateAppToken(loggedInUser: any, appName: string = ''): Promise<any> {
     try {
-      let companyDb = await GetCompanyDb(loggedInUser.secret);
-      let resultSet: any = await companyDb.query(
-        `EXEC ${constant.P_SearchedApplications} @appname = @0`,
-        [appName],
-      );
+          let config = {
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: 'https://siscoresyncapi.sisgroup.in/api/Authentication/GetToken_New?AccessToken=0vCKhdKs7dcM4fRoEkqHXIj4zoQgmO3c&SecretKey=JCulZVbUjDx6yFYuK1ywMR76lOdVbZq9',
+            headers: { }
+          };
 
-      if (resultSet[0].key_expired == 1) {
-        try {
-          const response = await axios.get(
-            'http://10.10.1.222:81/api/common/UpdateAppToken',
-          );
-          // You can process the response here if needed
-          let responseData: any = response.data;
-          let jsonObject: any = { status: responseData };
-          var jsonParsed: any = JSON.parse(jsonObject.status);
-          resultSet[0].key_expired = 0;
-          resultSet[0].expirydate = jsonParsed[0].expirydate;
-          resultSet[0].token = jsonParsed[0].token;
-        } catch (error) {
-          throw error;
-        }
-      } else {
-        let res: any = resultSet[0];
+        const response = await axios.request(config);
+        let token:string = response.data.token;
+        let expireIn:string = response.data.expires_in
+
+      let companyDb = await GetCompanyDb(clientSecret);
+
+          let updatedDetail: any = await companyDb.query(
+              `EXEC ${constant.P_Web_App_Token_Update} @appname = @0, @token = @1, @expires_in = @2`,
+              [
+                appName,
+                token,
+                expireIn
+              ],
+            );
+        let res: any = updatedDetail != undefined?updatedDetail[0]: { message: 'Record updated' };
         return res;
-      }
     } catch (error: any) {
-      Logger.error({
-        clientId: loggedInUser.clientId,
-        src: 'common/getAppToken',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
-        requestPayload: `appName : ${appName}`,
-        loggedBy: loggedInUser.userId,
-      });
-      error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
-          : error;
-      throw error;
+      // Logger.error({
+      //   clientId: 'sis',
+      //   src: 'common/updateAppToken',
+      //   error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+      //   requestPayload: `appName : ${appName}`,
+      //   loggedBy: '',
+      // });
+      if(error.name != undefined && error.name =='QueryFailedError')
+      {
+        return {
+          isError: true,
+          errMsg: error.message,
+        };
+      }
+      else {
+        let customError:any={
+          isError: true,
+          errMsg: error.message,
+        }
+        throw customError;
+      }
     }
   }
+
+  async getMachines(): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(clientSecret);
+      const resultSets = await getResultSets(
+        companyDb,
+        constant.Proc_machines,
+        {},
+      );
+      let res: any = { recordsets: resultSets };
+      return res;
+    } catch (error: any) {
+      // Logger.error({
+      //   clientId: 'sis',
+      //   src: 'common/getMachines',
+      //   error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+      //   requestPayload: ``,
+      //   loggedBy: '',
+      // });
+      if(error.name != undefined && error.name =='QueryFailedError')
+      {
+        return {
+          isError: true,
+          errMsg: error.message,
+        };
+      }
+      else {
+        let customError:any={
+          isError: true,
+          errMsg: error.message,
+        }
+        throw customError;
+      }
+    }
+  }
+
+    async getInstalledMachines(): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(clientSecret);
+      const resultSets = await getResultSets(
+        companyDb,
+        constant.proc_started_machine,
+        {},
+      );
+      let res: any = { recordsets: resultSets };
+      return res;
+    } catch (error: any) {
+      // Logger.error({
+      //   clientId: 'sis',
+      //   src: 'common/getMachines',
+      //   error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+      //   requestPayload: ``,
+      //   loggedBy: '',
+      // });
+      if(error.name != undefined && error.name =='QueryFailedError')
+      {
+        return {
+          isError: true,
+          errMsg: error.message,
+        };
+      }
+      else {
+        let customError:any={
+          isError: true,
+          errMsg: error.message,
+        }
+        throw customError;
+      }
+    }
+  }
+
+    async getRecruitmentCount(): Promise<any> {
+    try {
+      let companyDb = await GetCompanyDb(clientSecret);
+      const resultSets = await getResultSets(
+        companyDb,
+        constant.p_new_recruitment,
+        {},
+      );
+      let res: any = { recordsets: resultSets };
+      return res;
+    } catch (error: any) {
+      // Logger.error({
+      //   clientId: 'sis',
+      //   src: 'common/getMachines',
+      //   error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+      //   requestPayload: ``,
+      //   loggedBy: '',
+      // });
+      if(error.name != undefined && error.name =='QueryFailedError')
+      {
+        return {
+          isError: true,
+          errMsg: error.message,
+        };
+      }
+      else {
+        let customError:any={
+          isError: true,
+          errMsg: error.message,
+        }
+        throw customError;
+      }
+    }
+  }
+
 }

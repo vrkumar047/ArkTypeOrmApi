@@ -7,8 +7,6 @@ import moment from 'moment';
 import dotenv from 'dotenv';
 import { Encrypt } from './encrypt';
 dotenv.config();
-const {} = process.env;
-
 const { dirPath, allowedOrigins, aud, iss, sub, tokenExpireTime } = process.env;
 
 export class JWT {

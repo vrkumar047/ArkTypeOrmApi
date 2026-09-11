@@ -105,6 +105,9 @@ export class DashboardController {
       let loggedInUser: any = req['currentUser'];
       let reportDetail: any = {};
 
+      reportDetail.reportName = req.body.reportName ?? '';
+      reportDetail.procName = req.body.procName ?? '';
+      reportDetail.formatUrl = req.body.formatUrl ?? '';
       reportDetail.userId = req.body.userId ?? '';
       reportDetail.company = req.body.company ?? '';
       reportDetail.zone = req.body.zone ?? '';

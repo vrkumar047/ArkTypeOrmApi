@@ -1,52 +1,66 @@
-import { GetCompanyDb, getResultSets } from '../_dbs/mssql/sqlConnection';
-import { plainToClass } from 'class-transformer';
-import constant from '../_dbs/mssql/constant';
-import Logger from '../utils/logger';
-import { CustomError } from '../helpers/customError';
-import { create } from 'xmlbuilder2';
-import { Config } from '../helpers/config';
-import * as path from 'path';
-import * as http from 'http';
-import * as fs from 'fs';
-import moment from 'moment';
-import * as crypto from 'crypto';
-import * as request from 'request';
-import axios from 'axios';
+import { GetCompanyDb, getResultSets } from "../_dbs/mssql/sqlConnection";
+import { plainToClass } from "class-transformer";
+import constant from "../_dbs/mssql/constant";
+import Logger from "../utils/logger";
+import { CustomError } from "../helpers/customError";
+import { create } from "xmlbuilder2";
+import { Config } from "../helpers/config";
+import * as path from "path";
+import * as http from "http";
+import * as fs from "fs";
+import moment from "moment";
+import * as crypto from "crypto";
+import * as request from "request";
+import axios from "axios";
 
 let options: any = {
   excludeExtraneousValues: true,
 };
 
 export class EmployeeService {
-  getRandomNumber(maxNo, minNo) {
+  getRandomNumber(maxNo:number, minNo:number) {
     return Math.floor(Math.random() * (maxNo - minNo) + minNo);
   }
   async getFormNo(
     loggedInUser: any,
     head: string,
     branchCode: string,
-    updateBit: number,
+    updateBit: number
   ): Promise<any[]> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let formNo: any = await companyDb.query(
         `EXEC ${constant.P_getFormNo} @head = @0, @BranchCode = @1, @Update = @2`,
-        [head, branchCode, updateBit],
+        [head, branchCode, updateBit]
       );
-      return formNo ?? '';
+      return formNo ?? "";
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/getFormNo',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/getFormNo",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `head : ${head}, branchCode : ${branchCode}, updateBit : ${updateBit}`,
         loggedBy: loggedInUser.userId,
       });
-      error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
-          : error;
-      throw error;
+      if (error.name != undefined && error.name == "QueryFailedError") {
+        let errRes: any = {
+          isError: true,
+          errMsg: error.message,
+        };
+        return errRes;
+      } else {
+        let customError: any = {
+          isError: true,
+          errMsg: error.message,
+        };
+        throw customError;
+      }
     }
   }
 
@@ -64,15 +78,15 @@ export class EmployeeService {
           employeeDetail.branchCode,
           employeeDetail.updateBit,
           employeeDetail.prspctNo,
-        ],
+        ]
       );
       if (formNo[0]) {
-        if (formNo[0].Code == 'update') {
+        if (formNo[0].Code == "update") {
           formNO = employeeDetail.head;
-          action = 'update';
+          action = "update";
         } else {
           formNO = formNo[0].Code;
-          action = 'insert';
+          action = "insert";
         }
         try {
           let resultSets: any[] = await getResultSets(
@@ -140,7 +154,7 @@ export class EmployeeService {
               assessmentExmpted: employeeDetail.isAssessmentExmpted,
               identityMark: employeeDetail.identityMark,
               created_by: employeeDetail.userId,
-            },
+            }
           );
           let otpDetail: any = {
             firstName: employeeDetail.firstName,
@@ -157,16 +171,29 @@ export class EmployeeService {
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/addEmployee',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/addEmployee",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `${JSON.stringify(employeeDetail)}`,
         loggedBy: loggedInUser.userId,
       });
-      error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
-          : error;
-      throw error;
+      if (error.name != undefined && error.name == "QueryFailedError") {
+        return {
+          isError: true,
+          errMsg: error.message,
+        };
+      } else {
+        let customError: any = {
+          isError: true,
+          errMsg: error.message,
+        };
+        throw customError;
+      }
     }
   }
 
@@ -175,26 +202,32 @@ export class EmployeeService {
     action: string,
     formNo: string,
     otpNo: number,
-    userId: string,
+    userId: string
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let otpDetail: any = await companyDb.query(
         `EXEC ${constant.P_OtpDetails} @action = @0, @formNo = @1, @otpNo = @2, @userId = @3`,
-        [action, formNo, otpNo, userId],
+        [action, formNo, otpNo, userId]
       );
       return otpDetail;
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/getOtpDetail',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/getOtpDetail",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `action : ${action}, formNo : ${formNo}, otpNo : ${otpNo}, userId : ${userId}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -216,20 +249,26 @@ export class EmployeeService {
           eduDetail.remarks,
           eduDetail.condoRemark,
           eduDetail.userId,
-        ],
+        ]
       );
-      return addedEduDetail ?? { message: 'Record updated' };
+      return addedEduDetail ?? { message: "Record updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/addEducationDetails',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/addEducationDetails",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `${JSON.stringify(eduDetail)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -239,26 +278,32 @@ export class EmployeeService {
     loggedInUser: any,
     action: string,
     formNo: string,
-    classCode: number,
+    classCode: number
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let removedEduDetail: any = await companyDb.query(
         `EXEC ${constant.P_EducationDetails} @action = @0, @formNo = @1, @classCode = @2`,
-        [action, formNo, classCode],
+        [action, formNo, classCode]
       );
-      return removedEduDetail ?? { message: 'Record updated' };
+      return removedEduDetail ?? { message: "Record updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/removeEducationDetails',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/removeEducationDetails",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `action : ${action}, formNo : ${formNo}, classCode : ${classCode}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -266,7 +311,7 @@ export class EmployeeService {
 
   async addLanguageDetails(
     loggedInUser: any,
-    languageDetail: any,
+    languageDetail: any
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
@@ -281,20 +326,26 @@ export class EmployeeService {
           languageDetail.canWrite,
           languageDetail.canSpeak,
           languageDetail.userId,
-        ],
+        ]
       );
-      return addedLanguageDetail ?? { message: 'Record updated' };
+      return addedLanguageDetail ?? { message: "Record updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/addLanguageDetails',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/addLanguageDetails",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `${JSON.stringify(languageDetail)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -321,20 +372,26 @@ export class EmployeeService {
           expDetail.toDate,
           expDetail.remarks,
           expDetail.userId,
-        ],
+        ]
       );
-      return exprDetail ?? { message: 'Record updated' };
+      return exprDetail ?? { message: "Record updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/addCvExpDetails',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/addCvExpDetails",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `${JSON.stringify(expDetail)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -344,26 +401,32 @@ export class EmployeeService {
     loggedInUser: any,
     action: string,
     formNo: string,
-    orgType: number,
+    orgType: number
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let expDetail: any = await companyDb.query(
         `EXEC ${constant.P_CivilianDetails} @action = @0, @formNo = @1, @org_type = @2`,
-        [action, formNo, orgType],
+        [action, formNo, orgType]
       );
-      return expDetail ?? { message: 'Record updated' };
+      return expDetail ?? { message: "Record updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/removeCvExpDetails',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/removeCvExpDetails",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `action : ${action}, formNo : ${formNo}, orgType : ${orgType}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -387,20 +450,26 @@ export class EmployeeService {
           exManDetail.toDate,
           exManDetail.remarks,
           exManDetail.userId,
-        ],
+        ]
       );
-      return addedExManDetail ?? { message: 'Record updated' };
+      return addedExManDetail ?? { message: "Record updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/addExManExpDetails',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/addExManExpDetails",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `${JSON.stringify(exManDetail)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -411,26 +480,32 @@ export class EmployeeService {
     action: string,
     formNo: string,
     serviceType: string,
-    org: string,
+    org: string
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let removedExManDetail: any = await companyDb.query(
         `EXEC ${constant.P_ExManExpDetails} @action = @0, @formNo = @1, @serviceType = @2, @org = @3`,
-        [action, formNo, serviceType, org],
+        [action, formNo, serviceType, org]
       );
-      return removedExManDetail ?? { message: 'Record updated' };
+      return removedExManDetail ?? { message: "Record updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/removeExManExpDetails',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/removeExManExpDetails",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `action : ${action}, formNo : ${formNo}, serviceType : ${serviceType}, org : ${org}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -457,20 +532,26 @@ export class EmployeeService {
           esiDetail.oldestEsiDateDDMMMYYYY,
           0,
           esiDetail.userId,
-        ],
+        ]
       );
-      return addedEsiDetail ?? { message: 'Record updated' };
+      return addedEsiDetail ?? { message: "Record updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/addEsiServerDetails',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/addEsiServerDetails",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `${JSON.stringify(esiDetail)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -480,26 +561,32 @@ export class EmployeeService {
     loggedInUser: any,
     action: string,
     formNo: string,
-    esiNo: string,
+    esiNo: string
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let removedEsiDetail: any = await companyDb.query(
         `EXEC ${constant.P_EsiServerDetails} @action = @0, @formNo = @1, @esiNo = @2`,
-        [action, formNo, esiNo],
+        [action, formNo, esiNo]
       );
-      return removedEsiDetail ?? { message: 'Record updated' };
+      return removedEsiDetail ?? { message: "Record updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/removeEsiServerDetails',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/removeEsiServerDetails",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `action : ${action}, formNo : ${formNo}, esiNo : ${esiNo}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -521,20 +608,26 @@ export class EmployeeService {
           familyDetail.nomineePerc,
           familyDetail.age,
           familyDetail.userId,
-        ],
+        ]
       );
-      return addedFamilyDetail ?? { message: 'Record updated' };
+      return addedFamilyDetail ?? { message: "Record updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/addFamilyDetails',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/addFamilyDetails",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `${JSON.stringify(familyDetail)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -544,26 +637,32 @@ export class EmployeeService {
     loggedInUser: any,
     action: string,
     formNo: string,
-    name: string,
+    name: string
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let removedFamilyDetail: any = await companyDb.query(
         `EXEC ${constant.P_FamilyDetails} @action = @0, @formNo = @1, @name = @2`,
-        [action, formNo, name],
+        [action, formNo, name]
       );
-      return removedFamilyDetail ?? { message: 'Record updated' };
+      return removedFamilyDetail ?? { message: "Record updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/removeFamilyDetail',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/removeFamilyDetail",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `action : ${action}, formNo : ${formNo}, name : ${name}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -571,7 +670,7 @@ export class EmployeeService {
 
   async addPhysicalDetails(
     loggedInUser: any,
-    physicalDetail: any,
+    physicalDetail: any
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
@@ -622,20 +721,26 @@ export class EmployeeService {
           physicalDetail.rqccAgent,
           physicalDetail.verifiedOn,
           physicalDetail.userId,
-        ],
+        ]
       );
-      return addedPhysicalDetail ?? { message: 'Record updated' };
+      return addedPhysicalDetail ?? { message: "Record updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/addPhysicalDetails',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/addPhysicalDetails",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `${JSON.stringify(physicalDetail)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -644,26 +749,32 @@ export class EmployeeService {
   async removePhysicalDetail(
     loggedInUser: any,
     action: string,
-    formNo: string,
+    formNo: string
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let removedPhysicalDetail: any = await companyDb.query(
         `EXEC ${constant.P_PhysicalDetails} @action = @0, @formNo = @1`,
-        [action, formNo],
+        [action, formNo]
       );
-      return removedPhysicalDetail ?? { message: 'Record updated' };
+      return removedPhysicalDetail ?? { message: "Record updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/removePhysicalDetail',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/removePhysicalDetail",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -685,20 +796,26 @@ export class EmployeeService {
           bankDetail.bankDetail,
           bankDetail.bankUpdatedInERP,
           bankDetail.userId,
-        ],
+        ]
       );
-      return addedBankDetail ?? { message: 'Record updated' };
+      return addedBankDetail ?? { message: "Record updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/addBankDetails',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/addBankDetails",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `${JSON.stringify(bankDetail)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -707,26 +824,32 @@ export class EmployeeService {
   async removeBankDetail(
     loggedInUser: any,
     action: string,
-    formNo: string,
+    formNo: string
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let removedPhysicalDetail: any = await companyDb.query(
         `EXEC ${constant.P_BankDetails} @action = @0, @formNo = @1`,
-        [action, formNo],
+        [action, formNo]
       );
-      return removedPhysicalDetail ?? { message: 'Record updated' };
+      return removedPhysicalDetail ?? { message: "Record updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/removeBankDetail',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/removeBankDetail",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -743,20 +866,26 @@ export class EmployeeService {
           formDetail.formName,
           formDetail.status,
           formDetail.userId,
-        ],
+        ]
       );
-      return updatedFormDetail ?? { message: 'Record updated' };
+      return updatedFormDetail ?? { message: "Record updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/updateFormStatus',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/updateFormStatus",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `${JSON.stringify(formDetail)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -765,7 +894,7 @@ export class EmployeeService {
   async getEmployeeBasicDetails(
     loggedInUser: any,
     action: string,
-    formNo: string,
+    formNo: string
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
@@ -775,21 +904,27 @@ export class EmployeeService {
         {
           action: action,
           formNO: formNo,
-        },
+        }
       );
       let res: any = basicDetails;
       return res ?? [];
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/getEmployeeBasicDetails',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/getEmployeeBasicDetails",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -798,7 +933,7 @@ export class EmployeeService {
   async getUploadedFormDetails(
     loggedInUser: any,
     action: string,
-    formNo: string,
+    formNo: string
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
@@ -808,21 +943,27 @@ export class EmployeeService {
         {
           action: action,
           form_no: formNo,
-        },
+        }
       );
       let res: any = formDetails;
       return res ?? [];
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/getUploadedFormDetails',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/getUploadedFormDetails",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -833,7 +974,7 @@ export class EmployeeService {
     action: string,
     formNo: string,
     docTypeId: string,
-    docId: string,
+    docId: string
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
@@ -845,21 +986,27 @@ export class EmployeeService {
           form_no: formNo,
           doc_type_id: docTypeId,
           doc_id: docId,
-        },
+        }
       );
       let res: any = removedDocument;
-      return res ?? { message: 'Record updated' };
+      return res ?? { message: "Record updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/removedocument',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/removedocument",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `action : ${action}, formNo : ${formNo}, docTypeId : ${docTypeId}, docId : ${docId}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -873,21 +1020,27 @@ export class EmployeeService {
         constant.P_GetEduLangDetails,
         {
           formNo: formNo,
-        },
+        }
       );
       let res: any = langDetails;
       return res ?? [];
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/getEduLangDetails',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/getEduLangDetails",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -901,21 +1054,27 @@ export class EmployeeService {
         constant.P_GetExpExMEsiDetails,
         {
           formNo: formNo,
-        },
+        }
       );
       let res: any = esiDetails;
       return res ?? [];
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/getExpExMEsiDetails',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/getExpExMEsiDetails",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -926,24 +1085,30 @@ export class EmployeeService {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let bmiDetail: any = await companyDb.query(
         `EXEC ${constant.P_GetBMIDetails} @formNo = @0`,
-        [formNo],
+        [formNo]
       );
       let res: any =
         bmiDetail.length > 0
           ? bmiDetail[0]
-          : { prospectusNo: '', weight: 0, height: 0, bmi: 0 };
+          : { prospectusNo: "", weight: 0, height: 0, bmi: 0 };
       return res;
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/getBMIDetails',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/getBMIDetails",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -951,7 +1116,7 @@ export class EmployeeService {
 
   async updateRqccDocument(
     loggedInUser: any,
-    documentDetail: any,
+    documentDetail: any
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
@@ -981,20 +1146,26 @@ export class EmployeeService {
           documentDetail.expFromESI,
           documentDetail.userId,
           documentDetail.withPhysical,
-        ],
+        ]
       );
-      return rqccDocument ?? { message: 'Record updated' };
+      return rqccDocument ?? { message: "Record updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/updateRqccDocument',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/updateRqccDocument",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `${JSON.stringify(documentDetail)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -1002,59 +1173,54 @@ export class EmployeeService {
 
   async updateApprovalStatus(
     loggedInUser: any,
-    statusDetail: any,
+    statusDetail: any
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let formLists: any = statusDetail.formLists;
-      //       const doc = create({ version: '1.0' })
-      //   .ele('root')
-      //     .ele('user')
-      //       .att('id', '123')
-      //       .ele('name').txt('John Doe').up()
-      //       .ele('email').txt('john@example.com')
-      //     .up()
-      //   .up()
-      // .end({ prettyPrint: true });
-
-      // console.log(doc);
-
-      // let xmlNode: any = xmlBuilder.create('formList');
-      // for (var i = 0; i <= formLists.length - 1; i++) {
-      //   var leafNode = xmlNode.ele('emp');
-      //   leafNode.ele('formNo', formLists[i].formNo);
-      //   leafNode.ele('formStatus', formLists[i].formStatus);
-      //   leafNode.ele('reason', formLists[i].reason);
-      // }
-      // xmlNode.end({ pretty: true });
-
-      //let xmlString: string = xmlNode.toString();
-
-      let xmlString: string = '';
+      let formListXmlString:string = '';
+            let formListXml = create().ele('formList');
+      formLists.forEach((form:any) => {
+        const leafNode = formListXml.ele('emp');
+        leafNode.ele('formNo').txt(form.formNo);
+        leafNode.ele('formStatus').txt(form.formStatus);
+        leafNode.ele('reason').txt(form.reason);
+      });
+      formListXmlString = formListXml.end({
+        headless: true,
+        prettyPrint: true,
+      });
+      formListXmlString = formListXmlString.replace(/[\r\n]+/g, '').trim();
 
       let rqccDocument: any = await companyDb.query(
         `EXEC ${constant.P_UpdateApprovalStatus} @action = @0, @formList = @1, @userId = @2`,
-        [statusDetail.action, xmlString, statusDetail.userId],
+        [statusDetail.action, formListXmlString, statusDetail.userId]
       );
-
-      // var formLists = req.body.formLists;
-
-      // var sqlReq = new sql.Request(conn_pool);
-      // sqlReq.input('action', sql.VarChar(50), req.body.action);
-      // sqlReq.input('formList', sql.VarChar(sql.MAX), xmlString);
-      // sqlReq.input('userId', sql.VarChar(50), req.body.userId);
-      return rqccDocument ?? { message: 'Record updated' };
+      if(!rqccDocument)
+      {
+        return {status:'no records updated'}
+      }
+      else
+      {
+        return {status:'records updated'}
+      }
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/updateApprovalStatus',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/updateApprovalStatus",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `${JSON.stringify(statusDetail)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -1062,7 +1228,7 @@ export class EmployeeService {
 
   async updateEmployeeDetails(
     loggedInUser: any,
-    empDetails: any,
+    empDetails: any
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
@@ -1076,20 +1242,26 @@ export class EmployeeService {
           empDetails.Aadhar_Dob,
           empDetails.UanNo,
           empDetails.userId,
-        ],
+        ]
       );
-      return updatedEmpDetails ?? { message: 'Record updated' };
+      return updatedEmpDetails ?? { message: "Record updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/updateEmployeeDetails',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/updateEmployeeDetails",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `${JSON.stringify(empDetails)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -1097,13 +1269,28 @@ export class EmployeeService {
 
   async updateAllFormStatus(
     loggedInUser: any,
-    statusDetails: any,
+    statusDetails: any
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let updatedStatusDetails: any = await companyDb.query(
-        `EXEC ${constant.P_UpdateAllFormStatus} @action = @0, @formNo = @1, @basic = @2, @document = @3, @education = @4, @experience = @5, @physical = @6
-        , @assessment = @7, @score = @8, @electronic = @9, @family = @10, @bank = @11, @icard = @12, @rqccdoc = @13, @rqccPhy = @14, @userId = @15`,
+        `EXEC ${constant.P_UpdateAllFormStatus} 
+        @action = @0, 
+        @formNo = @1, 
+        @basic = @2, 
+        @document = @3, 
+        @education = @4, 
+        @experience = @5, 
+        @physical = @6,
+        @assessment = @7, 
+        @score = @8, 
+        @electronic = @9, 
+        @family = @10, 
+        @bank = @11, 
+        @icard = @12,
+        @rqccdoc = @13, 
+        @rqccPhy = @14, 
+        @userId = @15`,
         [
           statusDetails.action,
           statusDetails.form_no,
@@ -1121,20 +1308,27 @@ export class EmployeeService {
           statusDetails.rqccDocVerified,
           statusDetails.rqccPhyVerified,
           statusDetails.userId,
-        ],
+        ]
       );
-      return updatedStatusDetails ?? { message: 'Record updated' };
+      // console.log(updatedStatusDetails)
+      return { status: "updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/updateAllFormStatus',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/updateAllFormStatus",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `${JSON.stringify(statusDetails)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -1145,28 +1339,41 @@ export class EmployeeService {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
       let updatedRegNo: any = await companyDb.query(
         `EXEC ${constant.P_UpdateRegNo} @fromNo = @0, @regNo = @1, @userId = @2`,
-        [regNoDetails.formNo, regNoDetails.regNo, regNoDetails.userId],
+        [regNoDetails.formNo, regNoDetails.regNo, regNoDetails.userId]
       );
-      return updatedRegNo ?? { message: 'Record updated' };
+      return updatedRegNo ?? { message: "Record updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/updateRegNo',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/updateRegNo",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `${JSON.stringify(regNoDetails)}`,
         loggedBy: loggedInUser.userId,
       });
-      error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
-          : error;
-      throw error;
+      if (error.name != undefined && error.name == "QueryFailedError") {
+        return {
+          isError: true,
+          errMsg: error.message,
+        };
+      } else {
+        let customError: any = {
+          isError: true,
+          errMsg: error.message,
+        };
+        throw customError;
+      }
     }
   }
 
   async updateApprovalStatusDetails(
     loggedInUser: any,
-    statusDetails: any,
+    statusDetails: any
   ): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
@@ -1183,20 +1390,26 @@ export class EmployeeService {
           statusDetails.statusReason,
           statusDetails.otherRemark,
           statusDetails.userId,
-        ],
+        ]
       );
-      return updatedStatusDetail ?? { message: 'Record updated' };
+      return updatedStatusDetail ?? { message: "Record updated" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/updateApprovalStatusDetails',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/updateApprovalStatusDetails",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `${JSON.stringify(statusDetails)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
@@ -1205,36 +1418,58 @@ export class EmployeeService {
   async sendOtp(loggedInUser: any, otpDetail: any): Promise<any> {
     try {
       let companyDb = await GetCompanyDb(loggedInUser.secret);
-      let updatedOtp: any = await companyDb.query(
-        `EXEC ${constant.P_OTP_Validity} @formNo = @0`,
-        [otpDetail.formNo],
-      );
-      await this.sendSms(updatedOtp[0]);
-      return { message: 'Otp sent successfully' };
+      if (otpDetail.formNo == '' && otpDetail.otpUrl != '') {
+        let sendOtpDetail: any = {
+          otpUrl: otpDetail.otpUrl,
+        };
+        await this.sendSms(sendOtpDetail);
+      } else {
+        let updatedOtp: any = await companyDb.query(
+          `EXEC ${constant.P_OTP_Validity} @formNo = @0`,
+          [otpDetail.formNo]
+        );
+        let sendOtpDetail: any = {
+          firstName: updatedOtp[0].firstName,
+          mobileNo: updatedOtp[0].mobileNo,
+          otp: updatedOtp[0].otp,
+        };
+        await this.sendSms(sendOtpDetail);
+      }
+      return { message: "Otp sent successfully" };
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
-        src: 'employee/sendOtp',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        src: "employee/sendOtp",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `${JSON.stringify(otpDetail)}`,
         loggedBy: loggedInUser.userId,
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }
   }
 
   async sendSms(otpDetail: any): Promise<any> {
+    let url: string = otpDetail.otpUrl;
+    if (url == undefined || url.length == 0) {
+      url = `http://api.technotch.in/restTrans?username=sisind&password=sisind&campaign-name=SISARKOTP&unicode=false&from=SISARK&to=${otpDetail.mobileNo}&text=Dear ${otpDetail.firstName}, Your OTP is ${otpDetail.otp}. This is valid for next 48 Hrs. Please visit our recruitment center with this OTP, filled application form and all Original Documents. SIS India Ltd`;
+    }
     try {
       let config = {
-        method: 'get',
+        method: "get",
         maxBodyLength: Infinity,
-        url: `http://api.technotch.in/restTrans?username=sisind&password=sisind&campaign-name=SISARKOTP&unicode=false&from=SISARK&to=${otpDetail.mobileNo}&text=Dear ${otpDetail.firstName}, Your OTP is ${otpDetail.otp}. This is valid for next 48 Hrs. Please visit our recruitment center with this OTP, filled application form and all Original Documents. SIS India Ltd`,
+        url: url,
         headers: {
-          Cookie: 'JSESSIONID=A6057DDDE01DB7C29C6FF5FA980C9E87',
+          Cookie: "JSESSIONID=A6057DDDE01DB7C29C6FF5FA980C9E87",
         },
       };
 
@@ -1248,15 +1483,21 @@ export class EmployeeService {
         });
     } catch (error: any) {
       Logger.error({
-        clientId: 'unknown',
-        src: 'employee/sendSms',
-        error: `{"Error":"${error.name == 'RequestError' ? error.name : error.message}", "Detail":${error.name == 'RequestError' ? JSON.stringify(error.precedingErrors) : '"' + error.detail + '"'}}`,
+        clientId: "unknown",
+        src: "employee/sendSms",
+        error: `{"Error":"${
+          error.name == "RequestError" ? error.name : error.message
+        }", "Detail":${
+          error.name == "RequestError"
+            ? JSON.stringify(error.precedingErrors)
+            : '"' + error.detail + '"'
+        }}`,
         requestPayload: `${JSON.stringify(otpDetail)}`,
-        loggedBy: 'unknown',
+        loggedBy: "unknown",
       });
       error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
+        error.driverError || error.name == "RequestError"
+          ? new CustomError("InternalServerError")
           : error;
       throw error;
     }

@@ -1064,7 +1064,7 @@ export class CommonController {
       let compCode: string = req.params.compCode ?? '';
 
       if (loggedInUser) {
-        let data: any = await commonService.industryList(
+        let data: any = await commonService.userWiseBranchList(
           loggedInUser,
           userId,
           compCode,
@@ -1239,32 +1239,61 @@ export class CommonController {
     try {
       let loggedInUser: any = req['currentUser'];
       let appName: any = req.headers.appname ?? '';
-
-      if (loggedInUser) {
+     // if (loggedInUser) {
         let data: any = await commonService.getAppToken(loggedInUser, appName);
         res.locals.data = data;
-      } else {
-        res.locals.error = 'Unauthorized';
-      }
+        return res.json(res.locals.data);
+      // } else {
+      //   res.locals.error = 'Unauthorized';
+      // }
     } catch (err) {
       res.locals.error = err;
     }
-    next();
+   // next();
   }
 
   async updateAppToken(req: Request, res: Response, next: NextFunction) {
     try {
-      let loggedInUser: any = req['currentUser'];
-
-      if (loggedInUser) {
-        let data: any = await commonService.getAppToken(loggedInUser);
+        let data: any = await commonService.updateAppToken(undefined,'Coresyncapi');
         res.locals.data = data;
-      } else {
-        res.locals.error = 'Unauthorized';
-      }
+        return res.json(res.locals.data);
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            error: err
+        });
+    }
+  }
+    async getMachines(req: Request, res: Response, next: NextFunction) {
+    try {
+        let data: any = await commonService.getMachines();
+        res.locals.data = data.recordsets[0];
+        return res.json(res.locals.data);
+    } catch (err:any) {
+      return res.status(500).json({
+                      isError: true,
+                      errMsg: err.message
+                  });
+    }
+  }
+      async getInstalledMachines(req: Request, res: Response, next: NextFunction) {
+    try {
+        let data: any = await commonService.getInstalledMachines();
+        res.locals.data = data.recordsets[0];
+        return res.json(res.locals.data);
     } catch (err) {
       res.locals.error = err;
     }
-    next();
+    //next();
+  }
+      async getRecruitmentCount(req: Request, res: Response, next: NextFunction) {
+    try {
+        let data: any = await commonService.getRecruitmentCount();
+        res.locals.data = data.recordsets[0];
+        return res.json(res.locals.data);
+    } catch (err) {
+      res.locals.error = err;
+    }
+    //next();
   }
 }

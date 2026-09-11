@@ -9,7 +9,6 @@ const employeeCntrl = new EmployeeController();
 
 employeeRoute.use(authenticate);
 
-//employeeRoute.get('/getStates/:countryCode', checkCache, employeeCntrl.getStates);  // to check data from redis
 employeeRoute.get(
   '/getFormNo/:head/:branchCode/:updateBit',
   employeeCntrl.getFormNo,
@@ -25,7 +24,10 @@ employeeRoute.put(
   employeeCntrl.removeEducationDetails,
 );
 employeeRoute.post('/addLanguageDetails', employeeCntrl.addLanguageDetails);
-
+// employeeRoute.put(
+//   '/removeLanguageDetails/:action/:formNo/:languageId',
+//   employeeCntrl.removeLanguageDetails,
+// );
 employeeRoute.post('/addCvExpDetails', employeeCntrl.addCvExpDetails);
 
 employeeRoute.put(
@@ -89,7 +91,7 @@ employeeRoute.get(
 employeeRoute.get('/getBMIDetails/:formNo', employeeCntrl.getBMIDetails);
 employeeRoute.post('/updateRqccDocument', employeeCntrl.updateRqccDocument);
 employeeRoute.post(
-  '/getExpExMEsiDetailsUpdateApprovalStatus',
+  '/updateApprovalStatus',
   employeeCntrl.updateApprovalStatus,
 );
 employeeRoute.post(

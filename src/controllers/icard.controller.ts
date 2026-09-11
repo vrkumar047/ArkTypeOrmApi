@@ -11,7 +11,7 @@ export class ICardController {
           loggedInUser,
           qrDetail,
         );
-        res.locals.data = { url: printedCardDetail };
+        res.locals.data = printedCardDetail;
       } else {
         res.locals.error = 'Unauthorized';
       }
@@ -51,6 +51,27 @@ export class ICardController {
           loggedInUser,
           empDetail,
         );
+        res.locals.data = printedCardDetail;
+      } else {
+        res.locals.error = 'Unauthorized';
+      }
+    } catch (err) {
+      res.locals.error = err;
+    }
+    next();
+  }
+
+    async generateNewICardPdf(req: Request, res: Response, next: NextFunction) {
+    try {
+      let loggedInUser: any = req['currentUser'];
+      let empDetail: any = req.body.empDetail;
+      if (loggedInUser) {
+        let printedCardDetail: any = await icardService.convertPdfFromBS64New(
+          loggedInUser,
+          empDetail,
+        );
+        console.log('controller response');
+        console.log(printedCardDetail);
         res.locals.data = printedCardDetail;
       } else {
         res.locals.error = 'Unauthorized';
@@ -106,7 +127,7 @@ export class ICardController {
     try {
       let loggedInUser: any = req['currentUser'];
       let empDetails: string = req.body.empDetails;
-      if (loggedInUser) {
+      if (!loggedInUser) {
         let regDetail: any;
         if (!res.locals.data) {
           regDetail = await icardService.generateEmployeeRegNo(
@@ -118,13 +139,19 @@ export class ICardController {
         }
 
         res.locals.data = regDetail;
+        return res.json(res.locals.data);
       } else {
-        res.locals.error = 'Unauthorized';
+                return res.status(500).json({
+          isError: true,
+          errMsg: "Unauthorized",
+        });
       }
-    } catch (err) {
-      res.locals.error = err;
+    } catch (err:any) {
+            return res.status(500).json({
+        isError: true,
+        errMsg: err.message,
+      });
     }
-    next();
   }
 
   async getCardStatus(req: Request, res: Response, next: NextFunction) {
@@ -167,4 +194,22 @@ export class ICardController {
     }
     next();
   }
+
+      async getCardPrintDetailsWithRegNo(req: Request, res: Response, next: NextFunction) {
+      try {
+        let loggedInUser: any = req['currentUser'];
+        let regNo: string = req.params.regNo ?? '';
+  
+        
+        if (loggedInUser) {
+          let data: any = await icardService.getCardPrintDetailsWithRegNo(loggedInUser, regNo);
+          res.locals.data = data;
+        } else {
+          res.locals.error = 'Unauthorized';
+        }
+      } catch (err) {
+        res.locals.error = err;
+      }
+      next();
+    }
 }

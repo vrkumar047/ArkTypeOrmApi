@@ -6,6 +6,7 @@ const validateRequest = SchemaValidator(true);
 const authRoute = Router();
 const authCntrl = new AuthController();
 
+authRoute.post('/signUp', validateRequest, authCntrl.signUp);
 authRoute.post('/signIn', validateRequest, authCntrl.signIn);
 authRoute.post('/isLogedIn', validateRequest, authCntrl.isLogedIn);
 //authRoute.post('/refreshToken', validateRequest, authCntrl.refreshToken);

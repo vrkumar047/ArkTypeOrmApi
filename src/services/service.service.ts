@@ -53,11 +53,20 @@ export class ServiceService {
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
-      error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
-          : error;
-      throw error;
+    if(error.name != undefined && error.name =='QueryFailedError')
+      {
+        return {
+          isError: true,
+          errMsg: error.message,
+        };
+      }
+      else {
+        let customError:any={
+          isError: true,
+          errMsg: error.message,
+        }
+        throw customError;
+      }
     }
   }
   async getArkData(loggedInUser: any, data: any): Promise<any> {
@@ -134,11 +143,20 @@ export class ServiceService {
         requestPayload: `action : ${action}, formNo : ${formNo}`,
         loggedBy: loggedInUser.userId,
       });
-      error =
-        error.driverError || error.name == 'RequestError'
-          ? new CustomError('InternalServerError')
-          : error;
-      throw error;
+    if(error.name != undefined && error.name =='QueryFailedError')
+      {
+        return {
+          isError: true,
+          errMsg: error.message,
+        };
+      }
+      else {
+        let customError:any={
+          isError: true,
+          errMsg: error.message,
+        }
+        throw customError;
+      }
     }
   }
 }

@@ -13,6 +13,7 @@ import { icardRoute } from './icard.route';
 import { fingerPrintRoute } from './fingerPrint.route';
 import { scoreRoute } from './score.route';
 import { serviceRoute } from './service.route';
+import { dashboardRoute } from './dashboard.route';
 
 route.use('/account', authRoute);
 route.use('/employee', employeeRoute);
@@ -24,5 +25,6 @@ route.use('/card', icardRoute);
 route.use('/fingerprint', fingerPrintRoute);
 route.use('/score', scoreRoute);
 route.use('/services', serviceRoute);
+route.use('/dashboard', dashboardRoute);
 
 export { route };

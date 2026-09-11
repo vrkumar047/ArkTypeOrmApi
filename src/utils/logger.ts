@@ -13,8 +13,17 @@ const {
 
 const { combine, timestamp, printf, colorize } = format;
 
+// const logFormat = printf(({ level, message, timestamp }) => {
+//   return `${timestamp} ${level}: ${message}`;
+// });
+
 const logFormat = printf(({ level, message, timestamp }) => {
-  return `${timestamp} ${level}: ${message}`;
+  const formattedMessage =
+    typeof message === 'object'
+      ? JSON.stringify(message)
+      : message;
+
+  return `${timestamp} ${level}: ${formattedMessage}`;
 });
 
 const Logger = createLogger({

@@ -21,14 +21,15 @@ export class AuthController {
 
   async signUp(req: Request, res: Response, next: NextFunction) {
     try {
-      let userName: string = req.body.userName;
-      let password: string = req.body.password;
-      let userDetail: any = await authService.checkuser(userName, password);
-      res.locals.data = userDetail;
+      let userDetail: any = req.body;
+      let updatedUserDetail: any = await authService.signUp(userDetail);
+      return res.json(updatedUserDetail);
     } catch (err) {
-      res.locals.error = err;
+      return res.status(500).json({
+        success: false,
+        error: err
+      });
     }
-    next();
   }
 
   async logOut(req: Request, res: Response, next: NextFunction) {
