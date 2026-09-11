@@ -62,7 +62,7 @@ export class EmployeeController {
           otpNo,
           userId,
         );
-        res.locals.data = data[0][''];
+        res.locals.data = data[0].status;
       } else {
         res.locals.error = 'Unauthorized';
       }

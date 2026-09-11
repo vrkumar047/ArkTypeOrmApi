@@ -183,10 +183,7 @@ export class EmployeeService {
         `EXEC ${constant.P_OtpDetails} @action = @0, @formNo = @1, @otpNo = @2, @userId = @3`,
         [action, formNo, otpNo, userId],
       );
-      if (!otpDetail) {
-        otpDetail = { message: 'Record updated' };
-      }
-      return otpDetail ?? [];
+      return otpDetail;
     } catch (error: any) {
       Logger.error({
         clientId: loggedInUser.clientId,
